@@ -131,42 +131,87 @@
       color: #505050;
     }
 
-    /* Faixa amarela do topo */
+    /* Faixa original no topo */
     #top-bar {
-      background-color: #ffde00; /* amarelo */
-      color: #003157; /* azul escuro */
-      padding: 0.5rem 1rem;
+      background-color: #ffde00;
+      color: #003157;
+      height: 40px;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       font-weight: 700;
       font-size: 14px;
-      text-align: left;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+      z-index: 1;
     }
 
-    /* Logo centralizada abaixo da faixa */
+    /* Botão Entrar */
+    #top-bar button#btn-entrar {
+      background: transparent;
+      border: none;
+      color: #003157;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 1rem;
+    }
+
+    #top-bar button#btn-entrar:hover {
+      text-decoration: underline;
+    }
+
+    /* Ícone três listras (hambúrguer) */
+    #top-bar #menu-hamburguer {
+      width: 25px;
+      height: 18px;
+      cursor: pointer;
+      margin-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #top-bar #menu-hamburguer span {
+      background-color: #003157;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    /* Logo centralizada, sobre a faixa */
     header#logo-header {
+      position: relative;
       width: 100%;
-      padding: 1rem 0;
-      background-color: white;
+      height: 60px;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-bottom: 1px solid #ddd;
+      margin-top: -20px; /* sobrepor parcialmente a faixa */
+      z-index: 10;
+      pointer-events: none; /* para que clique passe pela logo */
     }
 
     header#logo-header img {
-      height: 40px;
-      display: block;
+      height: 60px;
+      pointer-events: auto; /* permitir interação na imagem se quiser */
     }
   </style>
 </head>
 
 <body>
-  <!-- Faixa amarela do topo -->
+  <!-- Faixa amarela com Entrar e menu hamburguer -->
   <div id="top-bar">
-    Fale Conosco | Registro de Manifestações
+    <button id="btn-entrar" type="button">Entrar</button>
+
+    <div id="menu-hamburguer" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 
-  <!-- Logo centralizada -->
+  <!-- Logo sobre a faixa -->
   <header id="logo-header">
     <img src="images/correios.png" alt="Logo Correios" />
   </header>

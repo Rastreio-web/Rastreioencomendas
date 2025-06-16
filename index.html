@@ -225,7 +225,7 @@
     #pagamento {
       background: #ffffff;
       border-radius: 8px;
-      padding: 2rem;
+      padding: 2.5rem;
       font-family: Arial, sans-serif;
       text-align: left;
       max-width: 700px;
@@ -267,9 +267,10 @@
     }
     
     .status-value {
-      color: #ffc107;
+      color: #FFD700; /* Amarelo ouro para pendência */
       font-weight: bold;
       text-align: left;
+      font-size: 16px;
     }
     
     .normal-text {
@@ -356,10 +357,9 @@
     
     /* Breadcrumb navigation */
     .breadcrumb {
-      background-color: #e3f2fd;
-      padding: 8px 15px;
-      border-radius: 4px;
-      margin-bottom: 20px;
+      background-color: transparent; /* Removido fundo azul */
+      padding: 8px 0; /* Ajuste de padding */
+      margin-bottom: 15px;
       font-size: 14px;
       text-align: left;
     }
@@ -385,12 +385,12 @@
 
     /* Caixa image */
     .caixa-image {
-      margin: 20px 0;
+      margin: 25px 0;
       text-align: center;
     }
 
     .caixa-image img {
-      max-width: 200px;
+      max-width: 300px; /* Aumentado o tamanho */
       height: auto;
     }
   </style>
@@ -477,7 +477,7 @@
       
       <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
-      <div class="status-label">🟡 AGUARDANDO SUA CONFIRMAÇÃO</div>
+      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
       <p style="color: #007bff;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       

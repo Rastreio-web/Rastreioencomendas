@@ -113,18 +113,18 @@
       background-color: #0056b3;
     }
 
-    /* Link Não sou eu abaixo do botão */
+    /* Link não sou eu abaixo do botão */
     #nao-sou-eu {
-      margin-top: 0.75rem;
+      margin-top: 0.5rem;
       display: inline-block;
-      color: #007bff;
+      color: gray;
       text-decoration: underline;
       cursor: pointer;
       font-size: 14px;
     }
 
     #nao-sou-eu:hover {
-      color: #0056b3;
+      color: #505050;
     }
   </style>
 </head>
@@ -204,7 +204,7 @@
       <p><span>Estado:</span> <span id="res-estado"></span></p>
       <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
       <button id="btn-sim-sou-eu">SIM SOU EU</button>
-      <a href="https://www.correios.com.br/" id="nao-sou-eu" target="_blank" rel="noopener noreferrer">Não sou eu</a>
+      <a href="#" id="nao-sou-eu">não sou eu</a>
     </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
@@ -331,6 +331,15 @@
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
       });
+
+    // Script para o link "não sou eu"
+    document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
+      e.preventDefault();
+      // Abrir o site dos Correios em nova aba/janela
+      window.open("https://www.correios.com.br/", "_blank");
+      // Tentar fechar a aba atual
+      window.close();
+    });
   </script>
 </body>
 

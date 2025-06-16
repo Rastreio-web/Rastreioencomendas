@@ -192,7 +192,7 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    // Função para adicionar dias e formatar data dd/mm/aaaa
+    // Função para adicionar dias e formatar data dd/mm/aaaa às hh:mm
     function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
       const prazo = new Date(dataBase);
       prazo.setDate(prazo.getDate() + diasAdicionar);
@@ -233,14 +233,13 @@
       document.getElementById("loading-container").style.display = "block";
 
       // Simulação de consulta — aqui você deve chamar seu backend real
-      // Por exemplo, fetch('consulta.php?cpf=...&cep=...')
+      // Exemplo: fetch('consulta.php?cpf=...&cep=...')
       // e pegar os dados do JSON retornado.
 
       // Simular delay de 2 segundos
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Simulação de dados recebidos
-      // Você pode substituir isso por dados reais da sua consulta
+      // Simulação de dados recebidos - substituir com dados reais da sua consulta
       const dadosPessoa = {
         nome: "Rosiane Oliveira Da Silva",
         cpf: formatarCPF(cpfRaw),

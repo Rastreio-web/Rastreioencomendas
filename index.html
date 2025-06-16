@@ -136,11 +136,38 @@
       color: #505050;
     }
 
-    /* ----------- NOVO: Logo sempre centralizada ----------- */
-    nav div.ml-0.ml-lg-1.d-flex.justify-content-center {
+    /* ----------- NOVO: Logo e botão na mesma linha ----------- */
+    #form-rastreamento {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #form-rastreamento input[type="text"] {
+      flex: 1 1 200px;
+      min-width: 150px;
+      max-width: 250px;
+    }
+
+    #consultar-btn {
+      flex: 0 0 auto;
+      min-width: 120px;
+    }
+
+    /* Logo centralizada e alinhada com o form */
+    header nav div.ml-0.ml-lg-1.d-flex.justify-content-center {
       justify-content: center !important;
       width: 100% !important;
       margin-left: 0 !important;
+      display: flex !important;
+      align-items: center;
+    }
+
+    header nav div.ml-0.ml-lg-1.d-flex.justify-content-center a {
+      display: inline-block;
+      margin-right: auto;
     }
   </style>
 </head>
@@ -185,26 +212,15 @@
       </h5>
 
       <form id="form-rastreamento">
-        <span>Deseja acompanhar seu objeto?</span><br />
-        <span>Digite o CPF do comprador.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
-        </div>
-
-        <span>Informe o seu CEP abaixo.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
-        </div>
-
-        <div class="form-group mt-1 d-flex justify-content-center" id="botao-container">
-          <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
-        </div>
-
-        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
-          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
-          <div class="spinner"></div>
-        </div>
+        <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
+        <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
+        <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>
       </form>
+
+      <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
+        <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
+        <div class="spinner"></div>
+      </div>
     </section>
 
     <!-- Tela Resultado -->

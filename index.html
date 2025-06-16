@@ -111,9 +111,20 @@
     }
 
     main {
-      max-width: 1000px;
+      max-width: 350px; /* Tamanho da janela mais estreita */
       margin: 2rem auto;
       padding: 0 1rem;
+      text-align: center; /* Centraliza o texto dentro do main */
+      font-family: Arial, sans-serif;
+      color: #003157;
+    }
+
+    /* Centralizar o título Rastreamento */
+    main > h1 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 24px;
+      color: #003157;
     }
 
     /* Alinhamento do texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" centralizado */
@@ -203,6 +214,7 @@
       text-align: center;
       max-width: 350px;
       margin: 2rem auto;
+      display: none;
     }
 
     #resultado h2 {
@@ -325,13 +337,11 @@
   </header>
 
   <main>
-    <h1 class="mt-4 px-2 font-size-24 text-blue-dark font-weight-700 w-95 max-w-1000" style="margin: 0 auto;">
-      Rastreamento
-    </h1>
+    <h1>Rastreamento</h1>
 
     <!-- Tela Formulário -->
-    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000" style="margin: 0 auto;">
-      <h5 style="color: #003157;" class="text-center font-weight-700 mb-4">
+    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000">
+      <h5>
         <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
       </h5>
 
@@ -354,7 +364,7 @@
     </section>
 
     <!-- Tela Resultado -->
-    <section id="resultado" style="display: none;">
+    <section id="resultado">
       <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
       <p><span>Nome:</span> <span id="res-nome"></span></p>
       <p><span>CPF:</span> <span id="res-cpf"></span></p>

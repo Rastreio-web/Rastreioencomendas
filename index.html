@@ -136,38 +136,78 @@
       color: #505050;
     }
 
-    /* ----------- NOVO: Logo e botão na mesma linha ----------- */
+    /* Form com logo, inputs e botão na mesma linha */
     #form-rastreamento {
       display: flex;
       align-items: center;
       gap: 15px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: center;
+      margin-top: 1rem;
+    }
+
+    #form-rastreamento img.logo-form {
+      height: 40px;
+      display: block;
+      user-select: none;
+      flex-shrink: 0;
     }
 
     #form-rastreamento input[type="text"] {
       flex: 1 1 200px;
       min-width: 150px;
       max-width: 250px;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid #ced4da;
+      outline: none;
+      transition: border-color 0.15s ease-in-out;
+    }
+
+    #form-rastreamento input[type="text"]:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
     #consultar-btn {
       flex: 0 0 auto;
       min-width: 120px;
+      padding: 0.5rem 1rem;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      transition: background-color 0.3s ease;
+      animation: pulsar 1s infinite;
     }
 
-    /* Logo centralizada e alinhada com o form */
-    header nav div.ml-0.ml-lg-1.d-flex.justify-content-center {
-      justify-content: center !important;
-      width: 100% !important;
-      margin-left: 0 !important;
-      display: flex !important;
-      align-items: center;
+    #consultar-btn:hover {
+      background-color: #0056b3;
     }
 
-    header nav div.ml-0.ml-lg-1.d-flex.justify-content-center a {
-      display: inline-block;
-      margin-right: auto;
+    /* Responsividade: no celular empilha tudo */
+    @media (max-width: 576px) {
+      #form-rastreamento {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #form-rastreamento img.logo-form {
+        margin-bottom: 10px;
+        height: 30px;
+      }
+
+      #form-rastreamento input[type="text"] {
+        max-width: 100%;
+      }
+
+      #consultar-btn {
+        width: 100%;
+        min-width: unset;
+      }
     }
   </style>
 </head>
@@ -212,6 +252,7 @@
       </h5>
 
       <form id="form-rastreamento">
+        <img src="images/correios.png" alt="Logo Correios" class="logo-form" />
         <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
         <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
         <button type="submit" class="btn btn-primary" id="consultar-btn">Consultar</button>

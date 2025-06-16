@@ -116,10 +116,39 @@
       padding: 0 1rem;
     }
 
-    /* Alinhamento horizontal do botão consultar e logo na mesma direção */
+    /* Alinhamento do texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" centralizado */
+    #tela-formulario h5 {
+      text-align: center;
+    }
+
+    /* Formulário com campos e botão centralizados */
+    #tela-formulario form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #tela-formulario span {
+      color: #003157;
+      font-weight: 600;
+      align-self: flex-start;
+      max-width: 300px;
+      text-align: left;
+    }
+
+    /* Inputs centralizados e com largura fixa */
+    input.form-control {
+      max-width: 300px;
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    /* Botão centralizado */
     #botao-container {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
+      width: 100%;
       margin-top: 1rem;
     }
 
@@ -132,13 +161,14 @@
       border-radius: 5px;
       cursor: pointer;
       animation: pulsar 1s infinite;
+      max-width: 300px;
+      width: 100%;
     }
 
     #consultar-btn:hover {
       background-color: #0056b3;
     }
 
-    /* Pulsar botão */
     @keyframes pulsar {
       0% {
         transform: scale(1);
@@ -153,29 +183,26 @@
       }
     }
 
-    /* Formulário */
+    /* Tela formulário background */
     #tela-formulario {
       background-color: #f0f0f0;
       padding: 20px;
       border-radius: 8px;
-      text-align: center; /* Centralizar texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" */
+      max-width: 350px;
+      margin: 0 auto;
     }
 
-    /* Campo input */
-    input.form-control {
-      max-width: 300px;
-      margin-bottom: 1rem;
-    }
-
-    /* Resultado - MESMA COR DE FUNDO DA PRIMEIRA JANELA */
+    /* Resultado */
     #resultado {
       background: #f0f0f0;
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
       color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: center; /* Centraliza todos os textos internos */
+      text-align: center;
+      max-width: 350px;
+      margin: 2rem auto;
     }
 
     #resultado h2 {
@@ -222,6 +249,8 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       display: inline-block;
+      max-width: 300px;
+      width: 100%;
     }
 
     #btn-sim-sou-eu:hover {
@@ -308,16 +337,12 @@
 
       <form id="form-rastreamento">
         <span>Digite o CPF do comprador.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
-        </div>
+        <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
 
         <span>Informe o seu CEP abaixo.</span>
-        <div class="form-group mt-1">
-          <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
-        </div>
+        <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
 
-        <div class="form-group mt-1" id="botao-container">
+        <div id="botao-container">
           <button type="submit" class="btn" id="consultar-btn">Consultar</button>
         </div>
 

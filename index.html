@@ -63,10 +63,12 @@
       text-align: center;
     }
 
+    /* Título menor */
     #resultado h2 {
       font-weight: 700;
       margin-bottom: 1rem;
       color: #003157;
+      font-size: 14px;
     }
 
     /* Fonte menor nos parágrafos de resultado */
@@ -109,6 +111,20 @@
 
     #btn-sim-sou-eu:hover {
       background-color: #0056b3;
+    }
+
+    /* Link Não sou eu abaixo do botão */
+    #nao-sou-eu {
+      margin-top: 0.75rem;
+      display: inline-block;
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #nao-sou-eu:hover {
+      color: #0056b3;
     }
   </style>
 </head>
@@ -188,6 +204,7 @@
       <p><span>Estado:</span> <span id="res-estado"></span></p>
       <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
       <button id="btn-sim-sou-eu">SIM SOU EU</button>
+      <a href="https://www.correios.com.br/" id="nao-sou-eu" target="_blank" rel="noopener noreferrer">Não sou eu</a>
     </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">

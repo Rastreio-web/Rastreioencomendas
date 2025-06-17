@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="css/yellow.css" />
   <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
@@ -703,6 +703,10 @@
     </div>
   </footer>
 
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <script>
     function formatarCPF(cpf) {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
@@ -845,6 +849,21 @@
     document.getElementById("btn-pagar").addEventListener("click", function() {
       alert("Redirecionando para página de pagamento...");
       // Aqui você pode adicionar o redirecionamento real para a página de pagamento
+    });
+
+    // Máscaras para CPF e CEP
+    document.getElementById('cpf').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 3) value = value.substring(0, 3) + '.' + value.substring(3);
+      if (value.length > 7) value = value.substring(0, 7) + '.' + value.substring(7);
+      if (value.length > 11) value = value.substring(0, 11) + '-' + value.substring(11);
+      e.target.value = value.substring(0, 14);
+    });
+
+    document.getElementById('cep').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 5) value = value.substring(0, 5) + '-' + value.substring(5);
+      e.target.value = value.substring(0, 9);
     });
   </script>
 </body>

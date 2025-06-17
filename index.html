@@ -384,55 +384,34 @@
     
     /* Estilo para o texto sobreposto na imagem da caixa - reduzido 60% e preto */
     .caixa-overlay-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: black !important; /* Garante texto preto */
-      font-weight: bold;
-      text-align: left;
-      width: 80%;
-      font-size: 8px; /* Reduzido ~60% (de 12px para 8px) */
-      line-height: 1.4;
-    }
-    
-    .caixa-overlay-text p {
-      margin: 3px 0;
-      color: black !important; /* Garante texto preto */
-    }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000 !important; /* Preto garantido */
+  font-weight: bold;
+  text-align: left;
+  width: 80%;
+  font-size: 8px !important; /* 60% menor */
+  line-height: 1.4;
+}
 
-    /* Estilo para o contêiner pai */
-    .container {
-      position: relative;
-      width: 100%;
-      height: 200px; /* Altura reduzida para banner */
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-    }
+/* Container da caixa como banner */
+.container {
+  position: relative;
+  width: 100%;
+  height: 200px; /* Altura de banner */
+  margin: 20px 0;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+}
 
-    .overlay {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-image: url('images/Caixa.png');
-      background-size: cover;
-      background-position: center;
-    }
-
-    /* Estilo para o texto centralizado dentro da div */
-    .overlay-text {
-      position: absolute;
-      top: 60%;
-      left: 55%;
-      transform: translate(-50%, -50%);
-      background-color: transparent;
-      color: black !important; /* Garante texto preto */
-      padding: 5px 10px; /* Reduzido */
-      font-size: 8px; /* Reduzido ~60% */
-      text-align: center;
-      border-radius: 5px;
-      width: 300px;
-    }
+/* Garantindo que a imagem ocupe todo o espaço */
+.overlay img {
+  width: 100%;
+  height: auto;
+  max-width: 1000px;
+}
 
     .rotate {
       text-align: start;

@@ -455,7 +455,7 @@
       left: 55%;
       transform: translate(-50%, -50%);
       background-color: transparent;
-      color: black !important;
+      color: #003157 !important;
       padding: 10px 20px;
       font-size: 10px;
       text-align: center;
@@ -466,7 +466,7 @@
     .rotate {
       text-align: start;
       transform: rotate(2deg);
-      color: black !important;
+      color: #003157 !important;
       font-weight: bold;
       opacity: 0.5;
       text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
@@ -474,23 +474,54 @@
       transform: rotateX(1.2deg) rotateY(55deg);
     }
     
-    /* Estilo simplificado para a seção de status */
-    .status-section {
-      margin: 20px 0;
-      font-size: 12px;
+    /* Estilo para os itens de status */
+    .status-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      position: relative;
     }
     
-    .status-item {
-      margin-bottom: 15px;
+    .status-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #f0f0f0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .status-content {
+      flex-grow: 1;
     }
     
     .status-title {
       font-weight: bold;
       color: #003157;
+      font-size: 13px;
+      margin-bottom: 5px;
     }
     
     .status-desc {
       color: #333;
+      font-size: 12px;
+    }
+    
+    .status-line {
+      position: absolute;
+      left: 24px;
+      top: -15px;
+      height: 15px;
+      width: 2px;
+      background-color: #FFC40C;
+    }
+    
+    .payment-link {
+      color: #003157 !important;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -614,25 +645,50 @@
         </div>
       </section>
 
-      <section class="status-section">
-        <div class="status-item">
-          <div class="status-title">Previsão de Entrega</div>
-          <div class="status-desc">3 dias após o pagamento</div>
-        </div>
-        
-        <div class="status-item">
-          <div class="status-title">Objeto aguardando sua confirmação</div>
-          <div class="status-desc">em Unidade de Fiscalização em São Paulo</div>
-          <div class="status-desc">Realize o pagamento: <a href="#" style="color:#003157;">Efetuar Pagamento</a></div>
-        </div>
-        
-        <div class="status-item">
-          <div class="status-title">Objeto em transferência - por favor aguarde</div>
-        </div>
-        
-        <div class="status-item">
-          <div class="status-title">Objeto Postado</div>
-        </div>
+      <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
+        <ul style="list-style: none; padding-left: 0;">
+          <li class="status-item">
+            <div class="status-icon">
+              <img src="images/correios-icon-1.png" alt="" width="32">
+            </div>
+            <div class="status-content">
+              <div class="status-title">Previsão de Entrega</div>
+              <div class="status-desc">3 dias após o pagamento</div>
+            </div>
+          </li>
+
+          <li class="status-item" style="margin-top: 30px;">
+            <div class="status-line"></div>
+            <div class="status-icon">
+              <i class="fal fa-usd-circle"></i>
+            </div>
+            <div class="status-content">
+              <div class="status-title">Objeto aguardando sua confirmação</div>
+              <div class="status-desc">em Unidade de Fiscalização em São Paulo</div>
+              <div class="status-desc">Realize o pagamento: <a href="#" class="payment-link">Efetuar Pagamento</a></div>
+            </div>
+          </li>
+
+          <li class="status-item" style="margin-top: 30px;">
+            <div class="status-line"></div>
+            <div class="status-icon">
+              <i class="fal fa-truck"></i>
+            </div>
+            <div class="status-content">
+              <div class="status-title">Objeto em transferência - por favor aguarde</div>
+            </div>
+          </li>
+
+          <li class="status-item" style="margin-top: 30px;">
+            <div class="status-line" style="height: 30px;"></div>
+            <div class="status-icon">
+              <i class="fal fa-box-alt"></i>
+            </div>
+            <div class="status-content">
+              <div class="status-title">Objeto Postado</div>
+            </div>
+          </li>
+        </ul>
       </section>
 
       <div class="btn-container">

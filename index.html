@@ -720,20 +720,21 @@
     }
   }
   
-  /* Estilos para mobile (reduzido 20% em relação ao desktop) */
+  /* Estilos para mobile (reduzido 50% no total: 20% + 30%) */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 6.4px !important; /* 20% menor que 8px */
-      line-height: 1.3; /* Melhora a legibilidade */
+      font-size: 5.6px !important; /* ~30% menor que 8px (total 50% menor que o original) */
+      line-height: 1.4; /* Melhora a legibilidade com fonte pequena */
     }
     
-    /* Ajustes de posicionamento para mobile */
+    /* Ajustes finos de posicionamento */
     #caixa-info-1 {
-      margin-top: 28% !important;
+      margin-top: 30% !important;
+      margin-right: 5% !important;
     }
     
     #caixa-info-2 {
-      margin-top: 10% !important;
+      margin-top: 12% !important;
     }
   }
 </style>

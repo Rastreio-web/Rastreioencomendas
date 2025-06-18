@@ -713,29 +713,27 @@
 </section>
 
       <style>
-  /* Estilos para desktop */
+  /* Estilos para desktop (mantém 8px definido inline) */
   @media (min-width: 768px) {
     #caixa-info-1, #caixa-info-2 {
       font-size: 8px !important;
     }
   }
   
-  /* Estilos para mobile - reduzido em 20% */
+  /* Estilos para mobile (reduzido 20% em relação ao desktop) */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 10px !important; /* Reduzido de 12px para 10px */
-      line-height: 1.2; /* Melhora espaçamento entre linhas */
+      font-size: 6.4px !important; /* 20% menor que 8px */
+      line-height: 1.3; /* Melhora a legibilidade */
     }
     
-    .container {
-      height: 120px; /* Altura mais compacta para mobile */
+    /* Ajustes de posicionamento para mobile */
+    #caixa-info-1 {
+      margin-top: 28% !important;
     }
     
-    .overlay-text {
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
-      width: 90% !important; /* Ajuste de largura para melhor encaixe */
+    #caixa-info-2 {
+      margin-top: 10% !important;
     }
   }
 </style>

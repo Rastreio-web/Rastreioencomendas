@@ -34,6 +34,7 @@
       font-family: Arial, sans-serif;
       font-size: 14px;
       color: #003157;
+      
     }
 
     #top-bar .left-options a {
@@ -383,93 +384,75 @@
       }
     }
 
-    /* Estilos para o chat - MODIFICADO PARA APARÊNCIA DE APP DE MENSAGENS */
+    /* Estilos para o chat */
     #chat-container {
       display: none;
       max-width: 600px;
       margin: 20px auto;
-      border-radius: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      background: #f5f5f5;
-      padding: 10px;
+      background-color: #f5f5f5;
       font-family: Arial, sans-serif;
     }
 
     .chat-header {
-      background: #003157;
+      background-color: #003157;
       color: white;
       padding: 15px;
       text-align: center;
       font-weight: bold;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      margin: -10px -10px 10px -10px;
+      font-size: 16px;
     }
 
     .chat-messages {
-      padding: 10px;
-      max-height: 500px;
+      padding: 15px;
+      height: 400px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .message {
-      margin-bottom: 15px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message-received {
-      align-items: flex-start;
-    }
-
-    .message-sent {
-      align-items: flex-end;
-    }
-
-    .message-bubble {
       max-width: 80%;
       padding: 10px 15px;
       border-radius: 18px;
       position: relative;
-      margin-bottom: 5px;
+      animation: fadeIn 0.3s ease-out;
     }
 
-    .received-bubble {
-      background: white;
-      border-top-left-radius: 0;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .received {
+      align-self: flex-start;
+      background-color: white;
+      border-bottom-left-radius: 5px;
       color: #333;
     }
 
-    .sent-bubble {
-      background: #003157;
-      border-top-right-radius: 0;
+    .sent {
+      align-self: flex-end;
+      background-color: #003157;
       color: white;
-    }
-
-    .message-info {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      margin-right: 10px;
-      object-fit: cover;
-    }
-
-    .sender-name {
-      font-weight: bold;
-      font-size: 14px;
+      border-bottom-right-radius: 5px;
     }
 
     .message-time {
       font-size: 11px;
       color: #999;
-      margin-left: 10px;
+      text-align: right;
+      margin-top: 5px;
+    }
+
+    .message-sender {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 14px;
     }
 
     .message-text {
@@ -479,56 +462,105 @@
 
     .message-image {
       max-width: 100%;
-      border-radius: 10px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 8px;
     }
 
     .chat-options {
+      padding: 10px;
+      background-color: white;
+      border-top: 1px solid #eee;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 10px;
-      background: white;
-      border-radius: 10px;
-      margin-top: 10px;
     }
 
-    .option-button {
-      background: #f0f0f0;
+    .option-btn {
+      padding: 10px 15px;
+      background-color: #003157;
+      color: white;
       border: none;
-      padding: 12px 15px;
       border-radius: 20px;
       cursor: pointer;
-      text-align: left;
       font-size: 14px;
-      color: #003157;
-      transition: background 0.3s;
+      align-self: flex-end;
+      transition: all 0.2s;
+      max-width: 80%;
+      text-align: center;
     }
 
-    .option-button:hover {
-      background: #e0e0e0;
+    .option-btn:hover {
+      background-color: #001a33;
+      transform: translateY(-2px);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 8px;
+      object-fit: cover;
+    }
+
+    .message-with-avatar {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .message-content {
+      flex: 1;
     }
 
     .hidden {
       display: none;
     }
 
-    /* Estilos responsivos */
-    @media (max-width: 600px) {
-      .message-bubble {
-        max-width: 90%;
-      }
-      
-      #chat-container {
-        border-radius: 0;
-        margin: 0;
-        height: 100vh;
-      }
-      
-      .chat-messages {
-        max-height: calc(100vh - 200px);
-      }
+    /* Estilos para o status de digitação */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: white;
+      border-radius: 18px;
+      border-bottom-left-radius: 5px;
+      align-self: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #999;
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    /* Estilos para o rodapé do chat */
+    .chat-footer {
+      padding: 10px;
+      background-color: white;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
     }
   </style>
 </head>
@@ -633,86 +665,24 @@
       <div style="padding: 0px 30px 0px 30px; width: 100%; max-width: 1200px; margin: 0 auto;">
         <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%; max-width: 100%; margin: 0 auto; display: block; padding: 12px;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
       </div>
-
-      <div class="btn-container">
-        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
-      </div>
     </section>
 
-    <!-- Chat Container - MODIFICADO PARA APARÊNCIA DE APP DE MENSAGENS -->
+    <!-- Chat Container -->
     <div id="chat-container">
       <div class="chat-header">
-        Atendimento Virtual dos Correios
+        Atendimento Virtual - Correios
       </div>
       
-      <div class="chat-messages">
-        <!-- Parte 1 - Exibida automaticamente -->
-        <div id="part1" class="message message-received">
-          <div class="message-info">
-            <img src="images/avatar.png" alt="Atendente" class="avatar">
-            <span class="sender-name">Priscilla</span>
-            <span class="message-time">Agora</span>
-          </div>
-          <div class="message-bubble received-bubble">
-            <div class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</div>
-            <div class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</div>
-            <img src="images/image1.png" alt="Imagem 1" class="message-image">
-            <div class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</div>
-          </div>
-        </div>
+      <div class="chat-messages" id="messages-container">
+        <!-- Mensagens serão adicionadas aqui dinamicamente -->
       </div>
       
-      <!-- Opções de resposta do usuário -->
-      <div id="options-part1" class="chat-options">
-        <button id="btn-sim" class="option-button">SIM</button>
+      <div class="chat-options" id="chat-options">
+        <!-- Opções de resposta serão adicionadas aqui dinamicamente -->
       </div>
       
-      <!-- Parte 2 - Exibida após clicar no botão SIM -->
-      <div id="part2" class="message message-received hidden">
-        <div class="message-info">
-          <img src="images/avatar.png" alt="Atendente" class="avatar">
-          <span class="sender-name">Priscilla</span>
-          <span class="message-time">Agora</span>
-        </div>
-        <div class="message-bubble received-bubble">
-          <img src="images/image2.png" alt="Imagem 2" class="message-image">
-          <div class="message-text">Por que essa taxa?</div>
-          <div class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</div>
-          <div class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</div>
-          <div class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</div>
-          <div class="message-text">- Despacho postal – Serviço de liberação e envio.</div>
-        </div>
-      </div>
-      
-      <!-- Opções de resposta do usuário para parte 2 -->
-      <div id="options-part2" class="chat-options hidden">
-        <button id="btn-continuar" class="option-button">Entendi, continuar!</button>
-      </div>
-      
-      <!-- Parte 3 - Exibida após clicar no botão "Entendi, continuar!" -->
-      <div id="part3" class="message message-received hidden">
-        <div class="message-info">
-          <img src="images/avatar.png" alt="Atendente" class="avatar">
-          <span class="sender-name">Priscilla</span>
-          <span class="message-time">Agora</span>
-        </div>
-        <div class="message-bubble received-bubble">
-          <img src="images/image3.png" alt="Imagem 3" class="message-image">
-          <div class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</div>
-          <div class="message-text">Taxa de Liberação: R$ 23,89</div>
-          <div class="message-text">Peso da mercadoria: R$ 19,50</div>
-          <div class="message-text">Despacho postal: R$ 24,17</div>
-          <div class="message-text">Total a Pagar: R$ 67,56</div>
-          <div class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</div>
-          <div class="message-text">ATENÇÃO, <span id="chat-nome2"></span></div>
-          <div class="message-text">CPF: <span id="chat-cpf"></span></div>
-          <div class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></div>
-        </div>
-      </div>
-      
-      <!-- Opções de resposta do usuário para parte 3 -->
-      <div id="options-part3" class="chat-options hidden">
-        <button id="btn-acessar-guia" class="option-button">ACESSAR GUIA DE PAGAMENTO</button>
+      <div class="chat-footer">
+        Atendimento oficial dos Correios - Seguro e confiável
       </div>
     </div>
   </main>
@@ -828,6 +798,17 @@
       document.getElementById("res-prazo").textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas}h ${minutos}m ${segundos}s)`;
     }
 
+    function atualizarInfoCaixa(dados) {
+      const caixaInfo = document.getElementById("caixa-info");
+      caixaInfo.innerHTML = `
+        <p>NOME: ${dados.nome}</p>
+        <p>CPF: ${dados.cpf}</p>
+        <p>CEP: ${dados.cep}</p>
+        <p>CIDADE: ${dados.cidade}</p>
+        <p>ESTADO: ${dados.estado}</p>
+      `;
+    }
+
     // Função para obter a data de amanhã
     function getDataAmanha() {
       const hoje = new Date();
@@ -839,6 +820,185 @@
       const yyyy = amanha.getFullYear();
       
       return `${dd}/${mm}/${yyyy}`;
+    }
+
+    // Funções para o chat
+    function addMessage(sender, text, isReceived, hasAvatar = false, imageUrl = null) {
+      const messagesContainer = document.getElementById('messages-container');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isReceived ? 'received' : 'sent'}`;
+      
+      if (hasAvatar) {
+        messageDiv.classList.add('message-with-avatar');
+        messageDiv.innerHTML = `
+          <img src="images/avatar.png" alt="${sender}" class="avatar">
+          <div class="message-content">
+            <div class="message-sender">${sender}</div>
+            <div class="message-text">${text}</div>
+            ${imageUrl ? `<img src="${imageUrl}" alt="Imagem" class="message-image">` : ''}
+            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          </div>
+        `;
+      } else {
+        messageDiv.innerHTML = `
+          <div class="message-text">${text}</div>
+          ${imageUrl ? `<img src="${imageUrl}" alt="Imagem" class="message-image">` : ''}
+          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        `;
+      }
+      
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const messagesContainer = document.getElementById('messages-container');
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'typing-indicator';
+      typingDiv.innerHTML = `
+        <img src="images/avatar.png" alt="Atendente" class="avatar">
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return typingDiv;
+    }
+
+    function removeTypingIndicator(typingDiv) {
+      if (typingDiv && typingDiv.parentNode) {
+        typingDiv.parentNode.removeChild(typingDiv);
+      }
+    }
+
+    function addOptionButton(text, callback) {
+      const optionsContainer = document.getElementById('chat-options');
+      const button = document.createElement('button');
+      button.className = 'option-btn';
+      button.textContent = text;
+      button.addEventListener('click', callback);
+      optionsContainer.appendChild(button);
+    }
+
+    function clearOptions() {
+      document.getElementById('chat-options').innerHTML = '';
+    }
+
+    function initChat() {
+      const messagesContainer = document.getElementById('messages-container');
+      messagesContainer.innerHTML = '';
+      
+      // Parte 1 do chat
+      setTimeout(() => {
+        addMessage('Priscilla', 'Bem-vindo(a) ao atendimento Virtual dos Correios.', true, true);
+        
+        setTimeout(() => {
+          addMessage('Priscilla', 'Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada', true, true);
+          
+          setTimeout(() => {
+            addMessage('Priscilla', '', true, true, 'images/image1.png');
+            
+            setTimeout(() => {
+              const nome = document.getElementById('res-nome').textContent;
+              addMessage('Priscilla', `${nome}, você deseja solicitar a liberação da sua mercadoria?`, true, true);
+              
+              // Mostra opção de resposta
+              clearOptions();
+              addOptionButton('SIM', () => {
+                // Parte 2 do chat
+                clearOptions();
+                const typing = showTypingIndicator();
+                
+                setTimeout(() => {
+                  removeTypingIndicator(typing);
+                  addMessage('Priscilla', '', true, true, 'images/image2.png');
+                  
+                  setTimeout(() => {
+                    addMessage('Priscilla', 'Por que essa taxa?', true, true);
+                    
+                    setTimeout(() => {
+                      addMessage('Priscilla', 'A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:', true, true);
+                      
+                      setTimeout(() => {
+                        addMessage('Priscilla', '- Taxa de liberação: Cobrança padrão para processos alfandegários.', true, true);
+                        
+                        setTimeout(() => {
+                          addMessage('Priscilla', '- Peso da mercadoria – Valor ajustado conforme o peso do item.', true, true);
+                          
+                          setTimeout(() => {
+                            addMessage('Priscilla', '- Despacho postal – Serviço de liberação e envio.', true, true);
+                            
+                            // Mostra opção de continuar
+                            setTimeout(() => {
+                              clearOptions();
+                              addOptionButton('Entendi, continuar!', () => {
+                                // Parte 3 do chat
+                                clearOptions();
+                                const typing = showTypingIndicator();
+                                
+                                setTimeout(() => {
+                                  removeTypingIndicator(typing);
+                                  addMessage('Priscilla', '', true, true, 'images/image3.png');
+                                  
+                                  setTimeout(() => {
+                                    addMessage('Priscilla', 'GUIA DE PAGAMENTO GERADA COM SUCESSO!', true, true);
+                                    
+                                    setTimeout(() => {
+                                      addMessage('Priscilla', 'Taxa de Liberação: R$ 23,89', true, true);
+                                      
+                                      setTimeout(() => {
+                                        addMessage('Priscilla', 'Peso da mercadoria: R$ 19,50', true, true);
+                                        
+                                        setTimeout(() => {
+                                          addMessage('Priscilla', 'Despacho postal: R$ 24,17', true, true);
+                                          
+                                          setTimeout(() => {
+                                            addMessage('Priscilla', 'Total a Pagar: R$ 67,56', true, true);
+                                            
+                                            setTimeout(() => {
+                                              addMessage('Priscilla', 'Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.', true, true);
+                                              
+                                              setTimeout(() => {
+                                                const nome = document.getElementById('res-nome').textContent;
+                                                const cpf = document.getElementById('res-cpf').textContent;
+                                                const data = getDataAmanha();
+                                                
+                                                addMessage('Priscilla', `ATENÇÃO, ${nome}`, true, true);
+                                                addMessage('Priscilla', `CPF: ${cpf}`, true, true);
+                                                addMessage('Priscilla', `Após a confirmação do pagamento, sua encomenda será liberada amanhã dia ${data}`, true, true);
+                                                
+                                                // Mostra opção final
+                                                setTimeout(() => {
+                                                  clearOptions();
+                                                  addOptionButton('ACESSAR GUIA DE PAGAMENTO', () => {
+                                                    alert('Redirecionando para a página de pagamento...');
+                                                    // Aqui você pode adicionar o redirecionamento real
+                                                  });
+                                                }, 500);
+                                              }, 500);
+                                            }, 500);
+                                          }, 500);
+                                        }, 500);
+                                      }, 500);
+                                    }, 500);
+                                  }, 500);
+                                }, 1500);
+                              });
+                            }, 500);
+                          }, 500);
+                        }, 500);
+                      }, 500);
+                    }, 500);
+                  }, 500);
+                }, 1500);
+              });
+            }, 500);
+          }, 500);
+        }, 500);
+      }, 1000);
     }
 
     let intervalContagem;
@@ -912,6 +1072,11 @@
     document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {
       document.getElementById("resultado").style.display = "none";
       document.getElementById("pagamento").style.display = "block";
+      
+      // Transfere os dados para a tela de pagamento
+      document.getElementById("pag-nome").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("pag-cpf").textContent = document.getElementById("res-cpf").textContent;
+      document.getElementById("pag-cidade").textContent = document.getElementById("res-cidade").textContent;
     });
 
     // Script para o link "não sou eu"
@@ -932,16 +1097,7 @@
     document.getElementById("btn-pagar").addEventListener("click", function() {
       document.getElementById("pagamento").style.display = "none";
       document.getElementById("chat-container").style.display = "block";
-      
-      // Preenche os dados no chat
-      document.getElementById("chat-nome").textContent = document.getElementById("res-nome").textContent;
-      document.getElementById("chat-nome2").textContent = document.getElementById("res-nome").textContent;
-      document.getElementById("chat-cpf").textContent = document.getElementById("res-cpf").textContent;
-      document.getElementById("chat-data").textContent = getDataAmanha();
-      
-      // Rolagem automática para o final do chat
-      const chatMessages = document.querySelector('.chat-messages');
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      initChat();
     });
 
     // Máscaras para CPF e CEP
@@ -957,32 +1113,6 @@
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 5) value = value.substring(0, 5) + '-' + value.substring(5);
       e.target.value = value.substring(0, 9);
-    });
-
-    // Lógica do chat
-    document.getElementById('btn-sim').addEventListener('click', function() {
-      document.getElementById('part2').classList.remove('hidden');
-      document.getElementById('options-part1').classList.add('hidden');
-      document.getElementById('options-part2').classList.remove('hidden');
-      
-      // Rolagem automática para a parte 2
-      const chatMessages = document.querySelector('.chat-messages');
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-
-    document.getElementById('btn-continuar').addEventListener('click', function() {
-      document.getElementById('part3').classList.remove('hidden');
-      document.getElementById('options-part2').classList.add('hidden');
-      document.getElementById('options-part3').classList.remove('hidden');
-      
-      // Rolagem automática para a parte 3
-      const chatMessages = document.querySelector('.chat-messages');
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-
-    document.getElementById('btn-acessar-guia').addEventListener('click', function() {
-      alert('Redirecionando para a página de pagamento...');
-      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
   </script>
 </body>

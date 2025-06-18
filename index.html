@@ -168,6 +168,19 @@
       max-width: 600px;
       width: 100%;
       margin-bottom: 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Estilo para input inválido */
+    input.error {
+        border-color: red !important;
+        animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
     }
 
     /* Botão centralizado */
@@ -638,59 +651,6 @@
   </div>
 </section>
 
-<script>
-  // Function to update the countdown
-  function atualizarContagemRegressiva() {
-    const prazoElement = document.getElementById('res-prazo');
-    const now = new Date();
-    
-    // Format current date as DD/MM/YYYY
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
-    
-    // Set end time to 23:59:59 of current day
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 0);
-    
-    // Calculate time remaining
-    const diff = endOfDay - now;
-    
-    if (diff <= 0) {
-      prazoElement.textContent = "Prazo expirado";
-      return;
-    }
-    
-    // Convert milliseconds to hours, minutes, seconds
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    // Update the display (tudo em preto)
-    prazoElement.innerHTML = `<span style="color: black;">${formattedDate} às 23:59 (Tempo restante: ${hours}h ${minutes}m ${seconds}s)</span>`;
-    
-    // Update every second
-    setTimeout(atualizarContagemRegressiva, 1000);
-  }
-
-  // Start the countdown when the page loads (or when results are shown)
-  document.addEventListener('DOMContentLoaded', function() {
-    // Preenche os dados de exemplo
-    document.getElementById('res-nome').textContent = 'Cliente Exemplo';
-    document.getElementById('res-cpf').textContent = '209.068.077-60';
-    document.getElementById('res-nascimento').textContent = '01/01/1980';
-    document.getElementById('res-cep').textContent = '28390-000';
-    document.getElementById('res-rua').textContent = '';
-    document.getElementById('res-bairro').textContent = '';
-    document.getElementById('res-cidade').textContent = 'São Paulo';
-    document.getElementById('res-estado').textContent = 'SP';
-    
-    // Inicia a contagem regressiva
-    atualizarContagemRegressiva();
-  });
-</script>
-
     <!-- Tela Pagamento - MODIFICADA PARA LARGURA MAIOR -->
     <section id="pagamento">
       <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1200" style="margin: 0 auto;">
@@ -858,6 +818,40 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script>
+    // Função para validar CPF
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+        
+        // Verifica se tem 11 dígitos e não é uma sequência repetida
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+            return false;
+        }
+        
+        // Validação do primeiro dígito verificador
+        let soma = 0;
+        for (let i = 0; i < 9; i++) {
+            soma += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) {
+            return false;
+        }
+        
+        // Validação do segundo dígito verificador
+        soma = 0;
+        for (let i = 0; i < 10; i++) {
+            soma += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(10))) {
+            return false;
+        }
+        
+        return true;
+    }
+
     function formatarCPF(cpf) {
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
@@ -919,14 +913,22 @@
         const cpfRaw = cpfInput.value.replace(/\D/g, "");
         const cepRaw = cepInput.value.replace(/\D/g, "");
 
-        if (!cpfRaw || cpfRaw.length !== 11) {
-          alert("Por favor, insira um CPF válido.");
-          return;
+        if (!validarCPF(cpfInput.value)) {
+            cpfInput.focus();
+            cpfInput.classList.add('error');
+            alert("CPF inválido. Por favor, verifique o número digitado.");
+            return;
+        } else {
+            cpfInput.classList.remove('error');
         }
 
         if (!cepRaw || cepRaw.length !== 8) {
-          alert("Por favor, insira um CEP válido.");
-          return;
+            cepInput.focus();
+            cepInput.classList.add('error');
+            alert("Por favor, insira um CEP válido.");
+            return;
+        } else {
+            cepInput.classList.remove('error');
         }
 
         document.getElementById("botao-container").style.display = "none";

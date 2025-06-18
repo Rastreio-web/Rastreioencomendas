@@ -720,10 +720,22 @@
     }
   }
   
-  /* Estilos para mobile (mantém 12px definido inline) */
+  /* Estilos para mobile - reduzido em 20% */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 12px !important;
+      font-size: 10px !important; /* Reduzido de 12px para 10px */
+      line-height: 1.2; /* Melhora espaçamento entre linhas */
+    }
+    
+    .container {
+      height: 120px; /* Altura mais compacta para mobile */
+    }
+    
+    .overlay-text {
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 90% !important; /* Ajuste de largura para melhor encaixe */
     }
   }
 </style>

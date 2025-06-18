@@ -12,416 +12,96 @@
   <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
   <title>Correios | Rastreio</title>
 
-  <!-- Add Futura font -->
   <style>
-    @font-face {
-      font-family: 'Futura No. 2';
-      src: url('https://fonts.cdnfonts.com/css/futura-no-2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-    }
-  </style>
-
-  <style>
-    /* ====== Top Bar amarela ====== */
-    #top-bar {
-      background-color: #ffd500;
-      height: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 15px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #003157;
-      
+    :root {
+      --max-container-width: 1000px;
     }
 
-    #top-bar .left-options a {
-      color: #003157;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    #top-bar .left-options a:hover {
-      text-decoration: underline;
-    }
-
-    #top-bar .right-options {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    #btn-entrar {
-      display: flex;
-      align-items: center;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      color: #003157;
-      font-weight: 600;
-      padding: 0;
-    }
-
-    #btn-entrar img {
-      height: 20px;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    #btn-entrar:hover {
-      text-decoration: underline;
-    }
-
-    #menu-hamburguer {
-      display: inline-block;
-      cursor: pointer;
-      width: 25px;
-      height: 18px;
-      position: relative;
-    }
-
-    #menu-hamburguer span {
-      background: #003157;
-      position: absolute;
-      height: 3px;
-      width: 100%;
-      border-radius: 2px;
-      opacity: 1;
-      left: 0;
-      transition: all 0.3s ease;
-    }
-
-    #menu-hamburguer span:nth-child(1) {
-      top: 0;
-    }
-
-    #menu-hamburguer span:nth-child(2) {
-      top: 7.5px;
-    }
-
-    #menu-hamburguer span:nth-child(3) {
-      top: 15px;
-    }
-
-    /* ====== Logo centralizada na horizontal e alinhada com botão consultar ====== */
-    header {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      position: relative;
-    }
-
-    header img {
-      height: 40px;
-      display: block;
-    }
-
-    main {
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      color: #003157;
-    }
-
-    /* Centralizar o título Rastreamento */
-    main > h1 {
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-      font-size: 24px;
-      color: #003157;
-    }
-
-    /* Texto "ACOMPANHE SUAS ENCOMENDAS ABAIXO" restaurado */
-    #tela-formulario h5 {
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #003157;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Formulário com campos e botão centralizados */
-    #tela-formulario form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    #tela-formulario span {
-      color: #003157;
-      font-weight: 600;
-      align-self: flex-start;
-      max-width: 600px;
-      text-align: left;
-    }
-
-    /* Inputs centralizados e com largura fixa */
-    input.form-control {
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 0;
-    }
-
-    /* Botão centralizado */
-    #botao-container {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    #consultar-btn {
-      padding: 0.5rem 1.5rem;
-      font-size: 1rem;
-      background-color: #003157;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      max-width: 600px;
-      width: 100%;
-    }
-
-    #consultar-btn:hover {
-      background-color: #001a33;
-    }
-
-    /* Tela formulário background */
-    #tela-formulario {
-      background-color: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* Resultado */
-    #resultado {
-      background: #f0f0f0;
-      border-radius: 8px;
-      padding: 2rem;
-      font-family: Arial, sans-serif;
-      color: #003157;
-      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-      text-align: center;
-      max-width: 700px;
-      margin: 2rem auto;
-      display: none;
-    }
-
-    /* Pagamento */
     #pagamento {
       background: #ffffff;
       border-radius: 8px;
-      padding: 2.5rem;
+      padding: 2.5rem 1rem;
       font-family: Arial, sans-serif;
       text-align: left;
-      max-width: 700px;
+      max-width: var(--max-container-width);
+      width: 95%;
       margin: 2rem auto;
       display: none;
     }
 
-    #resultado h2, #pagamento h2 {
-      font-weight: 700;
-      margin-bottom: 1rem;
-      font-size: 14px;
+    #pagamento > section,
+    #pagamento > nav,
+    #pagamento .btn-container,
+    #pagamento .container,
+    #pagamento > div {
+      max-width: var(--max-container-width);
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1rem;
     }
 
-    #resultado p, #pagamento p {
-      font-size: 14px;
-      margin: 0.5rem 0;
-      text-align: left;
-    }
-
-    #resultado p span, #pagamento p span {
-      font-weight: 700;
-      color: #007bff;
-    }
-
-    /* Alert styles */
-    .alert-title {
-      color: #dc3545;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 15px;
-      text-align: center;
-      font-family: 'Futura No. 2', sans-serif;
-      font-variant: small-caps;
-      letter-spacing: 0.5px;
-    }
-    
-    .status-label {
-      color: #003157;
-      font-weight: bold;
-      margin-bottom: 5px;
-      text-align: left;
-    }
-    
-    .status-value {
-      color: #D4AF37;
-      font-weight: bold;
-      text-align: left;
-      font-size: 16px;
-      font-family: 'Futura No. 2', sans-serif;
-      font-variant: small-caps;
-      position: relative;
-      padding-left: 20px;
-      margin: 15px 0;
-    }
-    
-    .status-value:before {
-      content: "•";
-      color: #D4AF37;
-      font-size: 24px;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    
-    .normal-text {
-      color: #000000;
-      margin: 15px 0;
-      text-align: left;
-    }
-
-    /* Rua e Bairro vazios */
-    #res-rua,
-    #res-bairro,
-    #pag-rua,
-    #pag-bairro {
-      color: transparent !important;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    /* Prazo para regularização em vermelho */
-    #res-prazo {
-      font-size: 14px;
-      font-weight: 700;
-      color: red !important;
-    }
-
-    /* Botão sim sou eu */
-    #btn-sim-sou-eu, #btn-pagar {
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.5rem;
-      font-size: 1.1rem;
+    #btn-pagar {
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.75rem;
       background-color: #003157;
       color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      display: inline-block;
-      max-width: 600px;
-      width: 100%;
+      border-radius: 6px;
+      transition: 0.3s ease;
     }
 
-    #btn-sim-sou-eu:hover, #btn-pagar:hover {
+    #btn-pagar:hover {
       background-color: #001a33;
     }
 
-    /* Container para alinhar botão e link */
-    #resultado .btn-container, #pagamento .btn-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-    }
-
-    /* Link não sou eu abaixo do botão */
-    #nao-sou-eu, #voltar-rastreio {
-      color: gray;
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 14px;
-      display: inline-block;
-    }
-
-    #nao-sou-eu:hover, #voltar-rastreio:hover {
-      color: #505050;
-    }
-
-    /* Spinner */
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Caixa image - agora como banner */
-    .caixa-image {
-      margin: 25px 0;
-      text-align: center;
+    .container {
       position: relative;
       width: 100%;
-    }
-
-    .caixa-image img {
-      width: 100%;
-      max-width: 1000px;
       height: auto;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
     }
-    
-    /* Estilo para o texto sobreposto na imagem da caixa - reduzido 60% e preto */
-    .caixa-overlay-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #000 !important; /* Preto garantido */
-  font-weight: bold;
-  text-align: left;
-  width: 80%;
-  font-size: 8px !important; /* 60% menor */
-  line-height: 1.4;
-}
 
-/* Container da caixa como banner */
-.container {
-  position: relative;
-  width: 100%;
-  height: 200px; /* Altura de banner */
-  margin: 20px 0;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-}
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/Caixa.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+    }
 
-/* Garantindo que a imagem ocupe todo o espaço */
-.overlay img {
-  width: 100%;
-  height: auto;
-  max-width: 1000px;
-}
-
-    .rotate {
-      text-align: start;
-      transform: rotate(2deg);
-      color: black !important; /* Garante texto preto */
+    .overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.7);
+      color: black;
+      padding: 1rem;
+      font-size: 0.85rem;
       font-weight: bold;
-      opacity: 0.5;
-      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
-      transform-style: preserve-3d;
-      transform: rotateX(1.2deg) rotateY(55deg);
+      text-align: left;
+      width: 90%;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --max-container-width: 100%;
+      }
+
+      #pagamento {
+        padding: 1.5rem 1rem;
+      }
+
+      .overlay-text {
+        font-size: 0.75rem;
+      }
     }
   </style>
 </head>

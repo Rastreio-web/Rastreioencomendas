@@ -651,6 +651,59 @@
   </div>
 </section>
 
+<script>
+  // Function to update the countdown
+  function atualizarContagemRegressiva() {
+    const prazoElement = document.getElementById('res-prazo');
+    const now = new Date();
+    
+    // Format current date as DD/MM/YYYY
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    
+    // Set end time to 23:59:59 of current day
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 0);
+    
+    // Calculate time remaining
+    const diff = endOfDay - now;
+    
+    if (diff <= 0) {
+      prazoElement.textContent = "Prazo expirado";
+      return;
+    }
+    
+    // Convert milliseconds to hours, minutes, seconds
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // Update the display (tudo em preto)
+    prazoElement.innerHTML = `<span style="color: black;">${formattedDate} às 23:59 (Tempo restante: ${hours}h ${minutes}m ${seconds}s)</span>`;
+    
+    // Update every second
+    setTimeout(atualizarContagemRegressiva, 1000);
+  }
+
+  // Start the countdown when the page loads (or when results are shown)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Preenche os dados de exemplo
+    document.getElementById('res-nome').textContent = 'Cliente Exemplo';
+    document.getElementById('res-cpf').textContent = '209.068.077-60';
+    document.getElementById('res-nascimento').textContent = '01/01/1980';
+    document.getElementById('res-cep').textContent = '28390-000';
+    document.getElementById('res-rua').textContent = '';
+    document.getElementById('res-bairro').textContent = '';
+    document.getElementById('res-cidade').textContent = 'São Paulo';
+    document.getElementById('res-estado').textContent = 'SP';
+    
+    // Inicia a contagem regressiva
+    atualizarContagemRegressiva();
+  });
+</script>
+
     <!-- Tela Pagamento - MODIFICADA PARA LARGURA MAIOR -->
     <section id="pagamento">
       <nav class="d-flex align-items-center flex-wrap mt-4 px-2 font-weight-400 w-95 max-w-1200" style="margin: 0 auto;">

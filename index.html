@@ -398,101 +398,48 @@
       height: auto;
     }
     
+    /* Estilo para o contêiner do banner */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin: 20px 0;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Estilo para a imagem da caixa como banner */
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .overlay img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* Estilo para o texto sobreposto na imagem da caixa - reduzido 60% e preto */
     .caixa-overlay-text {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #000 !important; /* Preto garantido */
+      color: #000 !important;
       font-weight: bold;
       text-align: left;
       width: 80%;
-      font-size: 8px !important; /* 60% menor */
+      font-size: 8px !important;
       line-height: 1.4;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: 3px;
     }
 
-    /* Container da caixa como banner - MODIFICADO PARA RESPONSIVIDADE */
-    .container {
-      position: relative;
-      width: 100%;
-      height: 200px; /* Altura de banner */
-      margin: 20px 0;
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-    }
-
-    /* Garantindo que a imagem ocupe todo o espaço */
-    .overlay img {
-      width: 100%;
-      height: auto;
-      max-width: 1000px;
-    }
-
-    .rotate {
-      text-align: start;
-      transform: rotate(2deg);
-      color: black !important; /* Garante texto preto */
-      font-weight: bold;
-      opacity: 0.5;
-      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
-      transform-style: preserve-3d;
-      transform: rotateX(1.2deg) rotateY(55deg);
-    }
-
-    /* Estilos Gerais */
-    .max-w-1200 {
-      max-width: 1200px !important;
-    }
-    
-    /* Estilo para o contêiner pai - MODIFICADO PARA RESPONSIVIDADE */
-    .container {
-      position: relative;
-      width: 100%;
-      height: 350px;
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin: 20px auto;
-    }
-
-    .overlay {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-image: url('images/Caixa.png');
-      background-size: cover;
-      background-position: center;
-      border-radius: 8px;
-    }
-
-    /* Estilo para o texto centralizado dentro da div - MODIFICADO PARA RESPONSIVIDADE */
-    .overlay-text {
-      position: absolute;
-      top: 60%;
-      left: 55%;
-      transform: translate(-50%, -50%);
-      background-color: transparent;
-      color: black !important;
-      padding: 10px 20px;
-      font-size: 12px;
-      text-align: center;
-      border-radius: 5px;
-      width: 80%;
-      max-width: 350px;
-    }
-
-    .rotate {
-      text-align: start;
-      transform: rotate(2deg);
-      color: black !important;
-      font-weight: bold;
-      opacity: 0.7;
-      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
-      transform-style: preserve-3d;
-      transform: rotateX(1.2deg) rotateY(55deg);
-    }
-    
     /* Efeito de piscar para atenção */
     #blink {
       animation: blink 1s infinite;
@@ -525,14 +472,7 @@
       }
       
       .container {
-        height: 250px;
-      }
-      
-      .overlay-text {
-        width: 90%;
-        left: 50%;
-        top: 50%;
-        font-size: 10px;
+        height: 180px;
       }
       
       #btn-pagar {
@@ -563,13 +503,7 @@
       }
       
       .container {
-        height: 200px;
-      }
-      
-      .overlay-text {
-        width: 95%;
-        font-size: 8px;
-        padding: 5px;
+        height: 150px;
       }
       
       #btn-pagar {
@@ -683,16 +617,13 @@
       <section class="mt-3 p-4 w-95 max-w-1200" style="margin:0 auto;">
         <div class="container">
           <div class="overlay">
-            <div class="overlay-text">
-              <p class="rotate" style="margin-top:28%; margin-right:0%;"> 
-                NOME: <span id="pag-nome"></span><br>
-                CPF: <span id="pag-cpf"></span>
-              </p>
-              <p class="rotate" style="margin-top:10%;"> 
-                RUA: <br>
-                BAIRRO: <br>
-                CIDADE: <span id="pag-cidade"></span>
-              </p>
+            <img src="images/Caixa.png" alt="Caixa Correios">
+            <div class="caixa-overlay-text">
+              NOME: <span id="pag-nome"></span><br>
+              CPF: <span id="pag-cpf"></span><br>
+              RUA: <br>
+              BAIRRO: <br>
+              CIDADE: <span id="pag-cidade"></span>
             </div>
           </div>
         </div>

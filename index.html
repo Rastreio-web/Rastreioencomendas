@@ -539,7 +539,7 @@
       }
       
       #caixa-info-1, #caixa-info-2 {
-        font-size: 8px !important;
+        font-size: 6px !important; /* Reduzido ainda mais para desktop */
       }
     }
 
@@ -570,11 +570,18 @@
       }
       
       .overlay-text {
-        font-size: 12px !important; /* Tamanho maior para mobile */
+        font-size: 8px !important; /* Reduzido para mobile */
       }
       
       #caixa-info-1, #caixa-info-2 {
-        font-size: 12px !important;
+        font-size: 6px !important; /* Reduzido para mobile */
+        line-height: 1.2;
+      }
+      
+      /* Ajustes específicos para o texto da caixa */
+      .rotate {
+        margin-top: 15% !important;
+        margin-right: 0% !important;
       }
     }
   </style>
@@ -690,7 +697,7 @@
            style="margin-top: 28%; 
                   margin-right: 0%; 
                   color: #464545 !important; 
-                  font-size: 8px !important;
+                  font-size: 6px !important;
                   transform: rotateX(1.2deg) rotateY(55deg);" 
            id="caixa-info-1">
           NOME: <span id="pag-nome" style="color: #464545 !important;"></span><br>
@@ -700,7 +707,7 @@
         <p class="rotate" 
            style="margin-top: 10%; 
                   color: #464545 !important; 
-                  font-size: 8px !important;
+                  font-size: 6px !important;
                   transform: rotateX(1.2deg) rotateY(55deg);" 
            id="caixa-info-2">
           RUA: <span id="pag-rua" style="color: #464545 !important;"></span><br>
@@ -713,20 +720,17 @@
 </section>
 
       <style>
-  /* Ajustes para responsividade */
+  /* Estilos para desktop */
   @media (min-width: 768px) {
-    .rotate {
-      font-size: 8px !important; /* Tamanho original para desktop */
+    #caixa-info-1, #caixa-info-2 {
+      font-size: 6px !important;
     }
   }
   
+  /* Estilos para mobile (mantém 12px definido inline) */
   @media (max-width: 767px) {
-    .container {
-      height: 150px; /* Altura reduzida para mobile */
-    }
-    
-    .rotate {
-      margin-top: 25% !important; /* Ajuste fino de posicionamento */
+    #caixa-info-1, #caixa-info-2 {
+      font-size: 6px !important;
     }
   }
 </style>

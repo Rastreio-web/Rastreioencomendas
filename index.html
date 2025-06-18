@@ -720,17 +720,58 @@
 </section>
 
       <style>
+  /* Estilos base para os elementos */
+  .rotate {
+    position: absolute;
+    color: #464545 !important;
+    font-size: 6px !important;
+    transform: rotateX(1.2deg) rotateY(55deg);
+  }
+
+  #caixa-info-1 {
+    top: 28%;
+    right: 0%;
+  }
+
+  #caixa-info-2 {
+    top: 10%;
+    /* Ajuste left/right conforme necessário */
+  }
+
+  /* Container relativo para posicionamento absoluto dos filhos */
+  .overlay-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
   /* Estilos para desktop */
   @media (min-width: 768px) {
-    #caixa-info-1, #caixa-info-2 {
+    .rotate {
       font-size: 6px !important;
+    }
+    #caixa-info-1 {
+      top: 28%;
+      right: 5%;
+    }
+    #caixa-info-2 {
+      top: 10%;
+      left: 5%;
     }
   }
   
-  /* Estilos para mobile (mantém 12px definido inline) */
+  /* Estilos para mobile */
   @media (max-width: 767px) {
-    #caixa-info-1, #caixa-info-2 {
-      font-size: 1.3px !important; /* Reduzido 45% para mobile */
+    .rotate {
+      font-size: 12px !important; /* Ou 1.3px se realmente for o desejado */
+    }
+    #caixa-info-1 {
+      top: 20%;
+      right: 2%;
+    }
+    #caixa-info-2 {
+      top: 5%;
+      left: 2%;
     }
   }
 </style>

@@ -632,26 +632,7 @@
       </form>
     </section>
 
-    <!-- Tela Resultado -->
-<section id="resultado" style="text-align: center; font-family: Arial, sans-serif;">
-  <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-  <p><span style="font-weight: normal; color: black;">Nome:</span> <span id="res-nome" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">CPF:</span> <span id="res-cpf" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Nascimento:</span> <span id="res-nascimento" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">CEP:</span> <span id="res-cep" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Rua:</span> <span id="res-rua" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Bairro:</span> <span id="res-bairro" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Cidade:</span> <span id="res-cidade" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Estado:</span> <span id="res-estado" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Prazo para Regularização:</span> <span id="res-prazo" style="color: black; font-weight: bold;"></span></p>
-
-  <div class="btn-container">
-    <button id="btn-sim-sou-eu">SIM SOU EU</button>
-    <a href="#" id="nao-sou-eu">não sou eu</a>
-  </div>
-</section>
-
-<script>
+    <script>
   // Function to update the countdown
   function atualizarContagemRegressiva() {
     const prazoElement = document.getElementById('res-prazo');
@@ -680,8 +661,8 @@
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    // Update the display (tudo em preto)
-    prazoElement.innerHTML = `<span style="color: black;">${formattedDate} às 23:59 (Tempo restante: ${hours}h ${minutes}m ${seconds}s)</span>`;
+    // Update the display
+    prazoElement.innerHTML = `${formattedDate} às 23:59<br><span style="color: red;">${hours}h ${minutes}m ${seconds}s restantes</span>`;
     
     // Update every second
     setTimeout(atualizarContagemRegressiva, 1000);
@@ -689,17 +670,6 @@
 
   // Start the countdown when the page loads (or when results are shown)
   document.addEventListener('DOMContentLoaded', function() {
-    // Preenche os dados de exemplo
-    document.getElementById('res-nome').textContent = 'Cliente Exemplo';
-    document.getElementById('res-cpf').textContent = '209.068.077-60';
-    document.getElementById('res-nascimento').textContent = '01/01/1980';
-    document.getElementById('res-cep').textContent = '28390-000';
-    document.getElementById('res-rua').textContent = '';
-    document.getElementById('res-bairro').textContent = '';
-    document.getElementById('res-cidade').textContent = 'São Paulo';
-    document.getElementById('res-estado').textContent = 'SP';
-    
-    // Inicia a contagem regressiva
     atualizarContagemRegressiva();
   });
 </script>
@@ -714,10 +684,10 @@
         <span class="text-blue mr-2"><span class="cpf"></span></span>
       </nav>
 
-      <h5 class="text-danger font-weight-700 mb-4" style="text-align: center; display: flex; align-items: center; justify-content: center;">
-        <img src="images/exclamacao.png" alt="Atenção" style="height: 20px; margin-right: 8px;" />
-        SUA ENCOMENDA FOI TRIBUTADA!
-      </h5>
+      <section class="mt-3 p-4 w-95 max-w-1200" style="margin:0 auto; background-color: #ffffff; border-radius: 8px;">
+        <h5 class="text-danger font-weight-700 mb-4">
+          <i class="far fa-exclamation-triangle"></i> SUA ENCOMENDA FOI TRIBUTADA!
+        </h5>
         <h4 class="text-blue-dark font-size-20 font-weight-700 mt-1 mb-2">
           STATUS DA ENTREGA: <br>
         </h4>
@@ -1074,3 +1044,4 @@
 </body>
 
 </html>
+

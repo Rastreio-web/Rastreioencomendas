@@ -713,28 +713,29 @@
 </section>
 
       <style>
-  /* Estilos para desktop (mantém 8px definido inline) */
+  /* Desktop mantém 8px (inalterado) */
   @media (min-width: 768px) {
     #caixa-info-1, #caixa-info-2 {
       font-size: 8px !important;
     }
   }
   
-  /* Estilos para mobile (reduzido 50% no total: 20% + 30%) */
+  /* Mobile - versão ultra compacta (4px) */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 5.6px !important; /* ~30% menor que 8px (total 50% menor que o original) */
-      line-height: 1.4; /* Melhora a legibilidade com fonte pequena */
+      font-size: 4px !important; /* 50% do tamanho anterior (total 75% menor que o original) */
+      line-height: 1.5 !important;
+      letter-spacing: -0.1px !important; /* Compacta mais os caracteres */
     }
     
-    /* Ajustes finos de posicionamento */
+    /* Ajuste fino de posicionamento */
     #caixa-info-1 {
-      margin-top: 30% !important;
-      margin-right: 5% !important;
+      margin-top: 32% !important;
+      margin-right: 8% !important;
     }
     
     #caixa-info-2 {
-      margin-top: 12% !important;
+      margin-top: 15% !important;
     }
   }
 </style>

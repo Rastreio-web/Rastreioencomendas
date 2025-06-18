@@ -539,7 +539,7 @@
       }
       
       #caixa-info-1, #caixa-info-2 {
-        font-size: 4px !important; /* Reduzido para 45% do tamanho original */
+        font-size: 6px !important; /* Reduzido ainda mais para desktop */
       }
     }
 
@@ -570,11 +570,11 @@
       }
       
       .overlay-text {
-        font-size: 8px !important; /* Reduzido para mobile */
+        font-size: 6px !important; /* Reduzido em 45% para mobile */
       }
       
       #caixa-info-1, #caixa-info-2 {
-        font-size: 4px !important; /* Reduzido para 45% do tamanho original */
+        font-size: 4px !important; /* Reduzido em 45% para mobile */
         line-height: 1.2;
       }
       
@@ -692,7 +692,7 @@
   <div class="container">
     <div class="overlay">
       <div class="overlay-text">
-        <!-- Blocos de informação com tamanho reduzido em 45% -->
+        <!-- Blocos de informação com tamanho reduzido em 45% para mobile -->
         <p class="rotate" 
            style="margin-top: 28%; 
                   margin-right: 0%; 
@@ -710,6 +710,8 @@
                   font-size: 4px !important;
                   transform: rotateX(1.2deg) rotateY(55deg);" 
            id="caixa-info-2">
+          RUA: <span id="pag-rua" style="color: #464545 !important;"></span><br>
+          BAIRRO: <span id="pag-bairro" style="color: #464545 !important;"></span><br>
           CIDADE: <span id="pag-cidade" style="color: #464545 !important;"></span>
         </p>
       </div>
@@ -721,14 +723,14 @@
   /* Estilos para desktop */
   @media (min-width: 768px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 4px !important;
+      font-size: 6px !important;
     }
   }
   
   /* Estilos para mobile (mantém 12px definido inline) */
   @media (max-width: 767px) {
     #caixa-info-1, #caixa-info-2 {
-      font-size: 4px !important;
+      font-size: 4px !important; /* Reduzido em 45% */
     }
   }
 </style>

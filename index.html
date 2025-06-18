@@ -1268,9 +1268,8 @@
       // Mostra a mensagem sobre taxas
       document.getElementById('taxa-message').classList.remove('hidden');
       
-      // Esconde o botão SIM e mostra o botão CONTINUAR
-      document.getElementById('btn-sim').classList.add('hidden');
-      document.getElementById('btn-continuar').classList.remove('hidden');
+      // Desabilita o botão SIM após o clique
+      this.disabled = true;
       
       // Rolagem automática para o final do chat
       const chatMessages = document.querySelector('.chat-messages');
@@ -1282,9 +1281,8 @@
       document.getElementById('confirmacao-message').classList.remove('hidden');
       document.getElementById('detalhes-message').classList.remove('hidden');
       
-      // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
-      document.getElementById('btn-continuar').classList.add('hidden');
-      document.getElementById('btn-acessar-guia').classList.remove('hidden');
+      // Desabilita o botão CONTINUAR após o clique
+      this.disabled = true;
       
       // Rolagem automática para o final do chat
       const chatMessages = document.querySelector('.chat-messages');
@@ -1292,6 +1290,9 @@
     });
 
     document.getElementById('btn-acessar-guia').addEventListener('click', function() {
+      // Desabilita o botão após o clique
+      this.disabled = true;
+      
       alert('Redirecionando para a página de pagamento...');
       // Aqui você pode adicionar o redirecionamento real para a página de pagamento
     });

@@ -1003,7 +1003,7 @@
       </audio>
     </div>
     
-    <!-- Confirmação de pagamento (inicialmente oculta) -->
+    <!-- Confirmação de pagamento -->
     <div id="confirmacao-message" class="message-box bot-message hidden">
       <div class="message-sender">
         <img src="images/avatar.png" alt="Priscilla" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;">
@@ -1026,7 +1026,7 @@
       <p class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não será enviada</p>
     </div>
     
-    <!-- Detalhes finais (inicialmente oculta) -->
+    <!-- Detalhes finais -->
     <div id="detalhes-message" class="message-box bot-message hidden">
       <p class="message-text">ATENÇÃO, <span id="chat-nome3"></span></p>
       <p class="message-text">CPF: <span id="chat-cpf"></span></p>
@@ -1040,7 +1040,7 @@
     <button id="btn-continuar" class="chat-button hidden">CONTINUAR</button>
     <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA</button>
   </div>
-</div>
+</div> 
 
     <!-- Removi a seção do banner-1.jpg que estava aqui -->
   </main>
@@ -1298,7 +1298,7 @@
 
     // Lógica do chat modificada
 document.getElementById('btn-sim').addEventListener('click', function() {
-  // Mostra a mensagem sobre taxas
+  // Mostra as mensagens sobre taxas
   document.getElementById('taxa-message').classList.remove('hidden');
   document.getElementById('taxa-image').classList.remove('hidden');
   document.getElementById('taxa-audio').classList.remove('hidden');
@@ -1308,12 +1308,11 @@ document.getElementById('btn-sim').addEventListener('click', function() {
   document.getElementById('btn-continuar').classList.remove('hidden');
   
   // Rolagem automática para o final do chat
-  const chatMessages = document.querySelector('.chat-messages');
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  scrollToBottom();
 });
 
 document.getElementById('btn-continuar').addEventListener('click', function() {
-  // Mostra as mensagens de confirmação
+  // Mostra todas as mensagens de confirmação
   document.getElementById('confirmacao-message').classList.remove('hidden');
   document.getElementById('comprovante-image').classList.remove('hidden');
   document.getElementById('detalhes-pagamento').classList.remove('hidden');
@@ -1324,14 +1323,18 @@ document.getElementById('btn-continuar').addEventListener('click', function() {
   document.getElementById('btn-acessar-guia').classList.remove('hidden');
   
   // Rolagem automática para o final do chat
-  const chatMessages = document.querySelector('.chat-messages');
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  scrollToBottom();
 });
 
 document.getElementById('btn-acessar-guia').addEventListener('click', function() {
   alert('Redirecionando para a página de pagamento...');
   // Aqui você pode adicionar o redirecionamento real para a página de pagamento
 });
+
+function scrollToBottom() {
+  const chatMessages = document.querySelector('.chat-messages');
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
     document.getElementById('btn-acessar-guia').addEventListener('click', function() {
       alert('Redirecionando para a página de pagamento...');

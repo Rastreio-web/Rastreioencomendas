@@ -1,5 +1,4 @@
 <?php
-<?php
 header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -22,8 +21,23 @@ if (empty($cpf) || strlen($cpf) !== 11) {
 // 2. Configurar o cabeçalho HTTP
 $options = [
     'http' => [
-        'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n",
-        'timeout' => 30  // Timeout de 30 segundos
+        'method' => 'POST',
+        'header' => implode("\r\n", [
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Content-Type: application/x-www-form-urlencoded',
+            'Origin: https://www.descobreaqui.com',
+            'Referer: https://www.descobreaqui.com/search',
+            'Connection: keep-alive'
+        ]),
+        'content' => http_build_query(['cpf' => $cpf]),
+        'timeout' => 30,
+        'ignore_errors' => true
+    ],
+    'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false
     ]
 ];
 

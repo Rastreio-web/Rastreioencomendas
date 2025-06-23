@@ -1,4 +1,13 @@
 <?php
+<?php
+header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Função para debug
+function debug($data) {
+    file_put_contents('debug.log', print_r($data, true), FILE_APPEND);
+}
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");  // Importante para requisições frontend
 

@@ -1,109 +1,166 @@
 <?php
 header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Função para debug
-function debug($data) {
-    file_put_contents('debug.log', print_r($data, true), FILE_APPEND);
-}
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *");  // Importante para requisições frontend
+// Configuração avançada de logs
+$logFile = __DIR__ . '/scraper_debug.log';
+file_put_contents($logFile, "\n\n=== NOVA CONSULTA EM " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
 
-// 1. Validar o CPF recebido
+function logDebug($message) {
+    global $logFile;
+    file_put_contents($logFile, "[DEBUG] " . $message . "\n", FILE_APPEND);
+}
+
+// 1. Validação do CPF
 $cpf = isset($_GET['cpf']) ? preg_replace('/[^0-9]/', '', $_GET['cpf']) : '';
+logDebug("CPF recebido: $cpf");
 
 if (empty($cpf) || strlen($cpf) !== 11) {
+    logDebug("CPF inválido");
     echo json_encode(['success' => false, 'message' => 'CPF inválido']);
     exit;
 }
 
-// 2. Configurar o cabeçalho HTTP
+// 2. Configuração da requisição
 $options = [
     'http' => [
         'method' => 'POST',
         'header' => implode("\r\n", [
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
             'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
             'Content-Type: application/x-www-form-urlencoded',
             'Origin: https://www.descobreaqui.com',
             'Referer: https://www.descobreaqui.com/search',
-            'Connection: keep-alive'
+            'Connection: keep-alive',
+            'X-Requested-With: XMLHttpRequest'
         ]),
-        'content' => http_build_query(['cpf' => $cpf]),
+        'content' => http_build_query([
+            'cpf' => $cpf,
+            'tipo_consulta' => 'pf',
+            'token' => bin2hex(random_bytes(8)) // Token aleatório
+        ]),
         'timeout' => 30,
         'ignore_errors' => true
     ],
     'ssl' => [
         'verify_peer' => false,
-        'verify_peer_name' => false
+        'verify_peer_name' => false,
+        'allow_self_signed' => true
     ]
 ];
 
+// 3. Tentativa de requisição
 try {
-    // 3. URL do site de consulta
     $url = "https://www.descobreaqui.com/search";
-    
-    // 4. Preparar os dados do POST
-    $postData = http_build_query([
-        'cpf' => $cpf,
-        'tipo_consulta' => 'pf',
-        'token' => 'abc123'
-    ]);
-    
-    // 5. Configurar o contexto para POST
-    $options['http']['method'] = 'POST';
-    $options['http']['content'] = $postData;
-    $options['http']['header'] .= "Content-Type: application/x-www-form-urlencoded\r\n";
-    $options['http']['header'] .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n";
-    $options['http']['header'] .= "Referer: https://www.descobreaqui.com/search\r\n";
+    logDebug("Iniciando requisição para: $url");
     
     $context = stream_context_create($options);
     
-    // 6. Fazer a requisição
+    // Primeira tentativa com file_get_contents
     $html = @file_get_contents($url, false, $context);
     
-    if ($html === false) {
-        throw new Exception("Não foi possível acessar o site de consulta. Tente novamente mais tarde.");
+    // Fallback para cURL se falhar
+    if ($html === false && function_exists('curl_init')) {
+        logDebug("Fallback para cURL");
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $options['http']['content'],
+            CURLOPT_HTTPHEADER => explode("\r\n", $options['http']['header']),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true
+        ]);
+        $html = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new Exception("Falha no cURL. Código HTTP: $httpCode");
+        }
     }
     
-    // 7. Analisar o HTML retornado
+    if ($html === false) {
+        $error = error_get_last();
+        logDebug("Erro na requisição: " . print_r($error, true));
+        throw new Exception("Não foi possível acessar o site de consulta");
+    }
+    
+    logDebug("Resposta recebida (primeiros 200 chars): " . substr($html, 0, 200));
+    
+    // 4. Análise do HTML
     $dom = new DOMDocument();
-    libxml_use_internal_errors(true); // Suprime erros de HTML malformado
-    $dom->loadHTML($html);
-    libxml_clear_errors();
+    libxml_use_internal_errors(true);
+    
+    if (!$dom->loadHTML($html)) {
+        $libxmlErrors = libxml_get_errors();
+        logDebug("Erros DOMDocument: " . print_r($libxmlErrors, true));
+        libxml_clear_errors();
+        throw new Exception("Falha ao analisar o HTML");
+    }
     
     $xpath = new DOMXPath($dom);
     
-    // 8. Extrair os dados - SELETORES ATUALIZADOS (verifique no site atual)
-    $infoNodes = $xpath->query("//p[contains(@class, 'font-mono') and contains(@class, 'text-sm') and contains(@class, 'text-gray-500')]");
+    // 5. Extração de dados com múltiplos seletores de fallback
+    $selectors = [
+        'nome' => [
+            "//p[contains(@class, 'font-mono') and contains(@class, 'text-gray-500')]",
+            "//div[contains(@class, 'user-name')]",
+            "//span[@id='nome-completo']"
+        ],
+        'nascimento' => [
+            "//p[contains(@class, 'birth-date')]",
+            "//span[@id='data-nascimento']"
+        ]
+    ];
     
-    // Validação da estrutura
-    if (!$infoNodes || $infoNodes->length < 2) {
-        throw new Exception("Estrutura do site alterada. Não foi possível encontrar os dados.");
+    $resultado = [];
+    
+    foreach ($selectors as $campo => $xpaths) {
+        foreach ($xpaths as $xpathExpr) {
+            $nodes = $xpath->query($xpathExpr);
+            if ($nodes && $nodes->length > 0) {
+                $value = trim($nodes->item(0)->nodeValue);
+                $resultado[$campo] = preg_replace('/[\/\*]+/', '', $value);
+                break;
+            }
+        }
     }
     
-    // Processamento dos dados
-    $nome = trim(preg_replace('/\*+/', '', $infoNodes->item(0)->nodeValue));
-    $nascimento = trim(str_replace(['/**/', '*'], '', $infoNodes->item(1)->nodeValue));
-    
-    // 9. Validação dos dados
-    if (empty($nome)) {
-        throw new Exception("Nome não encontrado na página.");
+    if (empty($resultado['nome'])) {
+        throw new Exception("Dados não encontrados no HTML");
     }
     
-    // 10. Retornar os resultados
-    echo json_encode([
+    // 6. Retorno dos resultados
+    $response = [
         'success' => true,
-        'nome' => $nome,
-        'nascimento' => !empty($nascimento) ? $nascimento : 'Não encontrado'
-    ]);
+        'nome' => $resultado['nome'] ?? 'Não encontrado',
+        'nascimento' => $resultado['nascimento'] ?? 'Não encontrado',
+        'debug' => [
+            'html_length' => strlen($html),
+            'selector_used' => $selectors
+        ]
+    ];
+    
+    logDebug("Resultado final: " . json_encode($response));
+    echo json_encode($response);
     
 } catch (Exception $e) {
-    echo json_encode([
+    $errorResponse = [
         'success' => false,
         'message' => $e->getMessage(),
-        'error_code' => $e->getCode()
-    ]);
+        'error_code' => $e->getCode(),
+        'request_info' => [
+            'url' => $url ?? null,
+            'method' => $options['http']['method'] ?? null
+        ]
+    ];
+    
+    logDebug("ERRO: " . json_encode($errorResponse));
+    echo json_encode($errorResponse);
 }

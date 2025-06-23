@@ -1193,7 +1193,7 @@ function atualizarContagemRegressiva() {
 
     try {
         // Faz a consulta ao backend PHP
-        const response = await fetch(`/api/consulta-cpf.php?cpf=${cpfRaw}`);
+        const response = await fetch('https://seusite.com/api/consulta-cpf.php?cpf=11827304774');
         const resultado = await response.json();
 
         if (!resultado.success) {

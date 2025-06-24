@@ -10,7 +10,7 @@ if (!extension_loaded('dom')) {
 // Função para limpar e validar o CPF
 function limparCPF($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
-    return (strlen($cpf) === 11 ? $cpf : false;
+    return (strlen($cpf)) === 11 ? $cpf : false;
 }
 
 // Função para obter conteúdo com múltiplos fallbacks

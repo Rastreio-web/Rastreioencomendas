@@ -1,12 +1,8 @@
 <?php
-phpinfo();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Verifica extensões necessárias
-if (!extension_loaded('fileinfo')) {
-    die('Erro: A extensão fileinfo não está habilitada no seu servidor!');
-}
+// Verifica extensão necessária
 if (!extension_loaded('dom')) {
     die('Erro: A extensão DOM não está habilitada no seu servidor!');
 }
@@ -14,7 +10,7 @@ if (!extension_loaded('dom')) {
 // Função para limpar e validar o CPF
 function limparCPF($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
-    return (strlen($cpf)) === 11 ? $cpf : false;
+    return (strlen($cpf) === 11 ? $cpf : false;
 }
 
 // Função para realizar a pesquisa com tratamento avançado
@@ -42,10 +38,11 @@ function pesquisarCPF($cpf) {
         $context = stream_context_create($options);
         
         // Primeira requisição para obter o token CSRF
-        $response = file_get_contents($url, false, $context);
+        $response = @file_get_contents($url, false, $context);
         
         if ($response === false) {
-            throw new Exception('Erro na conexão: Não foi possível acessar o site');
+            $error = error_get_last();
+            throw new Exception('Erro na conexão: ' . $error['message']);
         }
 
         // Verifica se foi redirecionado para página de bloqueio
@@ -81,10 +78,11 @@ function pesquisarCPF($cpf) {
         $context = stream_context_create($options);
 
         // Executa a pesquisa
-        $resultado = file_get_contents($url, false, $context);
+        $resultado = @file_get_contents($url, false, $context);
         
         if ($resultado === false) {
-            throw new Exception('Erro ao enviar os dados para pesquisa');
+            $error = error_get_last();
+            throw new Exception('Erro ao enviar os dados para pesquisa: ' . $error['message']);
         }
 
         // Analisa o resultado

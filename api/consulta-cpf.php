@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
     }
     
     // Se não encontrou dados, verifica se há CAPTCHA
-    if (empty($data) {
+    if (empty($data)) {
         if (strpos($result, 'captcha') !== false) {
             die(json_encode(['error' => 'O site exige CAPTCHA. Não é possível automatizar.']));
         }

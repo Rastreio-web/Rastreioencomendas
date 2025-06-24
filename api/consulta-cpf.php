@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Verifica extensões necessárias
-if (!extension_loaded('curl')) {
-    die('Erro: A extensão cURL não está habilitada no seu servidor!');
+if (!extension_loaded('fileinfo')) {
+    die('Erro: A extensão fileinfo não está habilitada no seu servidor!');
 }
 if (!extension_loaded('dom')) {
     die('Erro: A extensão DOM não está habilitada no seu servidor!');
@@ -22,32 +22,30 @@ function pesquisarCPF($cpf) {
     $url = 'https://pesquisacpf.com.br/';
     
     try {
-        // Configuração detalhada do cURL
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            CURLOPT_REFERER => $url,
-            CURLOPT_HTTPHEADER => [
-                'Accept: text/html,application/xhtml+xml',
-                'Accept-Language: pt-BR,pt;q=0.9',
+        // Configuração do contexto para file_get_contents
+        $options = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n"
+                          . "Accept: text/html,application/xhtml+xml\r\n"
+                          . "Accept-Language: pt-BR,pt;q=0.9\r\n"
+                          . "Referer: $url\r\n",
+                'timeout' => 15,
+                'ignore_errors' => true
             ],
-            CURLOPT_CONNECTTIMEOUT => 15,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_MAXREDIRS => 5,
-            CURLOPT_COOKIEJAR => sys_get_temp_dir() . '/pesquisacpf_cookies.txt',
-            CURLOPT_COOKIEFILE => sys_get_temp_dir() . '/pesquisacpf_cookies.txt',
-        ]);
-
-        // Primeira requisição para obter o token CSRF
-        $response = curl_exec($ch);
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ];
         
-        if (curl_errno($ch)) {
-            throw new Exception('Erro na conexão: ' . curl_error($ch));
+        $context = stream_context_create($options);
+        
+        // Primeira requisição para obter o token CSRF
+        $response = file_get_contents($url, false, $context);
+        
+        if ($response === false) {
+            throw new Exception('Erro na conexão: Não foi possível acessar o site');
         }
 
         // Verifica se foi redirecionado para página de bloqueio
@@ -67,26 +65,27 @@ function pesquisarCPF($cpf) {
         $token = $tokenNodes->item(0)->nodeValue;
 
         // Prepara os dados para o POST
-        $postData = [
+        $postData = http_build_query([
             'cpf' => $cpf,
             'csrf_token' => $token,
             'acao' => 'pesquisar'
-        ];
-
-        // Configura a requisição POST
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($postData),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-www-form-urlencoded',
-                'X-Requested-With: XMLHttpRequest'
-            ],
         ]);
 
+        // Configuração para o POST
+        $options['http']['method'] = 'POST';
+        $options['http']['header'] .= "Content-Type: application/x-www-form-urlencoded\r\n"
+                                   . "X-Requested-With: XMLHttpRequest\r\n"
+                                   . "Content-Length: " . strlen($postData) . "\r\n";
+        $options['http']['content'] = $postData;
+        
+        $context = stream_context_create($options);
+
         // Executa a pesquisa
-        $resultado = curl_exec($ch);
-        curl_close($ch);
+        $resultado = file_get_contents($url, false, $context);
+        
+        if ($resultado === false) {
+            throw new Exception('Erro ao enviar os dados para pesquisa');
+        }
 
         // Analisa o resultado
         @$dom->loadHTML($resultado);

@@ -19,24 +19,18 @@ function logEvent($message, $level = 'INFO') {
 // 3. Classe de Requisição com Múltiplas Estratégias
 class AdvancedScraper {
     private static $endpoints = [
-        'primary' => 'https://www.descobreaqui.com/search',
-        'secondary' => 'https://consulta.descobreaqui.com/api',
-        'tertiary' => 'https://api.descobreaqui.com/v1/query'
+        'primary' => 'https://pesquisacpf.com.br/consulta',
+        'secondary' => 'https://api.pesquisacpf.com.br/v1/query',
+        'fallback' => 'https://www.receitaws.com.br/v1/cpf/'
     ];
     
     private static $proxyList = [
-        // Proxies gratuitos (podem precisar ser atualizados)
         '45.61.123.219:3128',
         '103.156.144.5:8080',
         '200.105.215.22:33630'
     ];
     
     public static function fetchData($cpf) {
-        // Primeiro verifica se o site está online
-        if (!self::isSiteAvailable()) {
-            throw new Exception("Site principal indisponível ou bloqueando requisições");
-        }
-        
         // Tenta em todos os endpoints
         foreach (self::$endpoints as $type => $url) {
             try {
@@ -57,36 +51,6 @@ class AdvancedScraper {
         }
         
         throw new Exception("Todos os endpoints falharam");
-    }
-    
-    private static function isSiteAvailable() {
-        $testUrl = 'https://www.descobreaqui.com';
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'HEAD',
-                'timeout' => 10,
-                'user_agent' => self::randomUserAgent()
-            ],
-            'ssl' => [
-                'verify_peer' => false
-            ]
-        ]);
-        
-        $headers = @get_headers($testUrl, 1, $context);
-        
-        if ($headers === false) {
-            logEvent("Falha ao acessar o site principal", "ERROR");
-            return false;
-        }
-        
-        $statusCode = (int)substr($headers[0], 9, 3);
-        $available = ($statusCode === 200 || $statusCode === 302);
-        
-        if (!$available) {
-            logEvent("Site retornou código HTTP $statusCode", "WARNING");
-        }
-        
-        return $available;
     }
     
     private static function tryEndpoint($url, $cpf) {
@@ -122,18 +86,20 @@ class AdvancedScraper {
         
         $ch = curl_init();
         
-        // Configuração com proxyy
+        // Configuração específica para pesquisacpf.com.br
+        $postData = [
+            'cpf' => $cpf,
+            'gad_source' => 1,
+            'gclid' => 'CjwKCAjwmenCBhA4EiwAtVjzmnvTg6P8kLUmM_A0IXoWOrmfNoMWkz0-LPsiFWewppXJoNOiQQCpsBoC2TgQAvD_BwE'
+        ];
+        
+        // Configuração com proxy
         $proxy = self::$proxyList[array_rand(self::$proxyList)];
         
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query([
-                'cpf' => $cpf,
-                'tipo_consulta' => 'pf',
-                'token' => bin2hex(random_bytes(8)),
-                'rand' => mt_rand(100000, 999999)
-            ]),
+            CURLOPT_POSTFIELDS => http_build_query($postData),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 3,
@@ -168,9 +134,8 @@ class AdvancedScraper {
                 'header' => self::generateHeaders(),
                 'content' => http_build_query([
                     'cpf' => $cpf,
-                    'tipo_consulta' => 'pf',
-                    'token' => bin2hex(random_bytes(8)),
-                    'rand' => mt_rand(100000, 999999)
+                    'gad_source' => 1,
+                    'gclid' => 'CjwKCAjwmenCBhA4EiwAtVjzmnvTg6P8kLUmM_A0IXoWOrmfNoMWkz0-LPsiFWewppXJoNOiQQCpsBoC2TgQAvD_BwE'
                 ]),
                 'timeout' => 15,
                 'ignore_errors' => true
@@ -243,11 +208,8 @@ class AdvancedScraper {
     
     private static function randomUserAgent() {
         $agents = [
-            // Chrome
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-            // Firefox
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
-            // Edge
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58'
         ];
         
@@ -293,13 +255,14 @@ try {
     
     $result = AdvancedScraper::fetchData($cpf);
     
-    // Análise do HTML (simplificada)
+    // Análise do HTML - padrão pesquisacpf.com.br
     $dom = new DOMDocument();
     @$dom->loadHTML($result['content']);
     $xpath = new DOMXPath($dom);
     
-    $nome = $xpath->query("//div[contains(@class,'user-name')]")->item(0)->nodeValue ?? 'Não encontrado';
-    $nascimento = $xpath->query("//span[contains(@class,'birth-date')]")->item(0)->nodeValue ?? 'Não encontrado';
+    // Extração de dados específica para o site
+    $nome = $xpath->query("//div[contains(@class,'nome') or contains(@class,'nome-titular')]")->item(0)->nodeValue ?? 'Não encontrado';
+    $nascimento = $xpath->query("//span[contains(@class,'data-nascimento') or contains(@class,'nascimento')]")->item(0)->nodeValue ?? 'Não encontrado';
     
     echo json_encode([
         'success' => true,
@@ -310,7 +273,8 @@ try {
         ],
         'metadata' => [
             'http_code' => $result['http_code'],
-            'method' => 'AdvancedScraper'
+            'method' => 'AdvancedScraper',
+            'source' => 'pesquisacpf.com.br'
         ]
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     

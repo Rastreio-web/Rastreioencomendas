@@ -1,11 +1,4 @@
 <?php
-<?php
-if (function_exists('curl_version')) {
-    echo "cURL está habilitado! 🎉";
-    print_r(curl_version());
-} else {
-    echo "cURL NÃO está habilitado. ❌";
-}
 phpinfo();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

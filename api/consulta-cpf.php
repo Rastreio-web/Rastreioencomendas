@@ -32,23 +32,26 @@ function validarCPF($cpf) {
 try {
     // Validações
     if (empty($cpf)) {
-        throw new Exception("CPF não fornecido");
+        throw new Exception("CPF não fornecido", 400);
     }
     
     if (!validarCPF($cpf)) {
-        throw new Exception("CPF inválido");
+        throw new Exception("CPF inválido", 400);
     }
 
-    // Primeira tentativa: ReceitaWS
-    $url1 = "https://www.receitaws.com.br/v1/cpf/$cpf";
-    $ch = curl_init($url1);
+    // Inicializa cURL
+    $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => 10,
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_USERAGENT => 'Mozilla/5.0'
+        CURLOPT_USERAGENT => 'Mozilla/5.0',
+        CURLOPT_FOLLOWLOCATION => true
     ]);
-    
+
+    // Tentativa 1: ReceitaWS
+    $url1 = "https://www.receitaws.com.br/v1/cpf/$cpf";
+    curl_setopt($ch, CURLOPT_URL, $url1);
     $response = curl_exec($ch);
     
     if ($response !== false) {
@@ -59,7 +62,8 @@ try {
                 'data' => [
                     'cpf' => $cpf,
                     'nome' => $data['nome'],
-                    'nascimento' => $data['nascimento'] ?? null
+                    'nascimento' => $data['nascimento'] ?? null,
+                    'situacao' => $data['situacao'] ?? null
                 ],
                 'source' => 'receitaws'
             ]);
@@ -67,7 +71,7 @@ try {
         }
     }
 
-    // Segunda tentativa: MinhaReceita
+    // Tentativa 2: MinhaReceita
     $url2 = "https://minhareceita.org/$cpf";
     curl_setopt($ch, CURLOPT_URL, $url2);
     $response = curl_exec($ch);
@@ -80,7 +84,8 @@ try {
                 'data' => [
                     'cpf' => $cpf,
                     'nome' => $data['nome'],
-                    'nascimento' => $data['data_nascimento'] ?? null
+                    'nascimento' => $data['data_nascimento'] ?? null,
+                    'situacao' => $data['situacao_cadastral'] ?? null
                 ],
                 'source' => 'minhareceita'
             ]);
@@ -88,15 +93,36 @@ try {
         }
     }
 
-    throw new Exception("Nenhum serviço retornou dados válidos");
+    // Tentativa 3: Dados de teste se estiver em localhost
+    if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1') {
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'cpf' => $cpf,
+                'nome' => "Fulano de Tal (Dados de Teste)",
+                'nascimento' => "01/01/1980",
+                'situacao' => "Regular"
+            ],
+            'source' => 'localhost',
+            'warning' => 'Dados simulados para ambiente de desenvolvimento'
+        ]);
+        exit;
+    }
+
+    throw new Exception("Nenhuma fonte de dados disponível no momento", 503);
 
 } catch (Exception $e) {
-    http_response_code(400);
+    $code = $e->getCode() >= 400 ? $e->getCode() : 500;
+    http_response_code($code);
+    
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage(),
-        'cpf' => $cpf
+        'cpf' => $cpf,
+        'error_code' => $code
     ]);
+    
+    logConsulta("ERRO: " . $e->getMessage() . " | CPF: $cpf | Código: $code");
 } finally {
     if (isset($ch)) {
         curl_close($ch);

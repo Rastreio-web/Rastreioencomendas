@@ -13,86 +13,53 @@ function limparCPF($cpf) {
     return (strlen($cpf)) === 11 ? $cpf : false;
 }
 
-// Função melhorada para obter conteúdo de URL
-function getUrlContent($url, $context = null) {
-    $allowUrlFopen = ini_get('allow_url_fopen');
-    $curlEnabled = function_exists('curl_init');
-    
-    if (!$allowUrlFopen && !$curlEnabled) {
-        throw new Exception('Nenhum método disponível para acessar URLs externas');
-    }
-
-    // Tenta com file_get_contents primeiro
-    if ($allowUrlFopen) {
-        $content = @file_get_contents($url, false, $context);
-        if ($content !== false) return $content;
-    }
-
-    // Fallback para cURL
-    if ($curlEnabled) {
+// Função ultra-robusta para requisições HTTP
+function getUrlContent($url, $postData = null, $headers = []) {
+    // Método 1: Tentativa com cURL (recomendado)
+    if (function_exists('curl_init')) {
         $ch = curl_init();
+        
         $options = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 15,
+            CURLOPT_TIMEOUT => 20,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            CURLOPT_HTTPHEADER => array_merge([
+                'Accept: text/html,application/xhtml+xml',
+                'Accept-Language: pt-BR,pt;q=0.9'
+            ], $headers)
         ];
         
-        if ($context && is_resource($context)) {
-            $optionsContext = stream_context_get_options($context);
-            if (isset($optionsContext['http']['header'])) {
-                $headers = array_filter(array_map('trim', explode("\r\n", $optionsContext['http']['header'])));
-                $parsedHeaders = [];
-                foreach ($headers as $header) {
-                    if (strpos($header, ':') !== false) {
-                        $parsedHeaders[] = $header;
-                    }
-                }
-                if (!empty($parsedHeaders)) {
-                    $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
-                }
-            }
-            
-            if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
-                $options[CURLOPT_POST] = true;
-                if (isset($optionsContext['http']['content'])) {
-                    $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
-                }
-            }
+        if ($postData) {
+            $options[CURLOPT_POST] = true;
+            $options[CURLOPT_POSTFIELDS] = $postData;
+            $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/x-www-form-urlencoded';
         }
         
         curl_setopt_array($ch, $options);
-        $content = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        $response = curl_exec($ch);
         $error = curl_error($ch);
         curl_close($ch);
         
-        if ($content === false) {
-            throw new Exception("Erro cURL: $error (HTTP Code: $httpCode)");
+        if ($response !== false) {
+            return $response;
         }
-        
-        return $content;
     }
-
-    throw new Exception('Todos os métodos de requisição falharam');
-}
-
-// Função para realizar a pesquisa com tratamento avançado
-function pesquisarCPF($cpf) {
-    $url = 'https://pesquisacpf.com.br/';
     
-    try {
-        // Configuração do contexto para a primeira requisição (GET)
-        $options = [
+    // Método 2: Tentativa com file_get_contents (se habilitado)
+    if (ini_get('allow_url_fopen')) {
+        $contextOptions = [
             'http' => [
-                'method' => 'GET',
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n"
-                          . "Accept: text/html,application/xhtml+xml\r\n"
-                          . "Accept-Language: pt-BR,pt;q=0.9\r\n"
-                          . "Referer: $url\r\n",
-                'timeout' => 15,
+                'method' => $postData ? 'POST' : 'GET',
+                'header' => implode("\r\n", array_merge([
+                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept: text/html,application/xhtml+xml',
+                    'Accept-Language: pt-BR,pt;q=0.9'
+                ], $headers)),
+                'timeout' => 20,
                 'ignore_errors' => true
             ],
             'ssl' => [
@@ -101,18 +68,79 @@ function pesquisarCPF($cpf) {
             ]
         ];
         
-        $context = stream_context_create($options);
-        
-        // Primeira requisição para obter o token CSRF
-        $response = getUrlContent($url, $context);
-        
-        // Debug: Verificar o conteúdo da resposta
-        if (isset($_POST['debug'])) {
-            file_put_contents('debug_get.html', $response);
+        if ($postData) {
+            $contextOptions['http']['content'] = $postData;
+            $contextOptions['http']['header'] .= "\r\nContent-Type: application/x-www-form-urlencoded";
         }
+        
+        $context = stream_context_create($contextOptions);
+        $response = @file_get_contents($url, false, $context);
+        
+        if ($response !== false) {
+            return $response;
+        }
+    }
+    
+    // Método 3: Tentativa com sockets (fallback final)
+    $parsedUrl = parse_url($url);
+    $host = $parsedUrl['host'];
+    $path = $parsedUrl['path'] ?? '/';
+    $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+    $port = $parsedUrl['port'] ?? ($parsedUrl['scheme'] === 'https' ? 443 : 80);
+    
+    $fp = @fsockopen(
+        $parsedUrl['scheme'] === 'https' ? 'ssl://' . $host : $host, 
+        $port, 
+        $errno, 
+        $errstr, 
+        20
+    );
+    
+    if ($fp) {
+        $out = ($postData ? "POST $path$query HTTP/1.1\r\n" : "GET $path$query HTTP/1.1\r\n") .
+               "Host: $host\r\n" .
+               implode("\r\n", array_merge([
+                   'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                   'Accept: text/html,application/xhtml+xml',
+                   'Accept-Language: pt-BR,pt;q=0.9',
+                   'Connection: Close'
+               ], $headers)) . "\r\n\r\n";
+        
+        if ($postData) {
+            $out .= $postData;
+        }
+        
+        fwrite($fp, $out);
+        $response = '';
+        
+        while (!feof($fp)) {
+            $response .= fgets($fp, 128);
+        }
+        
+        fclose($fp);
+        
+        // Extrai o corpo da resposta HTTP
+        $parts = explode("\r\n\r\n", $response);
+        if (count($parts) > 1) {
+            return $parts[1];
+        }
+    }
+    
+    throw new Exception('Não foi possível conectar ao servidor remoto. Métodos tentados: ' .
+                       (function_exists('curl_init') ? 'cURL, ' : '') .
+                       (ini_get('allow_url_fopen') ? 'file_get_contents, ' : '') .
+                       'sockets. Último erro: ' . ($error ?? $errstr ?? 'Desconhecido'));
+}
 
-        // Verifica bloqueio Cloudflare
-        if (strpos($response, 'Cloudflare') !== false || strpos($response, 'DDoS protection') !== false) {
+// Função para realizar a pesquisa
+function pesquisarCPF($cpf) {
+    $url = 'https://pesquisacpf.com.br/';
+    
+    try {
+        // Primeira requisição para obter o token CSRF
+        $response = getUrlContent($url);
+        
+        if (strpos($response, 'Cloudflare') !== false) {
             throw new Exception('O site está bloqueando o acesso (proteção Cloudflare)');
         }
 
@@ -123,7 +151,7 @@ function pesquisarCPF($cpf) {
         // Extrai o token CSRF
         $tokenNodes = $xpath->query('//input[@name="csrf_token"]/@value');
         if ($tokenNodes->length === 0) {
-            throw new Exception('Token CSRF não encontrado - estrutura do site pode ter mudado');
+            throw new Exception('Token CSRF não encontrado');
         }
         $token = $tokenNodes->item(0)->nodeValue;
 
@@ -134,22 +162,11 @@ function pesquisarCPF($cpf) {
             'acao' => 'pesquisar'
         ]);
 
-        // Configuração para o POST
-        $options['http']['method'] = 'POST';
-        $options['http']['header'] .= "Content-Type: application/x-www-form-urlencoded\r\n"
-                                   . "X-Requested-With: XMLHttpRequest\r\n"
-                                   . "Content-Length: " . strlen($postData) . "\r\n";
-        $options['http']['content'] = $postData;
-        
-        $context = stream_context_create($options);
-
-        // Executa a pesquisa
-        $resultado = getUrlContent($url, $context);
-        
-        // Debug: Verificar o conteúdo da resposta
-        if (isset($_POST['debug'])) {
-            file_put_contents('debug_post.html', $resultado);
-        }
+        // Segunda requisição com os dados
+        $resultado = getUrlContent($url, $postData, [
+            'X-Requested-With: XMLHttpRequest',
+            'Referer: ' . $url
+        ]);
 
         // Analisa o resultado
         @$dom->loadHTML($resultado);
@@ -158,7 +175,7 @@ function pesquisarCPF($cpf) {
         // Extrai os dados
         $resultadoDiv = $xpath->query('//div[contains(@class, "resultado")]');
         if ($resultadoDiv->length === 0) {
-            throw new Exception('Div de resultados não encontrada - verifique debug_post.html');
+            throw new Exception('Div de resultados não encontrada');
         }
 
         // Extrai nome completo
@@ -178,8 +195,7 @@ function pesquisarCPF($cpf) {
         return [
             'nome' => $nome,
             'nascimento' => $nascimento,
-            'status' => 'success',
-            'debug' => isset($_POST['debug']) ? ['get' => 'debug_get.html', 'post' => 'debug_post.html'] : null
+            'status' => 'success'
         ];
         
     } catch (Exception $e) {
@@ -192,7 +208,7 @@ function pesquisarCPF($cpf) {
     }
 }
 
-// Processa o formulário se enviado
+// Processa o formulário
 $resultado = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
     $cpf = limparCPF($_POST['cpf']);
@@ -207,6 +223,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
     }
 }
 ?>
+
+<!-- [O restante do HTML permanece igual] -->
 
 <!DOCTYPE html>
 <html lang="pt-BR">

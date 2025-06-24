@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Verifica extensões necessárias
+// Verifica extensão necessária
 if (!extension_loaded('dom')) {
     die('Erro: A extensão DOM não está habilitada no seu servidor!');
 }
@@ -10,60 +10,45 @@ if (!extension_loaded('dom')) {
 // Função para limpar e validar o CPF
 function limparCPF($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
-    return (strlen($cpf) === 11) ? $cpf : false;
+    return (strlen($cpf) === 11 ? $cpf : false;
 }
 
-// Função ultra-robusta para requisições HTTP com fallbacks
+// Função para obter conteúdo com múltiplos fallbacks
 function getUrlContent($url, $postData = null, $headers = []) {
-    // Tentativa com HTTP se HTTPS falhar
-    $originalUrl = $url;
-    $url = str_replace('https://', 'http://', $url);
-    
-    // Método 1: Tentativa com cURL (recomendado)
+    // Método 1: cURL
     if (function_exists('curl_init')) {
         $ch = curl_init();
-        
         $options = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_TIMEOUT => 20,
+            CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             CURLOPT_HTTPHEADER => array_merge([
                 'Accept: text/html,application/xhtml+xml',
-                'Accept-Language: pt-BR,pt;q=0.9'
-            ], $headers)
+                'Accept-Language: pt-BR,pt;q=0.9',
+                'Referer: https://pesquisacpf.com.br/'
+            ], $headers),
+            CURLOPT_COOKIEJAR => 'cookie.txt',
+            CURLOPT_COOKIEFILE => 'cookie.txt'
         ];
-        
-        if (strpos($url, 'https://') === 0) {
-            $options[CURLOPT_SSL_VERIFYPEER] = false;
-            $options[CURLOPT_SSL_VERIFYHOST] = false;
-        }
         
         if ($postData) {
             $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] = $postData;
-            $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/x-www-form-urlencoded';
         }
         
         curl_setopt_array($ch, $options);
-        
         $response = curl_exec($ch);
-        $error = curl_error($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        if ($response !== false && $httpCode === 200) {
+        if ($response !== false) {
             return $response;
-        }
-        
-        // Se falhou com HTTPS, tentar com HTTP
-        if (strpos($originalUrl, 'https://') === 0 && strpos($url, 'http://') === 0) {
-            return getUrlContent(str_replace('https://', 'http://', $originalUrl), $postData, $headers);
         }
     }
     
-    // Método 2: Tentativa com file_get_contents (se habilitado)
+    // Método 2: file_get_contents
     if (ini_get('allow_url_fopen')) {
         $contextOptions = [
             'http' => [
@@ -71,16 +56,15 @@ function getUrlContent($url, $postData = null, $headers = []) {
                 'header' => implode("\r\n", array_merge([
                     'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                     'Accept: text/html,application/xhtml+xml',
-                    'Accept-Language: pt-BR,pt;q=0.9'
+                    'Accept-Language: pt-BR,pt;q=0.9',
+                    'Referer: https://pesquisacpf.com.br/'
                 ], $headers)),
-                'timeout' => 20,
-                'ignore_errors' => true
+                'timeout' => 20
             ]
         ];
         
         if ($postData) {
             $contextOptions['http']['content'] = $postData;
-            $contextOptions['http']['header'] .= "\r\nContent-Type: application/x-www-form-urlencoded";
         }
         
         $context = stream_context_create($contextOptions);
@@ -91,154 +75,143 @@ function getUrlContent($url, $postData = null, $headers = []) {
         }
     }
     
-    // Método 3: Tentativa com sockets HTTP simples (sem SSL)
-    $parsedUrl = parse_url($url);
-    $host = $parsedUrl['host'];
-    $path = $parsedUrl['path'] ?? '/';
-    $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
-    $port = $parsedUrl['port'] ?? 80;
-    
-    $fp = @fsockopen($host, $port, $errno, $errstr, 20);
-    
-    if ($fp) {
-        $out = ($postData ? "POST $path$query HTTP/1.1\r\n" : "GET $path$query HTTP/1.1\r\n") .
-               "Host: $host\r\n" .
-               implode("\r\n", array_merge([
-                   'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                   'Accept: text/html,application/xhtml+xml',
-                   'Accept-Language: pt-BR,pt;q=0.9',
-                   'Connection: Close'
-               ], $headers)) . "\r\n\r\n";
-        
-        if ($postData) {
-            $out .= $postData;
-        }
-        
-        fwrite($fp, $out);
-        $response = '';
-        
-        while (!feof($fp)) {
-            $response .= fgets($fp, 128);
-        }
-        
-        fclose($fp);
-        
-        // Extrai o corpo da resposta HTTP
-        $parts = explode("\r\n\r\n", $response, 2);
-        if (count($parts) > 1) {
-            return $parts[1];
-        }
-    }
-    
-    throw new Exception('Não foi possível conectar ao servidor remoto. Métodos tentados: ' .
-                       (function_exists('curl_init') ? 'cURL, ' : '') .
-                       (ini_get('allow_url_fopen') ? 'file_get_contents, ' : '') .
-                       'sockets. Último erro: ' . ($error ?? $errstr ?? 'Desconhecido'));
+    throw new Exception('Falha ao carregar a URL');
 }
 
-// Função para realizar a pesquisa com tratamento melhorado
+// Função para pesquisar CPF com tratamento melhorado
 function pesquisarCPF($cpf) {
-    $urls = [
-        'https://pesquisacpf.com.br/',
-        'http://pesquisacpf.com.br/' // Fallback para HTTP
-    ];
-    
-    $lastError = null;
-    
-    foreach ($urls as $url) {
-        try {
-            // Primeira requisição para obter o token CSRF
-            $response = getUrlContent($url);
-            
-            // Salva para debug
-            if (isset($_POST['debug'])) {
-                file_put_contents('debug_get.html', $response);
-            }
+    try {
+        // Primeira requisição para obter o token CSRF
+        $url = 'https://pesquisacpf.com.br/';
+        $response = getUrlContent($url);
+        
+        // Salva para debug
+        if (isset($_POST['debug'])) {
+            file_put_contents('debug_get.html', $response);
+        }
 
-            if (strpos($response, 'Cloudflare') !== false) {
-                throw new Exception('O site está bloqueando o acesso (proteção Cloudflare)');
-            }
+        // Verifica se foi bloqueado pelo Cloudflare
+        if (strpos($response, 'Cloudflare') !== false || 
+            strpos($response, 'Checking your browser') !== false) {
+            throw new Exception('Acesso bloqueado pelo Cloudflare. Tente novamente mais tarde.');
+        }
 
-            $dom = new DOMDocument();
-            @$dom->loadHTML($response);
-            $xpath = new DOMXPath($dom);
-            
-            // Extrai o token CSRF
-            $tokenNodes = $xpath->query('//input[@name="csrf_token"]/@value');
-            if ($tokenNodes->length === 0) {
-                throw new Exception('Token CSRF não encontrado');
-            }
+        $dom = new DOMDocument();
+        @$dom->loadHTML($response);
+        $xpath = new DOMXPath($dom);
+        
+        // Tenta encontrar o token CSRF de várias formas
+        $token = null;
+        
+        // Tentativa 1: Procurando por input com name="csrf_token"
+        $tokenNodes = $xpath->query('//input[@name="csrf_token"]/@value');
+        if ($tokenNodes->length > 0) {
             $token = $tokenNodes->item(0)->nodeValue;
-
-            // Prepara os dados para o POST
-            $postData = http_build_query([
-                'cpf' => $cpf,
-                'csrf_token' => $token,
-                'acao' => 'pesquisar'
-            ]);
-
-            // Segunda requisição com os dados
-            $resultado = getUrlContent($url, $postData, [
-                'X-Requested-With: XMLHttpRequest',
-                'Referer: ' . $url
-            ]);
-            
-            // Salva para debug
-            if (isset($_POST['debug'])) {
-                file_put_contents('debug_post.html', $resultado);
+        }
+        
+        // Tentativa 2: Procurando em meta tags
+        if (!$token) {
+            $metaNodes = $xpath->query('//meta[@name="csrf-token"]/@content');
+            if ($metaNodes->length > 0) {
+                $token = $metaNodes->item(0)->nodeValue;
             }
-
-            // Analisa o resultado
-            @$dom->loadHTML($resultado);
-            $xpath = new DOMXPath($dom);
-            
-            // Extrai os dados
-            $resultadoDiv = $xpath->query('//div[contains(@class, "resultado")]');
-            if ($resultadoDiv->length === 0) {
-                throw new Exception('Div de resultados não encontrada');
+        }
+        
+        // Tentativa 3: Procurando em scripts
+        if (!$token) {
+            $scriptNodes = $xpath->query('//script[contains(text(), "csrf_token")]');
+            foreach ($scriptNodes as $script) {
+                if (preg_match('/csrf_token\s*:\s*["\']([^"\']+)["\']/', $script->nodeValue, $matches)) {
+                    $token = $matches[1];
+                    break;
+                }
             }
+        }
+        
+        if (!$token) {
+            throw new Exception('Token CSRF não encontrado na página. Estrutura do site pode ter mudado.');
+        }
 
-            // Extrai nome completo
-            $nome = 'Não encontrado';
+        // Segunda requisição com os dados
+        $postData = http_build_query([
+            'cpf' => $cpf,
+            'csrf_token' => $token,
+            'acao' => 'pesquisar'
+        ]);
+
+        $resultado = getUrlContent($url, $postData, [
+            'X-Requested-With: XMLHttpRequest',
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
+        
+        // Salva para debug
+        if (isset($_POST['debug'])) {
+            file_put_contents('debug_post.html', $resultado);
+        }
+
+        // Analisa o resultado
+        @$dom->loadHTML($resultado);
+        $xpath = new DOMXPath($dom);
+        
+        // Extrai os dados - várias tentativas de localização
+        $dados = ['nome' => 'Não encontrado', 'nascimento' => 'Não encontrado'];
+        
+        // Tentativa 1: Div com classe "resultado"
+        $resultadoDiv = $xpath->query('//div[contains(@class, "resultado")]');
+        if ($resultadoDiv->length > 0) {
+            // Nome
             $nomeNodes = $xpath->query('.//p[contains(., "Nome:")]', $resultadoDiv->item(0));
             if ($nomeNodes->length > 0) {
-                $nome = trim(str_replace(['Nome:', '⠀'], '', $nomeNodes->item(0)->nodeValue));
+                $dados['nome'] = trim(str_replace(['Nome:', '⠀'], '', $nomeNodes->item(0)->nodeValue));
             }
-
-            // Extrai data de nascimento
-            $nascimento = 'Não encontrado';
+            
+            // Nascimento
             $nascimentoNodes = $xpath->query('.//p[contains(., "Nascimento:")]', $resultadoDiv->item(0));
             if ($nascimentoNodes->length > 0) {
-                $nascimento = trim(str_replace(['Nascimento:', '⠀'], '', $nascimentoNodes->item(0)->nodeValue));
+                $dados['nascimento'] = trim(str_replace(['Nascimento:', '⠀'], '', $nascimentoNodes->item(0)->nodeValue));
             }
-
-            return [
-                'nome' => $nome,
-                'nascimento' => $nascimento,
-                'status' => 'success',
-                'debug' => isset($_POST['debug']) ? [
-                    'get' => 'debug_get.html',
-                    'post' => 'debug_post.html'
-                ] : null
-            ];
-            
-        } catch (Exception $e) {
-            $lastError = $e;
-            continue; // Tenta a próxima URL
         }
+        
+        // Tentativa 2: Tabela de resultados
+        if ($dados['nome'] === 'Não encontrado') {
+            $tableRows = $xpath->query('//table//tr');
+            foreach ($tableRows as $row) {
+                $cells = $xpath->query('.//td', $row);
+                if ($cells->length === 2) {
+                    $label = trim($cells->item(0)->nodeValue);
+                    $value = trim($cells->item(1)->nodeValue);
+                    
+                    if (stripos($label, 'Nome') !== false) {
+                        $dados['nome'] = $value;
+                    } elseif (stripos($label, 'Nascimento') !== false) {
+                        $dados['nascimento'] = $value;
+                    }
+                }
+            }
+        }
+
+        return [
+            'nome' => $dados['nome'],
+            'nascimento' => $dados['nascimento'],
+            'status' => 'success',
+            'debug' => isset($_POST['debug']) ? [
+                'get' => 'debug_get.html',
+                'post' => 'debug_post.html'
+            ] : null
+        ];
+        
+    } catch (Exception $e) {
+        return [
+            'nome' => '',
+            'nascimento' => '',
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'debug' => isset($_POST['debug']) ? [
+                'get' => file_exists('debug_get.html') ? 'debug_get.html' : null,
+                'post' => file_exists('debug_post.html') ? 'debug_post.html' : null
+            ] : null
+        ];
     }
-    
-    // Se todas as tentativas falharam
-    return [
-        'nome' => '',
-        'nascimento' => '',
-        'status' => 'error',
-        'message' => $lastError ? $lastError->getMessage() : 'Todas as tentativas de conexão falharam',
-        'debug' => isset($_POST['debug']) ? [
-            'get' => file_exists('debug_get.html') ? 'debug_get.html' : null,
-            'post' => file_exists('debug_post.html') ? 'debug_post.html' : null
-        ] : null
-    ];
 }
 
 // Processa o formulário

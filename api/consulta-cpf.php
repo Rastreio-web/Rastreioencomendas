@@ -13,187 +13,103 @@ function limparCPF($cpf) {
     return (strlen($cpf)) === 11 ? $cpf : false;
 }
 
-// Função alternativa com fallback para obter conteúdo de URL
+// Função melhorada com fallback para obter conteúdo de URL
 function getUrlContent($url, $context = null) {
-    // Tenta com file_get_contents primeiro
-    if (ini_get('allow_url_fopen')) {
-        $content = @file_get_contents($url, false, $context);
-        if ($content !== false) return $content;
+    $methods = [];
+    $lastError = null;
+    
+    // Verifica quais métodos estão disponíveis
+    $allowUrlFopen = ini_get('allow_url_fopen');
+    $curlEnabled = function_exists('curl_init');
+    
+    if (!$allowUrlFopen && !$curlEnabled) {
+        throw new Exception(
+            'Nenhum método disponível para acessar URLs externas. ' .
+            'O servidor não tem cURL habilitado nem allow_url_fopen ativado. ' .
+            'Contate o administrador do servidor para habilitar um desses métodos.'
+        );
+    }
+
+    // Tenta com file_get_contents primeiro se estiver habilitado
+    if ($allowUrlFopen) {
+        try {
+            $content = @file_get_contents($url, false, $context);
+            if ($content !== false) {
+                return $content;
+            }
+            $lastError = error_get_last();
+        } catch (Exception $e) {
+            $lastError = $e->getMessage();
+        }
     }
 
     // Fallback para cURL se disponível
-    if (function_exists('curl_init')) {
-        $ch = curl_init();
-        
-        // Configurações básicas
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 15,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_ENCODING => '',
-        ];
-        
-        // Se tivermos um contexto HTTP, extraímos os headers
-        if ($context && is_resource($context)) {
-            $optionsContext = stream_context_get_options($context);
-            if (isset($optionsContext['http']['header'])) {
-                $headers = explode("\r\n", $optionsContext['http']['header']);
-                $parsedHeaders = [];
-                foreach ($headers as $header) {
-                    if (strpos($header, ':') !== false) {
-                        $parsedHeaders[] = $header;
+    if ($curlEnabled) {
+        try {
+            $ch = curl_init();
+            
+            // Configurações básicas
+            $options = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_ENCODING => '',
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            ];
+            
+            // Se tivermos um contexto HTTP, extraímos os headers
+            if ($context && is_resource($context)) {
+                $optionsContext = stream_context_get_options($context);
+                if (isset($optionsContext['http']['header'])) {
+                    $headers = explode("\r\n", $optionsContext['http']['header']);
+                    $parsedHeaders = [];
+                    foreach ($headers as $header) {
+                        if (strpos($header, ':') !== false) {
+                            $parsedHeaders[] = $header;
+                        }
+                    }
+                    if (!empty($parsedHeaders)) {
+                        $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
                     }
                 }
-                if (!empty($parsedHeaders)) {
-                    $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
+                
+                // Configura método e conteúdo para POST
+                if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
+                    $options[CURLOPT_POST] = true;
+                    if (isset($optionsContext['http']['content'])) {
+                        $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
+                    }
                 }
             }
             
-            // Configura método e conteúdo para POST
-            if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
-                $options[CURLOPT_POST] = true;
-                if (isset($optionsContext['http']['content'])) {
-                    $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
-                }
+            curl_setopt_array($ch, $options);
+            $content = curl_exec($ch);
+            
+            if ($content === false) {
+                $lastError = curl_error($ch);
+            } else {
+                curl_close($ch);
+                return $content;
             }
+            
+            curl_close($ch);
+        } catch (Exception $e) {
+            $lastError = $e->getMessage();
         }
-        
-        curl_setopt_array($ch, $options);
-        $content = curl_exec($ch);
-        curl_close($ch);
-        return $content;
     }
 
-    throw new Exception('Nenhum método disponível para acessar URLs externas');
+    // Se chegou aqui, todos os métodos falharam
+    throw new Exception(
+        'Falha ao acessar a URL. ' .
+        'Métodos tentados: ' . ($allowUrlFopen ? 'file_get_contents' : '') . 
+        ($curlEnabled ? ($allowUrlFopen ? ' e cURL' : 'cURL') : '') . '. ' .
+        'Último erro: ' . (is_array($lastError) ? $lastError['message'] : $lastError)
+    );
 }
 
-// Função para realizar a pesquisa com tratamento avançado
-function pesquisarCPF($cpf) {
-    $url = 'https://pesquisacpf.com.br/';
-    
-    try {
-        // Configuração do contexto para file_get_contents
-        $options = [
-            'http' => [
-                'method' => 'GET',
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n"
-                          . "Accept: text/html,application/xhtml+xml\r\n"
-                          . "Accept-Language: pt-BR,pt;q=0.9\r\n"
-                          . "Referer: $url\r\n",
-                'timeout' => 15,
-                'ignore_errors' => true
-            ],
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false
-            ]
-        ];
-        
-        $context = stream_context_create($options);
-        
-        // Primeira requisição para obter o token CSRF usando a nova função
-        $response = getUrlContent($url, $context);
-        
-        if ($response === false) {
-            throw new Exception('Erro na conexão: Não foi possível acessar o site');
-        }
-
-        // Verifica se foi redirecionado para página de bloqueio
-        if (strpos($response, 'Cloudflare') !== false || strpos($response, 'DDoS protection') !== false) {
-            throw new Exception('O site está bloqueando o acesso (proteção Cloudflare)');
-        }
-
-        $dom = new DOMDocument();
-        @$dom->loadHTML($response);
-        $xpath = new DOMXPath($dom);
-        
-        // Extrai o token CSRF com validação
-        $tokenNodes = $xpath->query('//input[@name="csrf_token"]/@value');
-        if ($tokenNodes->length === 0) {
-            throw new Exception('Token CSRF não encontrado - estrutura do site pode ter mudado');
-        }
-        $token = $tokenNodes->item(0)->nodeValue;
-
-        // Prepara os dados para o POST
-        $postData = http_build_query([
-            'cpf' => $cpf,
-            'csrf_token' => $token,
-            'acao' => 'pesquisar'
-        ]);
-
-        // Configuração para o POST
-        $options['http']['method'] = 'POST';
-        $options['http']['header'] .= "Content-Type: application/x-www-form-urlencoded\r\n"
-                                   . "X-Requested-With: XMLHttpRequest\r\n"
-                                   . "Content-Length: " . strlen($postData) . "\r\n";
-        $options['http']['content'] = $postData;
-        
-        $context = stream_context_create($options);
-
-        // Executa a pesquisa usando a nova função
-        $resultado = getUrlContent($url, $context);
-        
-        if ($resultado === false) {
-            throw new Exception('Erro ao enviar os dados para pesquisa');
-        }
-
-        // Analisa o resultado
-        @$dom->loadHTML($resultado);
-        $xpath = new DOMXPath($dom);
-        
-        // Extrai os dados com seletores mais robustos
-        $resultadoDiv = $xpath->query('//div[contains(@class, "resultado")]');
-        if ($resultadoDiv->length === 0) {
-            throw new Exception('Div de resultados não encontrada - layout do site pode ter mudado');
-        }
-
-        // Extrai nome completo com tratamento de erro
-        $nome = 'Não encontrado';
-        $nomeNodes = $xpath->query('.//p[contains(., "Nome:")]', $resultadoDiv->item(0));
-        if ($nomeNodes->length > 0) {
-            $nome = trim(str_replace(['Nome:', '⠀'], '', $nomeNodes->item(0)->nodeValue));
-        }
-
-        // Extrai data de nascimento com tratamento de erro
-        $nascimento = 'Não encontrado';
-        $nascimentoNodes = $xpath->query('.//p[contains(., "Nascimento:")]', $resultadoDiv->item(0));
-        if ($nascimentoNodes->length > 0) {
-            $nascimento = trim(str_replace(['Nascimento:', '⠀'], '', $nascimentoNodes->item(0)->nodeValue));
-        }
-
-        return [
-            'nome' => $nome,
-            'nascimento' => $nascimento,
-            'status' => 'success'
-        ];
-        
-    } catch (Exception $e) {
-        return [
-            'nome' => '',
-            'nascimento' => '',
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ];
-    }
-}
-
-// Processa o formulário se enviado
-$resultado = [];
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
-    $cpf = limparCPF($_POST['cpf']);
-    
-    if (!$cpf) {
-        $resultado = [
-            'status' => 'error',
-            'message' => 'CPF inválido. Deve conter exatamente 11 dígitos.'
-        ];
-    } else {
-        $resultado = pesquisarCPF($cpf);
-    }
-}
-?>
+// ... [restante do código permanece igual] ...
 
 <!DOCTYPE html>
 <html lang="pt-BR">

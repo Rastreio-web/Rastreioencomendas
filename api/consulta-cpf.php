@@ -20,7 +20,7 @@ $cpf = preg_replace('/[^0-9]/', '', $cpfInput);
 logDebug("CPF recebido (original): $cpfInput");
 logDebug("CPF limpo: $cpf");
 
-if (strlen($cpf) !== 11 || !is_numeric($cpf)) {
+if (strlen($cpf) !== 11 || !ctype_digit($cpf)) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
@@ -45,7 +45,7 @@ function fetchData($url, $data) {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYPEER => true, // Alterado para true por segurança
             CURLOPT_HTTPHEADER => [
                 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
                 'Accept: text/html,application/xhtml+xml',
@@ -80,15 +80,25 @@ function fetchData($url, $data) {
                 'Content-type: application/x-www-form-urlencoded',
             ]),
             'content' => http_build_query($data),
-            'timeout' => 30
+            'timeout' => 30,
+            'ignore_errors' => true
+        ],
+        'ssl' => [
+            'verify_peer' => true,
+            'verify_peer_name' => true
         ]
     ];
     
     $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
+    $response = @file_get_contents($url, false, $context);
+    
+    if ($response === false) {
+        $error = error_get_last();
+        logDebug("Erro file_get_contents: " . $error['message']);
+    }
     
     return [
-        'html' => $response,
+        'html' => $response !== false ? $response : '',
         'http_code' => $response !== false ? 200 : 500,
         'method' => 'file_get_contents'
     ];
@@ -106,8 +116,8 @@ try {
     logDebug("Iniciando requisição para: $url");
     $result = fetchData($url, $postData);
 
-    if (empty($result['html']) {
-        throw new Exception("Resposta vazia. HTTP Code: " . $result['http_code']);
+    if (empty($result['html'])) {
+        throw new Exception("Resposta vazia. HTTP Code: " . ($result['http_code'] ?? 'N/A'));
     }
 
     logDebug("Resposta recebida (tamanho): " . strlen($result['html']));
@@ -119,8 +129,11 @@ try {
     
     if (!$dom->loadHTML($result['html'])) {
         $errors = libxml_get_errors();
+        $errorMessages = array_map(function($error) {
+            return trim($error->message);
+        }, $errors);
         libxml_clear_errors();
-        throw new Exception("Falha ao parsear HTML: " . json_encode($errors));
+        throw new Exception("Falha ao parsear HTML: " . implode("; ", $errorMessages));
     }
 
     $xpath = new DOMXPath($dom);
@@ -148,7 +161,7 @@ try {
         ]
     ];
 
-    echo json_encode($response);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 } catch (Exception $e) {
     logDebug("ERRO: " . $e->getMessage());
@@ -157,5 +170,5 @@ try {
         'success' => false,
         'message' => 'Erro na consulta: ' . $e->getMessage(),
         'error_code' => $e->getCode()
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }

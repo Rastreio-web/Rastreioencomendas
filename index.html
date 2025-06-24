@@ -587,83 +587,76 @@
 
      /* ESTILO FINAL DO CHAT - AJUSTE DE CORES */
     #chat-container {
-      display: none;
-      max-width: 600px;
-      margin: 20px auto;
-      background-color: #ffffff; /* JANELA PRINCIPAL BRANCA */
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-      padding-bottom: 70px;
-      box-shadow: none;
-      border: 1px solid #ffffff; /* BORDA BRANCA */
-    }
+    display: none;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 70px;
+    box-shadow: none;
+    border: 1px solid #ffffff;
+    text-align: left; /* Adicionado para alinhar todo o conteúdo à esquerda */
+  }
 
-    .chat-header {
-      background-color: #003157;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 16px;
-      border-bottom: 1px solid #ffffff; /* LINHA DIVISÓRIA BRANCA */
-    }
+  .chat-messages {
+    padding: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    background-color: #ffffff;
+    text-align: left; /* Garante alinhamento à esquerda */
+  }
 
-    .chat-messages {
-      padding: 15px;
-      max-height: 500px;
-      overflow-y: auto;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-      background-color: #ffffff; /* FUNDO BRANCO (ÁREA ENTRE MENSAGENS) */
-    }
-    .chat-messages::-webkit-scrollbar {
-      display: none;
-    }
+  .message-box {
+    background-color: #f8fcfc;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    position: relative;
+    max-width: 90%;
+    word-wrap: break-word;
+    color: #000000;
+    margin-left: 10px; /* Aumentado para mais espaço à esquerda */
+    margin-right: auto;
+    border: 1px solid #e6f7ff;
+    text-align: left; /* Alinhamento à esquerda garantido */
+  }
 
+  .bot-message {
+    background-color: #f8fcfc;
+    border-top-left-radius: 0;
+    margin-left: 10px; /* Alinhamento consistente com outras mensagens */
+    text-align: left; /* Texto alinhado à esquerda */
+  }
 
-    .message-box {
-      background-color: #f8fcfc; /* COR SOLICITADA */
-      border-radius: 8px;
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      position: relative;
-      max-width: 90%;
-      word-wrap: break-word;
-      color: #000000;
-      margin-left: 10px;
-      margin-right: auto;
-      border: 1px solid #e6f7ff; /* BORDA SUTIL AZUL CLARO */
-    }
+  .system-message {
+    background-color: #f8fcfc;
+    margin: 10px 10px 10px auto; /* Alinhado à esquerda */
+    text-align: left; /* Texto alinhado à esquerda */
+    max-width: 90%;
+    font-size: 12px;
+    padding: 8px 12px;
+    color: #000000;
+  }
 
-    .bot-message {
-      background-color: #f8fcfc;
-      border-top-left-radius: 0;
-    }
+  .message-sender {
+    font-weight: bold;
+    color: #000000 !important;
+    margin-bottom: 5px;
+    font-size: 14px;
+    text-align: left; /* Nome alinhado à esquerda */
+  }
 
-    .system-message {
-      background-color: #f8fcfc;
-      margin: 10px auto;
-      text-align: center;
-      max-width: 90%;
-      font-size: 12px;
-      padding: 8px 12px;
-      color: #000000;
-    }
-
-    .message-sender {
-      font-weight: bold;
-      color: #000000 !important;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-
-    .message-text {
-      margin: 0;
-      line-height: 1.4;
-      font-size: 14px;
-      color: #000000;
-    }
+  .message-text {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #000000;
+    text-align: left; /* Texto alinhado à esquerda */
+  }
    
 
     .message-image {

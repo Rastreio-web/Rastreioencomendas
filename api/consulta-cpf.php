@@ -1,130 +1,87 @@
 <?php
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *");
-error_reporting(0);
-
-// Configurações
-$logFile = __DIR__ . '/cpf_api.log';
-$cpf = preg_replace('/[^0-9]/', '', $_GET['cpf'] ?? '');
-
-function logConsulta($message) {
-    global $logFile;
-    file_put_contents($logFile, date('[Y-m-d H:i:s] ') . $message . "\n", FILE_APPEND);
-}
-
-function validarCPF($cpf) {
-    if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) {
-        return false;
+// Verifica se o formulário foi submetido
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
+    // Remove caracteres não numéricos do CPF
+    $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf']);
+    
+    // Validação básica do CPF
+    if (strlen($cpf) !== 11) {
+        die('CPF inválido. Deve conter 11 dígitos.');
     }
     
-    for ($t = 9; $t < 11; $t++) {
-        for ($d = 0, $c = 0; $c < $t; $c++) {
-            $d += $cpf[$c] * (($t + 1) - $c);
-        }
-        $d = ((10 * $d) % 11) % 10;
-        if ($cpf[$c] != $d) {
-            return false;
-        }
-    }
-    return true;
-}
-
-try {
-    // Validações
-    if (empty($cpf)) {
-        throw new Exception("CPF não fornecido", 400);
-    }
+    // URL do site de consulta
+    $url = 'https://pesquisacpf.com.br/';
     
-    if (!validarCPF($cpf)) {
-        throw new Exception("CPF inválido", 400);
-    }
-
-    // Inicializa cURL
+    // Inicializa o cURL
     $ch = curl_init();
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 10,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_USERAGENT => 'Mozilla/5.0',
-        CURLOPT_FOLLOWLOCATION => true
-    ]);
-
-    // Tentativa 1: ReceitaWS
-    $url1 = "https://www.receitaws.com.br/v1/cpf/$cpf";
-    curl_setopt($ch, CURLOPT_URL, $url1);
+    
+    // Configura as opções do cURL
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    
+    // Configuração para simular um navegador (alguns sites bloqueiam solicitações sem User-Agent)
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    
+    // Executa a requisição para obter cookies e tokens necessários
     $response = curl_exec($ch);
     
-    if ($response !== false) {
-        $data = json_decode($response, true);
-        if (isset($data['nome'])) {
-            echo json_encode([
-                'success' => true,
-                'data' => [
-                    'cpf' => $cpf,
-                    'nome' => $data['nome'],
-                    'nascimento' => $data['nascimento'] ?? null,
-                    'situacao' => $data['situacao'] ?? null
-                ],
-                'source' => 'receitaws'
-            ]);
-            exit;
-        }
+    // Verifica se a requisição foi bem-sucedida
+    if ($response === false) {
+        die('Erro ao acessar o site de consulta: ' . curl_error($ch));
     }
-
-    // Tentativa 2: MinhaReceita
-    $url2 = "https://minhareceita.org/$cpf";
-    curl_setopt($ch, CURLOPT_URL, $url2);
-    $response = curl_exec($ch);
     
-    if ($response !== false) {
-        $data = json_decode($response, true);
-        if (isset($data['nome'])) {
-            echo json_encode([
-                'success' => true,
-                'data' => [
-                    'cpf' => $cpf,
-                    'nome' => $data['nome'],
-                    'nascimento' => $data['data_nascimento'] ?? null,
-                    'situacao' => $data['situacao_cadastral'] ?? null
-                ],
-                'source' => 'minhareceita'
-            ]);
-            exit;
-        }
-    }
-
-    // Tentativa 3: Dados de teste se estiver em localhost
-    if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1') {
-        echo json_encode([
-            'success' => true,
-            'data' => [
-                'cpf' => $cpf,
-                'nome' => "Fulano de Tal (Dados de Teste)",
-                'nascimento' => "01/01/1980",
-                'situacao' => "Regular"
-            ],
-            'source' => 'localhost',
-            'warning' => 'Dados simulados para ambiente de desenvolvimento'
-        ]);
-        exit;
-    }
-
-    throw new Exception("Nenhuma fonte de dados disponível no momento", 503);
-
-} catch (Exception $e) {
-    $code = $e->getCode() >= 400 ? $e->getCode() : 500;
-    http_response_code($code);
-    
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage(),
+    // Prepara os dados para o POST (ajuste conforme necessário)
+    $postData = [
         'cpf' => $cpf,
-        'error_code' => $code
-    ]);
+        // Adicione outros campos necessários que você identificar no formulário do site
+    ];
     
-    logConsulta("ERRO: " . $e->getMessage() . " | CPF: $cpf | Código: $code");
-} finally {
-    if (isset($ch)) {
-        curl_close($ch);
+    // Configura a requisição POST
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+    
+    // Executa a consulta
+    $result = curl_exec($ch);
+    
+    // Fecha a conexão cURL
+    curl_close($ch);
+    
+    // Verifica se obteve resposta
+    if ($result === false) {
+        die('Erro ao consultar o CPF');
     }
+    
+    // Processa o resultado (usando expressões regulares para extrair os dados)
+    $nome = '';
+    $dataNascimento = '';
+    
+    // Padrão para extrair o nome (ajuste conforme o HTML retornado)
+    if (preg_match('/<span class="nome">(.*?)<\/span>/', $result, $matches)) {
+        $nome = htmlspecialchars(trim($matches[1]));
+    }
+    
+    // Padrão para extrair a data de nascimento (ajuste conforme o HTML retornado)
+    if (preg_match('/<span class="nascimento">(.*?)<\/span>/', $result, $matches)) {
+        $dataNascimento = htmlspecialchars(trim($matches[1]));
+    }
+    
+    // Exibe os resultados
+    echo '<h2>Resultado da Consulta</h2>';
+    echo '<p><strong>CPF:</strong> ' . htmlspecialchars($cpf) . '</p>';
+    
+    if (!empty($nome)) {
+        echo '<p><strong>Nome:</strong> ' . $nome . '</p>';
+    } else {
+        echo '<p>Nome não encontrado</p>';
+    }
+    
+    if (!empty($dataNascimento)) {
+        echo '<p><strong>Data de Nascimento:</strong> ' . $dataNascimento . '</p>';
+    } else {
+        echo '<p>Data de nascimento não encontrada</p>';
+    }
+    
+    exit;
 }

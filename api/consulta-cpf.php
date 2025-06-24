@@ -10,7 +10,7 @@ if (!extension_loaded('dom')) {
 // Função para limpar e validar o CPF
 function limparCPF($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
-    return (strlen($cpf)) === 11 ? $cpf : false;
+    return (strlen($cpf) === 11 ? $cpf : false;
 }
 
 // Função para obter conteúdo com múltiplos fallbacks
@@ -22,16 +22,17 @@ function getUrlContent($url, $postData = null, $headers = []) {
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 20,
+            CURLOPT_TIMEOUT => 30,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             CURLOPT_HTTPHEADER => array_merge([
-                'Accept: text/html,application/xhtml+xml',
-                'Accept-Language: pt-BR,pt;q=0.9',
+                'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
                 'Referer: https://pesquisacpf.com.br/'
             ], $headers),
             CURLOPT_COOKIEJAR => 'cookie.txt',
-            CURLOPT_COOKIEFILE => 'cookie.txt'
+            CURLOPT_COOKIEFILE => 'cookie.txt',
+            CURLOPT_ENCODING => 'gzip, deflate, br'
         ];
         
         if ($postData) {
@@ -41,9 +42,10 @@ function getUrlContent($url, $postData = null, $headers = []) {
         
         curl_setopt_array($ch, $options);
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        if ($response !== false) {
+        if ($response !== false && $httpCode === 200) {
             return $response;
         }
     }
@@ -55,11 +57,11 @@ function getUrlContent($url, $postData = null, $headers = []) {
                 'method' => $postData ? 'POST' : 'GET',
                 'header' => implode("\r\n", array_merge([
                     'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Accept: text/html,application/xhtml+xml',
-                    'Accept-Language: pt-BR,pt;q=0.9',
+                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
                     'Referer: https://pesquisacpf.com.br/'
                 ], $headers)),
-                'timeout' => 20
+                'timeout' => 30
             ]
         ];
         
@@ -75,7 +77,7 @@ function getUrlContent($url, $postData = null, $headers = []) {
         }
     }
     
-    throw new Exception('Falha ao carregar a URL');
+    throw new Exception('Falha ao carregar a URL. Verifique sua conexão ou tente novamente mais tarde.');
 }
 
 // Função para pesquisar CPF com tratamento melhorado
@@ -83,6 +85,10 @@ function pesquisarCPF($cpf) {
     try {
         // Primeira requisição para obter o token CSRF
         $url = 'https://pesquisacpf.com.br/';
+        
+        // Adiciona delay aleatório para evitar bloqueio
+        sleep(rand(1, 3));
+        
         $response = getUrlContent($url);
         
         // Salva para debug
@@ -92,8 +98,10 @@ function pesquisarCPF($cpf) {
 
         // Verifica se foi bloqueado pelo Cloudflare
         if (strpos($response, 'Cloudflare') !== false || 
-            strpos($response, 'Checking your browser') !== false) {
-            throw new Exception('Acesso bloqueado pelo Cloudflare. Tente novamente mais tarde.');
+            strpos($response, 'Checking your browser') !== false ||
+            strpos($response, 'jschl_vc') !== false ||
+            strpos($response, 'DDoS protection by Cloudflare') !== false) {
+            throw new Exception('Acesso bloqueado pelo Cloudflare. Tente novamente mais tarde ou use uma conexão diferente.');
         }
 
         $dom = new DOMDocument();
@@ -139,9 +147,13 @@ function pesquisarCPF($cpf) {
             'acao' => 'pesquisar'
         ]);
 
+        // Adiciona delay antes da segunda requisição
+        sleep(rand(1, 2));
+        
         $resultado = getUrlContent($url, $postData, [
             'X-Requested-With: XMLHttpRequest',
-            'Content-Type: application/x-www-form-urlencoded'
+            'Content-Type: application/x-www-form-urlencoded',
+            'Origin: https://pesquisacpf.com.br'
         ]);
         
         // Salva para debug

@@ -14,47 +14,83 @@ function logDebug($message) {
 }
 
 // 1. Validação do CPF
-$cpf = preg_replace('/[^0-9]/', $_GET['cpf'] ?? '');
-logDebug("CPF recebido: $cpf");
+$cpfInput = $_GET['cpf'] ?? '';
+$cpf = preg_replace('/[^0-9]/', '', $cpfInput);
 
-if (strlen($cpf) !== 11) {
-    echo json_encode(['success' => false, 'message' => 'CPF inválido']);
+logDebug("CPF recebido (original): $cpfInput");
+logDebug("CPF limpo: $cpf");
+
+if (strlen($cpf) !== 11 || !is_numeric($cpf)) {
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'message' => 'CPF inválido. Deve conter exatamente 11 dígitos numéricos.',
+        'received' => $cpfInput,
+        'cleaned' => $cpf
+    ]);
     exit;
 }
 
-// 2. Configuração da requisição CURL (mais confiável que file_get_contents)
-function fetchWithCurl($url, $data) {
-    $ch = curl_init();
+// 2. Função de requisição com fallback
+function fetchData($url, $data) {
+    // Primeiro tenta com cURL
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => [
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+                'Accept: text/html,application/xhtml+xml',
+                'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8',
+                'Content-Type: application/x-www-form-urlencoded',
+                'X-Requested-With: XMLHttpRequest'
+            ],
+            CURLOPT_ENCODING => 'gzip, deflate',
+            CURLOPT_COOKIEFILE => '',
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if (!$error && $httpCode === 200) {
+            return [
+                'html' => $response,
+                'http_code' => $httpCode,
+                'method' => 'curl'
+            ];
+        }
+    }
+
+    // Fallback para file_get_contents se cURL falhar
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => implode("\r\n", [
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+                'Content-type: application/x-www-form-urlencoded',
+            ]),
+            'content' => http_build_query($data),
+            'timeout' => 30
+        ]
+    ];
     
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => http_build_query($data),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_MAXREDIRS => 5,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_HTTPHEADER => [
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-            'Accept: text/html,application/xhtml+xml',
-            'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8',
-            'Content-Type: application/x-www-form-urlencoded',
-            'X-Requested-With: XMLHttpRequest'
-        ],
-        CURLOPT_ENCODING => 'gzip, deflate',
-        CURLOPT_COOKIEFILE => '', // Ativa cookie handling
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
-
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+    
     return [
         'html' => $response,
-        'http_code' => $httpCode,
-        'error' => $error
+        'http_code' => $response !== false ? 200 : 500,
+        'method' => 'file_get_contents'
     ];
 }
 
@@ -67,68 +103,59 @@ try {
         'token' => bin2hex(random_bytes(8))
     ];
 
-    logDebug("Iniciando requisição CURL para: $url");
-    $result = fetchWithCurl($url, $postData);
+    logDebug("Iniciando requisição para: $url");
+    $result = fetchData($url, $postData);
 
-    if ($result['error']) {
-        throw new Exception("Erro CURL: " . $result['error']);
-    }
-
-    if ($result['http_code'] !== 200) {
-        throw new Exception("HTTP Code: " . $result['http_code']);
+    if (empty($result['html']) {
+        throw new Exception("Resposta vazia. HTTP Code: " . $result['http_code']);
     }
 
     logDebug("Resposta recebida (tamanho): " . strlen($result['html']));
+    logDebug("Método utilizado: " . $result['method']);
 
-    // 4. Análise do HTML (com fallback)
+    // 4. Análise do HTML
     $dom = new DOMDocument();
     libxml_use_internal_errors(true);
     
     if (!$dom->loadHTML($result['html'])) {
-        throw new Exception("Falha ao parsear HTML");
+        $errors = libxml_get_errors();
+        libxml_clear_errors();
+        throw new Exception("Falha ao parsear HTML: " . json_encode($errors));
     }
 
     $xpath = new DOMXPath($dom);
     
-    // 5. Extração de dados com seletores alternativos
-    $nome = extractData($xpath, [
-        "//p[contains(@class, 'font-mono')]",
-        "//div[contains(@class, 'user-name')]",
-        "//span[@id='nome-completo']"
-    ]);
+    // 5. Extração de dados com seletores mais específicos
+    $nome = $xpath->query("//div[@class='user-info']/h2")->item(0)->nodeValue ?? null;
+    $nascimento = $xpath->query("//span[@class='birth-date']")->item(0)->nodeValue ?? null;
 
-    $nascimento = extractData($xpath, [
-        "//p[contains(@class, 'birth-date')]",
-        "//span[@id='data-nascimento']"
-    ]);
+    // Limpeza dos dados
+    $nome = $nome ? trim(preg_replace('/\s+/', ' ', $nome)) : null;
+    $nascimento = $nascimento ? trim($nascimento) : null;
 
     // 6. Retorno dos resultados
-    echo json_encode([
+    $response = [
         'success' => true,
-        'nome' => $nome ?: 'Não encontrado',
-        'nascimento' => $nascimento ?: 'Não encontrado',
+        'data' => [
+            'cpf' => $cpf,
+            'nome' => $nome ?: 'Não encontrado',
+            'nascimento' => $nascimento ?: 'Não encontrado'
+        ],
         'debug' => [
             'html_size' => strlen($result['html']),
-            'http_code' => $result['http_code']
+            'http_code' => $result['http_code'],
+            'method' => $result['method']
         ]
-    ]);
+    ];
+
+    echo json_encode($response);
 
 } catch (Exception $e) {
     logDebug("ERRO: " . $e->getMessage());
+    http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => $e->getMessage(),
+        'message' => 'Erro na consulta: ' . $e->getMessage(),
         'error_code' => $e->getCode()
     ]);
-}
-
-// Função auxiliar para extração de dados
-function extractData($xpath, $selectors) {
-    foreach ($selectors as $selector) {
-        $nodes = $xpath->query($selector);
-        if ($nodes && $nodes->length > 0) {
-            return trim(preg_replace('/[\/\*]+/', '', $nodes->item(0)->nodeValue));
-        }
-    }
-    return null;
 }

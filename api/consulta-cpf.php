@@ -13,6 +13,62 @@ function limparCPF($cpf) {
     return (strlen($cpf)) === 11 ? $cpf : false;
 }
 
+// Função alternativa com fallback para obter conteúdo de URL
+function getUrlContent($url, $context = null) {
+    // Tenta com file_get_contents primeiro
+    if (ini_get('allow_url_fopen')) {
+        $content = @file_get_contents($url, false, $context);
+        if ($content !== false) return $content;
+    }
+
+    // Fallback para cURL se disponível
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        
+        // Configurações básicas
+        $options = [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_ENCODING => '',
+        ];
+        
+        // Se tivermos um contexto HTTP, extraímos os headers
+        if ($context && is_resource($context)) {
+            $optionsContext = stream_context_get_options($context);
+            if (isset($optionsContext['http']['header'])) {
+                $headers = explode("\r\n", $optionsContext['http']['header']);
+                $parsedHeaders = [];
+                foreach ($headers as $header) {
+                    if (strpos($header, ':') !== false) {
+                        $parsedHeaders[] = $header;
+                    }
+                }
+                if (!empty($parsedHeaders)) {
+                    $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
+                }
+            }
+            
+            // Configura método e conteúdo para POST
+            if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
+                $options[CURLOPT_POST] = true;
+                if (isset($optionsContext['http']['content'])) {
+                    $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
+                }
+            }
+        }
+        
+        curl_setopt_array($ch, $options);
+        $content = curl_exec($ch);
+        curl_close($ch);
+        return $content;
+    }
+
+    throw new Exception('Nenhum método disponível para acessar URLs externas');
+}
+
 // Função para realizar a pesquisa com tratamento avançado
 function pesquisarCPF($cpf) {
     $url = 'https://pesquisacpf.com.br/';
@@ -37,12 +93,11 @@ function pesquisarCPF($cpf) {
         
         $context = stream_context_create($options);
         
-        // Primeira requisição para obter o token CSRF
-        $response = @file_get_contents($url, false, $context);
+        // Primeira requisição para obter o token CSRF usando a nova função
+        $response = getUrlContent($url, $context);
         
         if ($response === false) {
-            $error = error_get_last();
-            throw new Exception('Erro na conexão: ' . $error['message']);
+            throw new Exception('Erro na conexão: Não foi possível acessar o site');
         }
 
         // Verifica se foi redirecionado para página de bloqueio
@@ -77,12 +132,11 @@ function pesquisarCPF($cpf) {
         
         $context = stream_context_create($options);
 
-        // Executa a pesquisa
-        $resultado = @file_get_contents($url, false, $context);
+        // Executa a pesquisa usando a nova função
+        $resultado = getUrlContent($url, $context);
         
         if ($resultado === false) {
-            $error = error_get_last();
-            throw new Exception('Erro ao enviar os dados para pesquisa: ' . $error['message']);
+            throw new Exception('Erro ao enviar os dados para pesquisa');
         }
 
         // Analisa o resultado

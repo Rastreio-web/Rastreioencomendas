@@ -1,20 +1,18 @@
 <?php
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
-error_reporting(0); // Desativa erros para o usuário final
+error_reporting(0);
 
 // Configurações
 $logFile = __DIR__ . '/cpf_api.log';
-$cpf = $_GET['cpf'] ?? '';
+$cpf = preg_replace('/[^0-9]/', '', $_GET['cpf'] ?? '');
 
 function logConsulta($message) {
     global $logFile;
     file_put_contents($logFile, date('[Y-m-d H:i:s] ') . $message . "\n", FILE_APPEND);
 }
 
-// Validação do CPF
 function validarCPF($cpf) {
-    $cpf = preg_replace('/[^0-9]/', '', $cpf);
     if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) {
         return false;
     }
@@ -32,39 +30,36 @@ function validarCPF($cpf) {
 }
 
 try {
-    // Validação básica
+    // Validações
     if (empty($cpf)) {
         throw new Exception("CPF não fornecido");
     }
     
     if (!validarCPF($cpf)) {
-        throw new Exception("CPF inválido - formato incorreto ou dígitos verificadores inválidos");
+        throw new Exception("CPF inválido");
     }
 
-    // Tenta primeiro a ReceitaWS
-    $url = "https://www.receitaws.com.br/v1/cpf/" . $cpf;
-    $ch = curl_init();
+    // Primeira tentativa: ReceitaWS
+    $url1 = "https://www.receitaws.com.br/v1/cpf/$cpf";
+    $ch = curl_init($url1);
     curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 15,
+        CURLOPT_TIMEOUT => 10,
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        CURLOPT_USERAGENT => 'Mozilla/5.0'
     ]);
     
     $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
-    if ($httpCode == 200) {
+    if ($response !== false) {
         $data = json_decode($response, true);
-        
         if (isset($data['nome'])) {
             echo json_encode([
                 'success' => true,
                 'data' => [
                     'cpf' => $cpf,
                     'nome' => $data['nome'],
-                    'nascimento' => $data['nascimento'] ?? 'Não informado'
+                    'nascimento' => $data['nascimento'] ?? null
                 ],
                 'source' => 'receitaws'
             ]);
@@ -72,22 +67,20 @@ try {
         }
     }
 
-    // Fallback para Minha Receita (serviço alternativo)
-    $url = "https://minhareceita.org/" . $cpf;
-    curl_setopt($ch, CURLOPT_URL, $url);
+    // Segunda tentativa: MinhaReceita
+    $url2 = "https://minhareceita.org/$cpf";
+    curl_setopt($ch, CURLOPT_URL, $url2);
     $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
-    if ($httpCode == 200) {
+    if ($response !== false) {
         $data = json_decode($response, true);
-        
         if (isset($data['nome'])) {
             echo json_encode([
                 'success' => true,
                 'data' => [
                     'cpf' => $cpf,
                     'nome' => $data['nome'],
-                    'nascimento' => $data['data_nascimento'] ?? 'Não informado'
+                    'nascimento' => $data['data_nascimento'] ?? null
                 ],
                 'source' => 'minhareceita'
             ]);
@@ -95,12 +88,10 @@ try {
         }
     }
 
-    throw new Exception("Não foi possível obter dados para este CPF");
+    throw new Exception("Nenhum serviço retornou dados válidos");
 
 } catch (Exception $e) {
-    logConsulta("ERRO: " . $e->getMessage() . " | CPF: " . $cpf);
-    
-    http_response_code(500);
+    http_response_code(400);
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage(),

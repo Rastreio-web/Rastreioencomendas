@@ -719,10 +719,11 @@
     .icon {
       margin-right: 5px;
     }
+    
+    .chat-open footer {
+      display: none !important;
+    }
 
-     #chat-container:has(~ footer) + footer {
-    display: none;
-  }
   </style>
 </head>
 
@@ -1300,10 +1301,13 @@
       document.getElementById("resultado").style.display = "block";
     });
     
-    // Script para o botão "Efetuar Pagamento"
+    // Script para o botão "Efetuar Pagamento" - MODIFICADO
     document.getElementById("btn-pagar").addEventListener("click", function() {
       document.getElementById("pagamento").style.display = "none";
       document.getElementById("chat-container").style.display = "block";
+      
+      // Adiciona classe para esconder o footer
+      document.body.classList.add('chat-open');
       
       // Preenche os dados no chat
       const nome = document.getElementById("res-nome").textContent;
@@ -1323,6 +1327,17 @@
       const yyyy = amanha.getFullYear();
       document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
     });
+
+    // Adicione este novo evento para quando sair do chat (se necessário)
+    document.getElementById("voltar-rastreio").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("pagamento").style.display = "none";
+      document.getElementById("resultado").style.display = "block";
+      document.getElementById("chat-container").style.display = "none";
+      
+      // Remove classe para mostrar o footer novamente
+      document.body.classList.remove('chat-open');
+    })
 
     // Lógica do chat modificada
 document.getElementById('btn-sim').addEventListener('click', function() {

@@ -33,12 +33,12 @@ function validarCPF($cpf) {
 
 try {
     // Validação básica
-    if (empty($cpf) {
+    if (empty($cpf)) {
         throw new Exception("CPF não fornecido");
     }
     
     if (!validarCPF($cpf)) {
-        throw new Exception("CPF inválido");
+        throw new Exception("CPF inválido - formato incorreto ou dígitos verificadores inválidos");
     }
 
     // Tenta primeiro a ReceitaWS

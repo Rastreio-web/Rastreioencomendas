@@ -31,16 +31,71 @@ if (strlen($cpf) !== 11 || !ctype_digit($cpf)) {
     exit;
 }
 
-// 2. Função de requisição melhorada
+// 2. Função de requisição com múltiplas estratégias
 function fetchData($url, $data) {
+    $userAgents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
+    ];
+
+    // Tentativa com cURL (versão moderna)
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        
+        $headers = [
+            'Content-type: application/x-www-form-urlencoded',
+            'Accept: text/html,application/xhtml+xml',
+            'X-Requested-With: XMLHttpRequest',
+            'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8'
+        ];
+
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_ENCODING => 'gzip, deflate',
+            CURLOPT_COOKIEFILE => '',
+            CURLOPT_USERAGENT => $userAgents[array_rand($userAgents)],
+            CURLOPT_REFERER => 'https://www.descobreaqui.com',
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        
+        logDebug("cURL Debug:\n" . 
+                "URL: $url\n" .
+                "HTTP Code: $httpCode\n" .
+                "Error: " . ($error ?: 'Nenhum') . "\n" .
+                "Response Size: " . strlen($response) . " bytes\n" .
+                "User-Agent: " . curl_getinfo($ch, CURLINFO_USER_AGENT));
+        
+        curl_close($ch);
+
+        if ($httpCode === 200 && !empty($response)) {
+            return [
+                'html' => $response,
+                'http_code' => $httpCode,
+                'method' => 'curl'
+            ];
+        }
+    }
+
+    // Tentativa com file_get_contents (fallback)
     $options = [
         'http' => [
             'method' => 'POST',
             'header' => implode("\r\n", [
-                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+                'User-Agent: ' . $userAgents[array_rand($userAgents)],
                 'Content-type: application/x-www-form-urlencoded',
-                'Accept: */*',
-                'Connection: keep-alive',
+                'Accept: text/html,application/xhtml+xml',
                 'X-Requested-With: XMLHttpRequest'
             ]),
             'content' => http_build_query($data),
@@ -52,48 +107,7 @@ function fetchData($url, $data) {
             'verify_peer_name' => false
         ]
     ];
-
-    // Tentativa com cURL (mais robusta)
-    if (function_exists('curl_init')) {
-        $ch = curl_init();
-        
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($data),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS => 5,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_HTTPHEADER => [
-                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-                'Content-type: application/x-www-form-urlencoded',
-                'Accept: */*',
-                'X-Requested-With: XMLHttpRequest'
-            ],
-            CURLOPT_ENCODING => 'gzip, deflate',
-            CURLOPT_COOKIEFILE => '',
-            CURLOPT_VERBOSE => true,
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        
-        logDebug("cURL Info: " . print_r(curl_getinfo($ch), true));
-        if ($error) logDebug("cURL Error: $error");
-        
-        curl_close($ch);
-
-        return [
-            'html' => $response,
-            'http_code' => $httpCode,
-            'method' => 'curl'
-        ];
-    }
-
-    // Fallback para file_get_contents
+    
     $context = stream_context_create($options);
     $response = @file_get_contents($url, false, $context);
     
@@ -103,6 +117,11 @@ function fetchData($url, $data) {
         $httpCode = $matches[1] ?? 500;
     }
     
+    logDebug("file_get_contents Debug:\n" .
+            "URL: $url\n" .
+            "HTTP Code: $httpCode\n" .
+            "Response Size: " . strlen($response) . " bytes");
+    
     return [
         'html' => $response !== false ? $response : '',
         'http_code' => $httpCode,
@@ -110,7 +129,7 @@ function fetchData($url, $data) {
     ];
 }
 
-// 3. Tentativa de consulta com tratamento melhorado
+// 3. Consulta principal com fallbacks
 try {
     $url = "https://www.descobreaqui.com/search";
     $postData = [
@@ -119,25 +138,30 @@ try {
         'token' => bin2hex(random_bytes(8))
     ];
 
-    logDebug("Iniciando requisição para: $url");
-    logDebug("Dados enviados: " . print_r($postData, true));
+    logDebug("Iniciando consulta para CPF: $cpf");
     
+    // Primeira tentativa
     $result = fetchData($url, $postData);
-
-    logDebug("Resultado bruto: " . print_r($result, true));
     
-    if ($result['http_code'] == 500) {
-        throw new Exception("O servidor remoto retornou um erro interno (500)");
+    // Segunda tentativa se falhar (com pequena variação)
+    if ($result['http_code'] != 200 || empty($result['html'])) {
+        sleep(1); // Delay para evitar bloqueio
+        $postData['token'] = bin2hex(random_bytes(8)); // Novo token
+        $result = fetchData($url, $postData);
+    }
+
+    // Verificação final
+    if ($result['http_code'] != 200) {
+        throw new Exception("Servidor retornou HTTP " . $result['http_code']);
     }
     
     if (empty($result['html'])) {
-        throw new Exception("Resposta vazia. HTTP Code: " . $result['http_code']);
+        throw new Exception("Resposta vazia do servidor");
     }
 
-    logDebug("Resposta recebida (tamanho): " . strlen($result['html']));
-    logDebug("Método utilizado: " . $result['method']);
+    logDebug("Dados recebidos com sucesso (" . strlen($result['html']) . " bytes)");
 
-    // 4. Análise do HTML com tratamento de erros
+    // 4. Análise do HTML
     $dom = new DOMDocument();
     libxml_use_internal_errors(true);
     
@@ -147,29 +171,53 @@ try {
             return trim($error->message);
         }, $errors);
         libxml_clear_errors();
-        throw new Exception("Falha ao parsear HTML: " . implode("; ", $errorMessages));
+        throw new Exception("Erro ao analisar HTML: " . implode("; ", $errorMessages));
     }
 
     $xpath = new DOMXPath($dom);
     
-    // 5. Extração de dados com seletores mais tolerantes
-    $nomeNode = $xpath->query("//div[contains(@class,'user-info')]//h2")->item(0);
-    $nome = $nomeNode ? trim($nomeNode->nodeValue) : null;
-    
-    $nascimentoNode = $xpath->query("//span[contains(@class,'birth-date')]")->item(0);
-    $nascimento = $nascimentoNode ? trim($nascimentoNode->nodeValue) : null;
+    // 5. Extração de dados com seletores flexíveis
+    $data = [
+        'nome' => null,
+        'nascimento' => null,
+        'mae' => null
+    ];
+
+    // Tentativa com vários padrões de seletores
+    $selectors = [
+        'nome' => [
+            "//div[contains(@class,'user-info')]//h2",
+            "//div[@id='user-data']//h2",
+            "//h2[contains(text(),'Nome')]/following-sibling::div"
+        ],
+        'nascimento' => [
+            "//span[contains(@class,'birth-date')]",
+            "//div[contains(text(),'Nascimento')]/following-sibling::div",
+            "//span[@id='birth-date']"
+        ]
+    ];
+
+    foreach ($selectors as $field => $xpaths) {
+        foreach ($xpaths as $xpathExpr) {
+            $node = $xpath->query($xpathExpr)->item(0);
+            if ($node && !empty(trim($node->nodeValue))) {
+                $data[$field] = trim($node->nodeValue);
+                break;
+            }
+        }
+    }
 
     // 6. Retorno dos resultados
     $response = [
         'success' => true,
         'data' => [
             'cpf' => $cpf,
-            'nome' => $nome ?: 'Não encontrado',
-            'nascimento' => $nascimento ?: 'Não encontrado'
+            'nome' => $data['nome'] ?? 'Não encontrado',
+            'nascimento' => $data['nascimento'] ?? 'Não encontrado'
         ],
-        'debug' => [
-            'html_size' => strlen($result['html']),
-            'http_code' => $result['http_code'],
+        'metadata' => [
+            'response_size' => strlen($result['html']),
+            'http_status' => $result['http_code'],
             'method' => $result['method']
         ]
     ];
@@ -177,15 +225,16 @@ try {
     echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 } catch (Exception $e) {
-    logDebug("ERRO: " . $e->getMessage());
+    logDebug("ERRO CRÍTICO: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'message' => 'Erro na consulta: ' . $e->getMessage(),
         'error_code' => $e->getCode(),
-        'debug_info' => isset($result) ? [
-            'http_code' => $result['http_code'] ?? null,
-            'method' => $result['method'] ?? null
-        ] : null
+        'debug' => [
+            'last_http_code' => $result['http_code'] ?? null,
+            'method' => $result['method'] ?? null,
+            'cpf_consultado' => $cpf
+        ]
     ], JSON_UNESCAPED_UNICODE);
 }

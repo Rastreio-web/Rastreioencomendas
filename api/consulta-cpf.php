@@ -122,7 +122,7 @@ class AdvancedScraper {
         
         $ch = curl_init();
         
-        // Configuração com proxy
+        // Configuração com proxyy
         $proxy = self::$proxyList[array_rand(self::$proxyList)];
         
         curl_setopt_array($ch, [

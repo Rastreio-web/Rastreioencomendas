@@ -108,8 +108,7 @@ function getUrlContent($url, $context = null) {
         'Último erro: ' . (is_array($lastError) ? $lastError['message'] : $lastError)
     );
 }
-
-// ... [restante do código permanece igual] ...
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">

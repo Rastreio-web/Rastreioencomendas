@@ -31,9 +31,29 @@ if (strlen($cpf) !== 11 || !ctype_digit($cpf)) {
     exit;
 }
 
-// 2. Função de requisição com fallback
+// 2. Função de requisição melhorada
 function fetchData($url, $data) {
-    // Primeiro tenta com cURL
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => implode("\r\n", [
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+                'Content-type: application/x-www-form-urlencoded',
+                'Accept: */*',
+                'Connection: keep-alive',
+                'X-Requested-With: XMLHttpRequest'
+            ]),
+            'content' => http_build_query($data),
+            'timeout' => 30,
+            'ignore_errors' => true
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false
+        ]
+    ];
+
+    // Tentativa com cURL (mais robusta)
     if (function_exists('curl_init')) {
         $ch = curl_init();
         
@@ -45,66 +65,52 @@ function fetchData($url, $data) {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_SSL_VERIFYPEER => true, // Alterado para true por segurança
+            CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => [
                 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-                'Accept: text/html,application/xhtml+xml',
-                'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8',
-                'Content-Type: application/x-www-form-urlencoded',
+                'Content-type: application/x-www-form-urlencoded',
+                'Accept: */*',
                 'X-Requested-With: XMLHttpRequest'
             ],
             CURLOPT_ENCODING => 'gzip, deflate',
             CURLOPT_COOKIEFILE => '',
+            CURLOPT_VERBOSE => true,
         ]);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
+        
+        logDebug("cURL Info: " . print_r(curl_getinfo($ch), true));
+        if ($error) logDebug("cURL Error: $error");
+        
         curl_close($ch);
 
-        if (!$error && $httpCode === 200) {
-            return [
-                'html' => $response,
-                'http_code' => $httpCode,
-                'method' => 'curl'
-            ];
-        }
+        return [
+            'html' => $response,
+            'http_code' => $httpCode,
+            'method' => 'curl'
+        ];
     }
 
-    // Fallback para file_get_contents se cURL falhar
-    $options = [
-        'http' => [
-            'method' => 'POST',
-            'header' => implode("\r\n", [
-                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-                'Content-type: application/x-www-form-urlencoded',
-            ]),
-            'content' => http_build_query($data),
-            'timeout' => 30,
-            'ignore_errors' => true
-        ],
-        'ssl' => [
-            'verify_peer' => true,
-            'verify_peer_name' => true
-        ]
-    ];
-    
+    // Fallback para file_get_contents
     $context = stream_context_create($options);
     $response = @file_get_contents($url, false, $context);
     
-    if ($response === false) {
-        $error = error_get_last();
-        logDebug("Erro file_get_contents: " . $error['message']);
+    $httpCode = 500;
+    if (isset($http_response_header[0])) {
+        preg_match('/HTTP\/\d\.\d\s+(\d+)/', $http_response_header[0], $matches);
+        $httpCode = $matches[1] ?? 500;
     }
     
     return [
         'html' => $response !== false ? $response : '',
-        'http_code' => $response !== false ? 200 : 500,
+        'http_code' => $httpCode,
         'method' => 'file_get_contents'
     ];
 }
 
-// 3. Tentativa de consulta
+// 3. Tentativa de consulta com tratamento melhorado
 try {
     $url = "https://www.descobreaqui.com/search";
     $postData = [
@@ -114,16 +120,24 @@ try {
     ];
 
     logDebug("Iniciando requisição para: $url");
+    logDebug("Dados enviados: " . print_r($postData, true));
+    
     $result = fetchData($url, $postData);
 
+    logDebug("Resultado bruto: " . print_r($result, true));
+    
+    if ($result['http_code'] == 500) {
+        throw new Exception("O servidor remoto retornou um erro interno (500)");
+    }
+    
     if (empty($result['html'])) {
-        throw new Exception("Resposta vazia. HTTP Code: " . ($result['http_code'] ?? 'N/A'));
+        throw new Exception("Resposta vazia. HTTP Code: " . $result['http_code']);
     }
 
     logDebug("Resposta recebida (tamanho): " . strlen($result['html']));
     logDebug("Método utilizado: " . $result['method']);
 
-    // 4. Análise do HTML
+    // 4. Análise do HTML com tratamento de erros
     $dom = new DOMDocument();
     libxml_use_internal_errors(true);
     
@@ -138,13 +152,12 @@ try {
 
     $xpath = new DOMXPath($dom);
     
-    // 5. Extração de dados com seletores mais específicos
-    $nome = $xpath->query("//div[@class='user-info']/h2")->item(0)->nodeValue ?? null;
-    $nascimento = $xpath->query("//span[@class='birth-date']")->item(0)->nodeValue ?? null;
-
-    // Limpeza dos dados
-    $nome = $nome ? trim(preg_replace('/\s+/', ' ', $nome)) : null;
-    $nascimento = $nascimento ? trim($nascimento) : null;
+    // 5. Extração de dados com seletores mais tolerantes
+    $nomeNode = $xpath->query("//div[contains(@class,'user-info')]//h2")->item(0);
+    $nome = $nomeNode ? trim($nomeNode->nodeValue) : null;
+    
+    $nascimentoNode = $xpath->query("//span[contains(@class,'birth-date')]")->item(0);
+    $nascimento = $nascimentoNode ? trim($nascimentoNode->nodeValue) : null;
 
     // 6. Retorno dos resultados
     $response = [
@@ -169,6 +182,10 @@ try {
     echo json_encode([
         'success' => false,
         'message' => 'Erro na consulta: ' . $e->getMessage(),
-        'error_code' => $e->getCode()
+        'error_code' => $e->getCode(),
+        'debug_info' => isset($result) ? [
+            'http_code' => $result['http_code'] ?? null,
+            'method' => $result['method'] ?? null
+        ] : null
     ], JSON_UNESCAPED_UNICODE);
 }

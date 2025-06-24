@@ -4,53 +4,94 @@ header("Access-Control-Allow-Origin: *");
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Configuração de Ambiente
+// 1. Configurações melhoradas
 define('MAX_ATTEMPTS', 3);
-define('REQUEST_DELAY', 2);
-$logFile = __DIR__ . '/scraper_pro.log';
+define('REQUEST_DELAY', 5); // Aumentado para 5 segundos
+$logFile = __DIR__ . '/scraper_ultimate.log';
 
-// Sistema de Logs
+// 2. Sistema de Logs Aprimorado
 function logEvent($message, $level = 'INFO') {
     global $logFile;
-    $logMsg = sprintf("[%s][%s] %s\n", date('Y-m-d H:i:s'), $level, $message);
+    $timestamp = date('Y-m-d H:i:s');
+    $logMsg = "[$timestamp][$level] $message\n";
     file_put_contents($logFile, $logMsg, FILE_APPEND);
 }
 
-class ProfessionalScraper {
-    public static function fetchWithRetry($url, $data) {
-        $attempt = 0;
+// 3. Verificador de URL
+function verifyEndpoint($url) {
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'HEAD',
+            'timeout' => 10,
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false
+        ]
+    ]);
+    
+    $headers = @get_headers($url, 1, $context);
+    
+    if ($headers === false) {
+        return [
+            'status' => 'error',
+            'error' => 'URL não acessível ou bloqueada'
+        ];
+    }
+    
+    $statusCode = (int)substr($headers[0], 9, 3);
+    
+    return [
+        'status' => $statusCode === 200 ? 'success' : 'error',
+        'http_code' => $statusCode,
+        'headers' => $headers
+    ];
+}
+
+// 4. Classe de Requisição com Fallbacks
+class UltimateScraper {
+    public static function fetchData($url, $data) {
+        // Primeiro verifica se o endpoint está acessível
+        $verification = verifyEndpoint($url);
+        
+        if ($verification['status'] !== 'success') {
+            throw new Exception("Endpoint inacessível. Código HTTP: " . ($verification['http_code'] ?? 'N/A'));
+        }
+        
+        logEvent("Endpoint verificado. Iniciando requisições...", "INFO");
+        
+        // Tenta múltiplos métodos
+        $methods = ['fileGetContentsEnhanced', 'curlIfAvailable'];
         $lastError = null;
         
-        while ($attempt < MAX_ATTEMPTS) {
-            $attempt++;
+        foreach ($methods as $method) {
             try {
-                $result = self::fileGetContentsRequest($url, $data, $attempt);
+                $result = self::$method($url, $data);
                 
                 if ($result['status'] === 'success') {
                     return $result;
                 }
                 
                 $lastError = $result['error'];
-                logEvent("Tentativa $attempt falhou: " . $lastError, "WARNING");
+                logEvent("Método $method falhou: $lastError", "WARNING");
                 
             } catch (Exception $e) {
                 $lastError = $e->getMessage();
-                logEvent("Erro na tentativa $attempt: " . $lastError, "ERROR");
+                logEvent("Erro no método $method: $lastError", "ERROR");
             }
             
-            if ($attempt < MAX_ATTEMPTS) {
-                sleep(REQUEST_DELAY * $attempt);
-            }
+            sleep(REQUEST_DELAY);
         }
         
-        throw new Exception("Todas as tentativas falharam. Último erro: " . $lastError);
+        throw new Exception("Todos os métodos falharam. Último erro: $lastError");
     }
     
-    private static function fileGetContentsRequest($url, $data, $attempt) {
+    private static function fileGetContentsEnhanced($url, $data) {
         $context = stream_context_create([
             'http' => [
                 'method' => 'POST',
-                'header' => self::generateHeaders($attempt),
+                'header' => self::generateHeaders(),
                 'content' => http_build_query($data),
                 'timeout' => 15,
                 'ignore_errors' => true
@@ -67,14 +108,57 @@ class ProfessionalScraper {
             $error = error_get_last();
             return [
                 'status' => 'error',
-                'error' => $error['message'] ?? 'Erro desconhecido'
+                'error' => $error['message'] ?? 'Erro desconhecido no file_get_contents'
             ];
         }
         
-        // Extrair código HTTP dos headers
-        preg_match('{HTTP\/\S*\s(\d{3})}', $http_response_header[0] ?? '', $matches);
-        $httpCode = $matches[1] ?? 200;
+        // Extrair código HTTP
+        $httpCode = 200;
+        if (isset($http_response_header)) {
+            preg_match('{HTTP\/\S*\s(\d{3})}', $http_response_header[0], $matches);
+            $httpCode = $matches[1] ?? 200;
+        }
         
+        return self::validateResponse($response, $httpCode);
+    }
+    
+    private static function curlIfAvailable($url, $data) {
+        if (!function_exists('curl_init')) {
+            throw new Exception("cURL não disponível");
+        }
+        
+        $ch = curl_init();
+        
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 3,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_HTTPHEADER => self::generateHeaders(),
+            CURLOPT_USERAGENT => self::randomUserAgent(),
+            CURLOPT_REFERER => 'https://www.descobreaqui.com',
+            CURLOPT_SSL_VERIFYPEER => false
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($response === false) {
+            return [
+                'status' => 'error',
+                'error' => "cURL error: $error"
+            ];
+        }
+        
+        return self::validateResponse($response, $httpCode);
+    }
+    
+    private static function validateResponse($content, $httpCode) {
         if ($httpCode == 403 || $httpCode == 429) {
             return [
                 'status' => 'error',
@@ -82,31 +166,37 @@ class ProfessionalScraper {
             ];
         }
         
-        if ($httpCode != 200 || empty($response)) {
+        if ($httpCode != 200) {
             return [
                 'status' => 'error',
-                'error' => "HTTP $httpCode - Resposta vazia"
+                'error' => "HTTP $httpCode - Resposta não esperada"
+            ];
+        }
+        
+        if (empty($content)) {
+            return [
+                'status' => 'error',
+                'error' => "Resposta vazia"
             ];
         }
         
         return [
             'status' => 'success',
-            'content' => $response,
+            'content' => $content,
             'http_code' => $httpCode
         ];
     }
     
-    private static function generateHeaders($attempt) {
-        $headers = [
+    private static function generateHeaders() {
+        return implode("\r\n", [
             'Accept: text/html,application/xhtml+xml',
             'Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8',
             'Content-Type: application/x-www-form-urlencoded',
             'User-Agent: ' . self::randomUserAgent(),
             'Referer: https://www.descobreaqui.com',
-            'Origin: https://www.descobreaqui.com'
-        ];
-        
-        return implode("\r\n", $headers) . "\r\n";
+            'Origin: https://www.descobreaqui.com',
+            'Connection: keep-alive'
+        ]) . "\r\n";
     }
     
     private static function randomUserAgent() {
@@ -120,7 +210,7 @@ class ProfessionalScraper {
     }
 }
 
-// Validação de CPF (mesma implementação)
+// 5. Validação de CPF (corrigida)
 function validateCpf($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
     
@@ -140,7 +230,7 @@ function validateCpf($cpf) {
     return true;
 }
 
-// Processamento Principal (mesma implementação)
+// 6. Processamento Principal com Tratamento Aprimorado
 try {
     $cpf = $_GET['cpf'] ?? '';
     
@@ -164,7 +254,7 @@ try {
         'rand' => mt_rand(100000, 999999)
     ];
     
-    $result = ProfessionalScraper::fetchWithRetry($url, $postData);
+    $result = UltimateScraper::fetchData($url, $postData);
     
     // Análise do HTML
     $dom = new DOMDocument();
@@ -183,7 +273,7 @@ try {
         ],
         'metadata' => [
             'http_code' => $result['http_code'],
-            'attempts' => MAX_ATTEMPTS
+            'method' => 'UltimateScraper'
         ]
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
@@ -198,7 +288,9 @@ try {
         'debug' => [
             'cpf' => $cpf ?? null,
             'system' => php_uname(),
-            'timestamp' => time()
+            'timestamp' => time(),
+            'php_version' => PHP_VERSION,
+            'attempts' => MAX_ATTEMPTS
         ]
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 }

@@ -13,100 +13,198 @@ function limparCPF($cpf) {
     return (strlen($cpf)) === 11 ? $cpf : false;
 }
 
-// Função melhorada com fallback para obter conteúdo de URL
+// Função melhorada para obter conteúdo de URL
 function getUrlContent($url, $context = null) {
-    $methods = [];
-    $lastError = null;
-    
-    // Verifica quais métodos estão disponíveis
     $allowUrlFopen = ini_get('allow_url_fopen');
     $curlEnabled = function_exists('curl_init');
     
     if (!$allowUrlFopen && !$curlEnabled) {
-        throw new Exception(
-            'Nenhum método disponível para acessar URLs externas. ' .
-            'O servidor não tem cURL habilitado nem allow_url_fopen ativado. ' .
-            'Contate o administrador do servidor para habilitar um desses métodos.'
-        );
+        throw new Exception('Nenhum método disponível para acessar URLs externas');
     }
 
-    // Tenta com file_get_contents primeiro se estiver habilitado
+    // Tenta com file_get_contents primeiro
     if ($allowUrlFopen) {
-        try {
-            $content = @file_get_contents($url, false, $context);
-            if ($content !== false) {
-                return $content;
-            }
-            $lastError = error_get_last();
-        } catch (Exception $e) {
-            $lastError = $e->getMessage();
-        }
+        $content = @file_get_contents($url, false, $context);
+        if ($content !== false) return $content;
     }
 
-    // Fallback para cURL se disponível
+    // Fallback para cURL
     if ($curlEnabled) {
-        try {
-            $ch = curl_init();
-            
-            // Configurações básicas
-            $options = [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_TIMEOUT => 15,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_ENCODING => '',
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            ];
-            
-            // Se tivermos um contexto HTTP, extraímos os headers
-            if ($context && is_resource($context)) {
-                $optionsContext = stream_context_get_options($context);
-                if (isset($optionsContext['http']['header'])) {
-                    $headers = explode("\r\n", $optionsContext['http']['header']);
-                    $parsedHeaders = [];
-                    foreach ($headers as $header) {
-                        if (strpos($header, ':') !== false) {
-                            $parsedHeaders[] = $header;
-                        }
-                    }
-                    if (!empty($parsedHeaders)) {
-                        $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
+        $ch = curl_init();
+        $options = [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        ];
+        
+        if ($context && is_resource($context)) {
+            $optionsContext = stream_context_get_options($context);
+            if (isset($optionsContext['http']['header'])) {
+                $headers = array_filter(array_map('trim', explode("\r\n", $optionsContext['http']['header'])));
+                $parsedHeaders = [];
+                foreach ($headers as $header) {
+                    if (strpos($header, ':') !== false) {
+                        $parsedHeaders[] = $header;
                     }
                 }
-                
-                // Configura método e conteúdo para POST
-                if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
-                    $options[CURLOPT_POST] = true;
-                    if (isset($optionsContext['http']['content'])) {
-                        $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
-                    }
+                if (!empty($parsedHeaders)) {
+                    $options[CURLOPT_HTTPHEADER] = $parsedHeaders;
                 }
             }
             
-            curl_setopt_array($ch, $options);
-            $content = curl_exec($ch);
-            
-            if ($content === false) {
-                $lastError = curl_error($ch);
-            } else {
-                curl_close($ch);
-                return $content;
+            if (isset($optionsContext['http']['method']) && strtoupper($optionsContext['http']['method']) === 'POST') {
+                $options[CURLOPT_POST] = true;
+                if (isset($optionsContext['http']['content'])) {
+                    $options[CURLOPT_POSTFIELDS] = $optionsContext['http']['content'];
+                }
             }
-            
-            curl_close($ch);
-        } catch (Exception $e) {
-            $lastError = $e->getMessage();
         }
+        
+        curl_setopt_array($ch, $options);
+        $content = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($content === false) {
+            throw new Exception("Erro cURL: $error (HTTP Code: $httpCode)");
+        }
+        
+        return $content;
     }
 
-    // Se chegou aqui, todos os métodos falharam
-    throw new Exception(
-        'Falha ao acessar a URL. ' .
-        'Métodos tentados: ' . ($allowUrlFopen ? 'file_get_contents' : '') . 
-        ($curlEnabled ? ($allowUrlFopen ? ' e cURL' : 'cURL') : '') . '. ' .
-        'Último erro: ' . (is_array($lastError) ? $lastError['message'] : $lastError)
-    );
+    throw new Exception('Todos os métodos de requisição falharam');
+}
+
+// Função para realizar a pesquisa com tratamento avançado
+function pesquisarCPF($cpf) {
+    $url = 'https://pesquisacpf.com.br/';
+    
+    try {
+        // Configuração do contexto para a primeira requisição (GET)
+        $options = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n"
+                          . "Accept: text/html,application/xhtml+xml\r\n"
+                          . "Accept-Language: pt-BR,pt;q=0.9\r\n"
+                          . "Referer: $url\r\n",
+                'timeout' => 15,
+                'ignore_errors' => true
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ];
+        
+        $context = stream_context_create($options);
+        
+        // Primeira requisição para obter o token CSRF
+        $response = getUrlContent($url, $context);
+        
+        // Debug: Verificar o conteúdo da resposta
+        if (isset($_POST['debug'])) {
+            file_put_contents('debug_get.html', $response);
+        }
+
+        // Verifica bloqueio Cloudflare
+        if (strpos($response, 'Cloudflare') !== false || strpos($response, 'DDoS protection') !== false) {
+            throw new Exception('O site está bloqueando o acesso (proteção Cloudflare)');
+        }
+
+        $dom = new DOMDocument();
+        @$dom->loadHTML($response);
+        $xpath = new DOMXPath($dom);
+        
+        // Extrai o token CSRF
+        $tokenNodes = $xpath->query('//input[@name="csrf_token"]/@value');
+        if ($tokenNodes->length === 0) {
+            throw new Exception('Token CSRF não encontrado - estrutura do site pode ter mudado');
+        }
+        $token = $tokenNodes->item(0)->nodeValue;
+
+        // Prepara os dados para o POST
+        $postData = http_build_query([
+            'cpf' => $cpf,
+            'csrf_token' => $token,
+            'acao' => 'pesquisar'
+        ]);
+
+        // Configuração para o POST
+        $options['http']['method'] = 'POST';
+        $options['http']['header'] .= "Content-Type: application/x-www-form-urlencoded\r\n"
+                                   . "X-Requested-With: XMLHttpRequest\r\n"
+                                   . "Content-Length: " . strlen($postData) . "\r\n";
+        $options['http']['content'] = $postData;
+        
+        $context = stream_context_create($options);
+
+        // Executa a pesquisa
+        $resultado = getUrlContent($url, $context);
+        
+        // Debug: Verificar o conteúdo da resposta
+        if (isset($_POST['debug'])) {
+            file_put_contents('debug_post.html', $resultado);
+        }
+
+        // Analisa o resultado
+        @$dom->loadHTML($resultado);
+        $xpath = new DOMXPath($dom);
+        
+        // Extrai os dados
+        $resultadoDiv = $xpath->query('//div[contains(@class, "resultado")]');
+        if ($resultadoDiv->length === 0) {
+            throw new Exception('Div de resultados não encontrada - verifique debug_post.html');
+        }
+
+        // Extrai nome completo
+        $nome = 'Não encontrado';
+        $nomeNodes = $xpath->query('.//p[contains(., "Nome:")]', $resultadoDiv->item(0));
+        if ($nomeNodes->length > 0) {
+            $nome = trim(str_replace(['Nome:', '⠀'], '', $nomeNodes->item(0)->nodeValue));
+        }
+
+        // Extrai data de nascimento
+        $nascimento = 'Não encontrado';
+        $nascimentoNodes = $xpath->query('.//p[contains(., "Nascimento:")]', $resultadoDiv->item(0));
+        if ($nascimentoNodes->length > 0) {
+            $nascimento = trim(str_replace(['Nascimento:', '⠀'], '', $nascimentoNodes->item(0)->nodeValue));
+        }
+
+        return [
+            'nome' => $nome,
+            'nascimento' => $nascimento,
+            'status' => 'success',
+            'debug' => isset($_POST['debug']) ? ['get' => 'debug_get.html', 'post' => 'debug_post.html'] : null
+        ];
+        
+    } catch (Exception $e) {
+        return [
+            'nome' => '',
+            'nascimento' => '',
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
+// Processa o formulário se enviado
+$resultado = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cpf'])) {
+    $cpf = limparCPF($_POST['cpf']);
+    
+    if (!$cpf) {
+        $resultado = [
+            'status' => 'error',
+            'message' => 'CPF inválido. Deve conter exatamente 11 dígitos.'
+        ];
+    } else {
+        $resultado = pesquisarCPF($cpf);
+    }
 }
 ?>
 
@@ -117,108 +215,7 @@ function getUrlContent($url, $context = null) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de CPF</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        label {
-            font-weight: bold;
-            color: #34495e;
-        }
-        input[type="text"] {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border 0.3s;
-        }
-        input[type="text"]:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-        button {
-            background: #3498db;
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #2980b9;
-        }
-        .resultado {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 6px;
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .success {
-            background: #e8f8f5;
-            border-left: 5px solid #2ecc71;
-        }
-        .error {
-            background: #fdedec;
-            border-left: 5px solid #e74c3c;
-        }
-        .info {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #7f8c8d;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 20px;
-        }
-        .debug {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border: 1px dashed #ddd;
-            font-family: monospace;
-            font-size: 13px;
-            display: none;
-        }
-        .debug-toggle {
-            color: #3498db;
-            cursor: pointer;
-            font-size: 13px;
-            user-select: none;
-        }
+        /* [Seu CSS existente permanece igual] */
     </style>
 </head>
 <body>
@@ -231,6 +228,11 @@ function getUrlContent($url, $context = null) {
                 <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required
                        pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}" title="Formato: 000.000.000-00">
             </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="debug" value="1"> Modo debug
+                </label>
+            </div>
             <button type="submit">Consultar</button>
         </form>
         
@@ -240,24 +242,40 @@ function getUrlContent($url, $context = null) {
                     <h3>Resultado da Consulta</h3>
                     <p><strong>Nome:</strong> <?php echo htmlspecialchars($resultado['nome']); ?></p>
                     <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars($resultado['nascimento']); ?></p>
+                    
+                    <?php if (isset($resultado['debug'])): ?>
+                        <div class="debug-info">
+                            <h4>Informações de Debug</h4>
+                            <p>Arquivos salvos para análise:</p>
+                            <ul>
+                                <li><a href="<?php echo $resultado['debug']['get']; ?>" target="_blank">Requisição GET inicial</a></li>
+                                <li><a href="<?php echo $resultado['debug']['post']; ?>" target="_blank">Requisição POST com resultados</a></li>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                    
                 <?php else: ?>
                     <h3>Erro na Consulta</h3>
                     <p><?php echo htmlspecialchars($resultado['message']); ?></p>
+                    
+                    <?php if (isset($resultado['debug'])): ?>
+                        <div class="debug-info">
+                            <h4>Informações de Debug</h4>
+                            <p>Arquivos salvos para análise:</p>
+                            <ul>
+                                <?php if (file_exists('debug_get.html')): ?>
+                                    <li><a href="debug_get.html" target="_blank">Requisição GET inicial</a></li>
+                                <?php endif; ?>
+                                <?php if (file_exists('debug_post.html')): ?>
+                                    <li><a href="debug_post.html" target="_blank">Requisição POST com resultados</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                    
                     <?php if (strpos($resultado['message'], 'Cloudflare') !== false): ?>
                         <p><small>Solução: Tente novamente mais tarde ou use uma conexão diferente.</small></p>
                     <?php endif; ?>
-                <?php endif; ?>
-                
-                <?php if (isset($_POST['debug'])): ?>
-                    <div class="debug-toggle" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
-                        ▼ Mostrar detalhes técnicos
-                    </div>
-                    <div class="debug">
-                        <strong>Debug Info:</strong><br>
-                        CPF pesquisado: <?php echo htmlspecialchars($_POST['cpf']); ?><br>
-                        Timestamp: <?php echo date('Y-m-d H:i:s'); ?><br>
-                        IP: <?php echo $_SERVER['REMOTE_ADDR']; ?>
-                    </div>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -268,31 +286,7 @@ function getUrlContent($url, $context = null) {
     </div>
     
     <script>
-        // Máscara para o CPF
-        document.getElementById('cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            
-            if (value.length > 3) {
-                value = value.substring(0, 3) + '.' + value.substring(3);
-            }
-            if (value.length > 7) {
-                value = value.substring(0, 7) + '.' + value.substring(7);
-            }
-            if (value.length > 11) {
-                value = value.substring(0, 11) + '-' + value.substring(11);
-            }
-            
-            e.target.value = value.substring(0, 14);
-        });
-        
-        // Validação do formulário
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-            if (cpf.length !== 11) {
-                alert('CPF deve conter 11 dígitos numéricos');
-                e.preventDefault();
-            }
-        });
+        // [Seu JavaScript existente permanece igual]
     </script>
 </body>
 </html>

@@ -944,7 +944,7 @@
     <!-- Chat Container modificado -->
 <div id="chat-container">
   <div class="chat-messages">
-           <!-- Saudação inicial -->
+    <!-- Saudação inicial -->
     <div class="message-box bot-message">
       <div class="message-sender">
         <img src="images/avatar.png" alt="Priscilla" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;">
@@ -973,13 +973,13 @@
       <p class="message-text"><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
     </div>
     
-    <!-- Áudio da pergunta -->
-    <div class="message-box bot-message">
+    <!-- Áudio da pergunta (MOVIDO PARA A SEGUNDA TELA) -->
+    <!-- <div class="message-box bot-message">
       <audio controls class="message-audio">
         <source src="audio/audio1.mp3" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
       </audio>
-    </div>
+    </div> -->
     
     <!-- Explicação sobre taxas (inicialmente oculta) -->
     <div id="taxa-message" class="message-box bot-message hidden">
@@ -992,19 +992,14 @@
       <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
       <p class="message-text">- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
       <p class="message-text">- Despacho postal - Serviço de liberação e envio.</p>
-    </div>
-    
-    <!-- Imagem da explicação -->
-    <div id="taxa-image" class="message-box bot-message hidden">
-      <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
-    </div>
-    
-    <!-- Áudio da explicação -->
-    <div id="taxa-audio" class="message-box bot-message hidden">
-      <audio controls class="message-audio">
-        <source src="audio/audio2.mp3" type="audio/mpeg">
-        Seu navegador não suporta o elemento de áudio.
-      </audio>
+      
+      <!-- Áudio adicionado aqui na segunda tela -->
+      <div class="message-audio-container" style="margin-top: 15px;">
+        <audio controls class="message-audio">
+          <source src="audio/audio1.mp3" type="audio/mpeg">
+          Seu navegador não suporta o elemento de áudio.
+        </audio>
+      </div>
     </div>
     
     <!-- Confirmação de pagamento (inicialmente oculta) -->
@@ -1328,7 +1323,7 @@ document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
 
     // Lógica do chat modificada
 document.getElementById('btn-sim').addEventListener('click', function() {
-  // Mostra as mensagens sobre taxas
+  // Mostra as mensagens sobre taxas (incluindo o áudio que agora está aqui)
   document.getElementById('taxa-message').classList.remove('hidden');
   document.getElementById('taxa-image').classList.remove('hidden');
   document.getElementById('taxa-audio').classList.remove('hidden');
@@ -1340,6 +1335,12 @@ document.getElementById('btn-sim').addEventListener('click', function() {
   // Rolagem automática para o final do chat
   const chatMessages = document.querySelector('.chat-messages');
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  // Toca o áudio automaticamente (opcional)
+  const audioElement = document.querySelector('#taxa-message audio');
+  if(audioElement) {
+    audioElement.play().catch(e => console.log("Autoplay não permitido:", e));
+  }
 });
 
 document.getElementById('btn-continuar').addEventListener('click', function() {

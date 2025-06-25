@@ -973,13 +973,13 @@
       <p class="message-text"><span id="chat-nome2"></span>, você deseja solicitar a liberação da sua mercadoria?</p>
     </div>
     
-    <!-- Áudio da pergunta (MOVIDO PARA A SEGUNDA TELA) -->
-    <!-- <div class="message-box bot-message">
+    <!-- Áudio da pergunta (movido para antes da explicação) -->
+    <div class="message-box bot-message">
       <audio controls class="message-audio">
         <source src="audio/audio1.mp3" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
       </audio>
-    </div> -->
+    </div>
     
     <!-- Explicação sobre taxas (inicialmente oculta) -->
     <div id="taxa-message" class="message-box bot-message hidden">
@@ -992,14 +992,19 @@
       <p class="message-text">- Taxa de liberação: Cobrança padrão para processos alfandegários.</p>
       <p class="message-text">- Peso da mercadoria - Valor ajustado conforme o peso do item.</p>
       <p class="message-text">- Despacho postal - Serviço de liberação e envio.</p>
-      
-      <!-- Áudio adicionado aqui na segunda tela -->
-      <div class="message-audio-container" style="margin-top: 15px;">
-        <audio controls class="message-audio">
-          <source src="audio/audio1.mp3" type="audio/mpeg">
-          Seu navegador não suporta o elemento de áudio.
-        </audio>
-      </div>
+    </div>
+    
+    <!-- Imagem da explicação -->
+    <div id="taxa-image" class="message-box bot-message hidden">
+      <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
+    </div>
+    
+    <!-- Áudio da explicação -->
+    <div id="taxa-audio" class="message-box bot-message hidden">
+      <audio controls class="message-audio">
+        <source src="audio/audio2.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+      </audio>
     </div>
     
     <!-- Confirmação de pagamento (inicialmente oculta) -->
@@ -1027,17 +1032,19 @@
     
     <!-- Detalhes finais (inicialmente oculta) -->
     <div id="detalhes-message" class="message-box bot-message hidden">
-  <p class="message-text">ATENÇÃO, <strong><span id="chat-nome3"></span></strong></p>
-  <p class="message-text"><strong>CPF:</strong> <strong><span id="chat-cpf"></span></strong></p>
-  <p class="message-text">📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <strong><span id="chat-data"></span></strong></p>
-</div>
+      <p class="message-text">ATENÇÃO, <strong><span id="chat-nome3"></span></strong></p>
+      <p class="message-text"><strong>CPF:</strong> <strong><span id="chat-cpf"></span></strong></p>
+      <p class="message-text">📦 Após a confirmação do pagamento, sua encomenda será liberada amanhã dia <strong><span id="chat-data"></span></strong></p>
+    </div>
+  </div>
   
-   <div class="chat-buttons">
+  <div class="chat-buttons">
     <button id="btn-sim" class="chat-button">SIM</button>
     <button id="btn-continuar" class="chat-button hidden">CONTINUAR</button>
     <button id="btn-acessar-guia" class="chat-button hidden">ACESSAR GUIA</button>
   </div>
 </div>
+
 
     <!-- Removi a seção do banner-1.jpg que estava aqui -->
   </main>
@@ -1323,7 +1330,7 @@ document.getElementById("chat-data").textContent = `${dd}/${mm}/${yyyy}`;
 
     // Lógica do chat modificada
 document.getElementById('btn-sim').addEventListener('click', function() {
-  // Mostra as mensagens sobre taxas (incluindo o áudio que agora está aqui)
+  // Mostra as mensagens sobre taxas
   document.getElementById('taxa-message').classList.remove('hidden');
   document.getElementById('taxa-image').classList.remove('hidden');
   document.getElementById('taxa-audio').classList.remove('hidden');
@@ -1335,12 +1342,6 @@ document.getElementById('btn-sim').addEventListener('click', function() {
   // Rolagem automática para o final do chat
   const chatMessages = document.querySelector('.chat-messages');
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  
-  // Toca o áudio automaticamente (opcional)
-  const audioElement = document.querySelector('#taxa-message audio');
-  if(audioElement) {
-    audioElement.play().catch(e => console.log("Autoplay não permitido:", e));
-  }
 });
 
 document.getElementById('btn-continuar').addEventListener('click', function() {

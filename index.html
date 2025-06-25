@@ -585,45 +585,45 @@
       }
     }
 
-     /* ESTILO FINAL DO CHAT - AJUSTE DE CORES */
-    #chat-container {
-    display: none;
-    max-width: 600px;
-    margin: 20px auto;
-    background-color: #ffffff;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    padding-bottom: 70px;
-    box-shadow: none;
-    border: 1px solid #ffffff;
-    text-align: left; /* Adicionado para alinhar todo o conteúdo à esquerda */
-  }
+     #chat-container {
+        display: none;
+        max-width: 800px; /* Aumentado de 600px para 800px */
+        width: 90%; /* Adicionado para melhor responsividade */
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        padding-bottom: 70px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Adicionado sombra sutil */
+        border: 1px solid #e0e0e0; /* Alterado para cinza claro */
+        text-align: left;
+    }
 
-  .chat-messages {
-    padding: 15px;
-    max-height: 500px;
-    overflow-y: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    background-color: #ffffff;
-    text-align: left; /* Garante alinhamento à esquerda */
-  }
+    .chat-messages {
+        padding: 20px; /* Aumentado o padding */
+        max-height: 500px;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        background-color: #ffffff;
+        text-align: left;
+    }
 
-  .message-box {
-    background-color: #f8fcfc;
-    border-radius: 8px;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    position: relative;
-    max-width: 90%;
-    word-wrap: break-word;
-    color: #000000;
-    margin-left: 10px; /* Aumentado para mais espaço à esquerda */
-    margin-right: auto;
-    border: 1px solid #e6f7ff;
-    text-align: left; /* Alinhamento à esquerda garantido */
-  }
+    .message-box {
+        background-color: #f8fcfc;
+        border-radius: 8px;
+        padding: 15px 20px; /* Aumentado o padding */
+        margin-bottom: 15px;
+        position: relative;
+        max-width: 90%;
+        word-wrap: break-word;
+        color: #000000;
+        margin-left: 10px;
+        margin-right: auto;
+        border: 1px solid #e6f7ff;
+        text-align: left;
+    }
 
   .bot-message {
     background-color: #f8fcfc;

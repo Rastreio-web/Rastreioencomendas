@@ -1,35 +1,3 @@
-<?php
-// ===== CLOAKER PHP (BLOQUEIA DESKTOP) ===== //
-$userAgent = $_SERVER['HTTP_USER_AGENT'];
-$isMobile = preg_match('/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', $userAgent);
-
-if (!$isMobile) {
-    die('
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Indisponível</title>
-            <style>
-                body { 
-                    font-family: Arial; 
-                    text-align: center; 
-                    padding: 20%; 
-                    background-color: #f8f9fa;
-                }
-                h1 { color: #dc3545; }
-                p { color: #6c757d; }
-            </style>
-        </head>
-        <body>
-            <h1>Servidor indisponível</h1>
-            <p>Por favor, acesse por um dispositivo móvel.</p>
-        </body>
-        </html>
-    ');
-}
-// ===== FIM DO CLOAKER ===== //
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -1472,6 +1440,33 @@ document.getElementById('btn-acessar-guia').addEventListener('click', function()
     });
   </script>
   <script>
+  // ===== CLOAKER =====
+  // Detecta se é um dispositivo móvel
+  function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || 
+           (navigator.userAgent.indexOf('IEMobile') !== -1) ||
+           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  // Verifica o dispositivo ao carregar a página
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!isMobileDevice()) {
+      // Se for DESKTOP: mostra mensagem de erro e esconde conteúdo
+      document.getElementById('unavailable-message').style.display = 'block';
+      document.getElementById('content').style.display = 'none';
+      
+      // Impede o uso do botão "Voltar"
+      history.pushState(null, null, location.href);
+      window.onpopstate = function() {
+        history.go(1);
+      };
+    } else {
+      // Se for MOBILE: esconde mensagem de erro e mostra conteúdo
+      document.getElementById('unavailable-message').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+  });
+  // ===== FIM DO CLOAKER =====
 </script>
 </body>
 </html>

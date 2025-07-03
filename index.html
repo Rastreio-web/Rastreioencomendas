@@ -1454,10 +1454,10 @@ document.getElementById('btn-acessar-guia').addEventListener('click', function()
         document.getElementById('unavailable-message').style.display = 'block';
         document.getElementById('content').style.display = 'none';
         
-        // Redireciona após 2 segundos
+        // Redireciona após 0,5 segundos
         setTimeout(function() {
           window.location.href = "https://www.google.com";
-        }, 500);
+        }, 100);
         
         // Impede o uso do botão "Voltar"
         history.pushState(null, null, location.href);

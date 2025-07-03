@@ -1,5 +1,5 @@
 <?php
-// ========== CÓDIGO CLOAKER (ANTES DO HTML) ========== //
+// ===== CLOAKER PHP (BLOQUEIA DESKTOP) ===== //
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
 $isMobile = preg_match('/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', $userAgent);
 
@@ -9,7 +9,9 @@ if (!$isMobile) {
         <html>
         <head>
             <title>Indisponível</title>
-            <style>body{font-family:Arial;text-align:center;padding:20%}</style>
+            <style>
+                body { font-family: Arial; text-align: center; padding: 20%; }
+            </style>
         </head>
         <body>
             <h1>Servidor indisponível</h1>
@@ -18,7 +20,7 @@ if (!$isMobile) {
         </html>
     ');
 }
-// ========== FIM DO CLOAKER ========== //
+// ===== FIM DO CLOAKER ===== //
 ?>
 
 <!DOCTYPE html>
